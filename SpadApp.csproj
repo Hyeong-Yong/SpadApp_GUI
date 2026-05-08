@@ -15,4 +15,13 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="phlib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TLPMX_32.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
