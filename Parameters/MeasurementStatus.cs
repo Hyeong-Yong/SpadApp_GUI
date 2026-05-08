@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpadApp.Model
+namespace SpadApp.Parameters
 {
     public static class MeasurementStatus
     {

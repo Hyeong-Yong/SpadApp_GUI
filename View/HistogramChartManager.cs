@@ -1,6 +1,6 @@
 ﻿using ScottPlot;
 using ScottPlot.WinForms;
-using SpadApp.Model;
+using SpadApp.Parameters;
 
 namespace SpadApp.View
 {
@@ -49,7 +49,7 @@ namespace SpadApp.View
         /// 데이터는 건드리지 않고, Binning 변경 등에 따른 X축 해상도(눈금)만 즉시 업데이트합니다.
         /// </summary>
         /// <param name="resolutionPs">장비에서 읽어온 현재 Resolution (ps 단위) [cite: 841]</param>
-        public void UpdateResolution(double resolutionPs)
+        public void UpdateTimeAxis(double resolutionPs)
         {
             if (_signal == null) return;
 
@@ -59,6 +59,33 @@ namespace SpadApp.View
 
             // X축 범위만 자동으로 맞춤
             _plot.Plot.Axes.AutoScaleX();
+            _plot.Refresh();
+        }
+
+        /// <summary>
+        /// 장치에서 직접 최신 해상도(Resolution)를 읽어와 히스토그램 차트를 갱신합니다.
+        /// </summary>
+        /// <param name="rawData">PicoHarp에서 취득한 원본 히스토그램 데이터</param>
+        public void UpdateFromHardware(uint[] rawData)
+        {
+            if (_signal == null) return;
+
+            // 1. 하드웨어에서 현재 해상도 읽기 
+            double resPs = 0;
+            PicoHarpDevice.PH_GetResolution(PicoHarpInfo.DeviceIndex, ref resPs); 
+
+            // 2. X축 시간 간격 업데이트 (ps -> ns 변환)
+            double resNs = resPs / 1000.0;
+            _signal.Data.Period = resNs;
+
+            // 3. 데이터 복사 (uint -> double)
+            for (int i = 0; i < rawData.Length; i++)
+            {
+                _plotData[i] = rawData[i];
+            }
+
+            // 4. 차트 화면 갱신 및 축 자동 맞춤
+            _plot.Plot.Axes.AutoScale();
             _plot.Refresh();
         }
 
@@ -86,5 +113,7 @@ namespace SpadApp.View
             _plot.Plot.Axes.AutoScale();
             _plot.Refresh();
         }
+
+
     }
 }

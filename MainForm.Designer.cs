@@ -29,9 +29,7 @@
         private void InitializeComponent()
         {
             btnConnect = new Button();
-            btnDisconnect = new Button();
             btnMeasure = new Button();
-            btnStop = new Button();
             btnSave = new Button();
             numBinning = new NumericUpDown();
             numAcqTime = new NumericUpDown();
@@ -58,6 +56,7 @@
             label12 = new Label();
             richtxtLog = new RichTextBox();
             histogramPlot = new ScottPlot.WinForms.FormsPlot();
+            btnRun = new Button();
             ((System.ComponentModel.ISupportInitialize)numBinning).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numAcqTime).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSyncDiv).BeginInit();
@@ -71,7 +70,7 @@
             // 
             // btnConnect
             // 
-            btnConnect.Location = new Point(12, 41);
+            btnConnect.Location = new Point(12, 12);
             btnConnect.Name = "btnConnect";
             btnConnect.Size = new Size(189, 59);
             btnConnect.TabIndex = 0;
@@ -79,19 +78,9 @@
             btnConnect.UseVisualStyleBackColor = true;
             btnConnect.Click += btnConnect_Click;
             // 
-            // btnDisconnect
-            // 
-            btnDisconnect.Location = new Point(217, 41);
-            btnDisconnect.Name = "btnDisconnect";
-            btnDisconnect.Size = new Size(189, 59);
-            btnDisconnect.TabIndex = 0;
-            btnDisconnect.Text = "DisConnect";
-            btnDisconnect.UseVisualStyleBackColor = true;
-            btnDisconnect.Click += btnDisconnect_Click;
-            // 
             // btnMeasure
             // 
-            btnMeasure.Location = new Point(12, 106);
+            btnMeasure.Location = new Point(12, 77);
             btnMeasure.Name = "btnMeasure";
             btnMeasure.Size = new Size(189, 59);
             btnMeasure.TabIndex = 0;
@@ -99,19 +88,9 @@
             btnMeasure.UseVisualStyleBackColor = true;
             btnMeasure.Click += btnMeasure_Click;
             // 
-            // btnStop
-            // 
-            btnStop.Location = new Point(217, 106);
-            btnStop.Name = "btnStop";
-            btnStop.Size = new Size(189, 59);
-            btnStop.TabIndex = 0;
-            btnStop.Text = "Stop";
-            btnStop.UseVisualStyleBackColor = true;
-            btnStop.Click += btnStop_Click;
-            // 
             // btnSave
             // 
-            btnSave.Location = new Point(12, 171);
+            btnSave.Location = new Point(12, 142);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(189, 59);
             btnSave.TabIndex = 0;
@@ -356,9 +335,9 @@
             // 
             // richtxtLog
             // 
-            richtxtLog.Location = new Point(496, 274);
+            richtxtLog.Location = new Point(486, 264);
             richtxtLog.Name = "richtxtLog";
-            richtxtLog.Size = new Size(419, 102);
+            richtxtLog.Size = new Size(429, 102);
             richtxtLog.TabIndex = 10;
             richtxtLog.Text = "";
             // 
@@ -369,11 +348,22 @@
             histogramPlot.Size = new Size(442, 212);
             histogramPlot.TabIndex = 11;
             // 
+            // btnRun
+            // 
+            btnRun.Location = new Point(207, 77);
+            btnRun.Name = "btnRun";
+            btnRun.Size = new Size(189, 59);
+            btnRun.TabIndex = 12;
+            btnRun.Text = "Run";
+            btnRun.UseVisualStyleBackColor = true;
+            btnRun.Click += btnRun_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1170, 450);
+            Controls.Add(btnRun);
             Controls.Add(histogramPlot);
             Controls.Add(richtxtLog);
             Controls.Add(label12);
@@ -381,9 +371,7 @@
             Controls.Add(statusStrip1);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(btnSave);
-            Controls.Add(btnStop);
             Controls.Add(btnMeasure);
-            Controls.Add(btnDisconnect);
             Controls.Add(btnConnect);
             Name = "MainForm";
             Text = "Form1";
@@ -406,9 +394,7 @@
         #endregion
 
         private Button btnConnect;
-        private Button btnDisconnect;
         private Button btnMeasure;
-        private Button btnStop;
         private Button btnSave;
         private NumericUpDown numBinning;
         private NumericUpDown numAcqTime;
@@ -435,5 +421,6 @@
         private Label label12;
         private RichTextBox richtxtLog;
         private ScottPlot.WinForms.FormsPlot histogramPlot;
+        private Button btnRun;
     }
 }

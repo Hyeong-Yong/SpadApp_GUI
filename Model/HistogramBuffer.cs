@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace SpadApp
+namespace SpadApp.Model
 {
     public class HistogramBuffer
     {
