@@ -52,11 +52,20 @@
             lblStatus = new ToolStripStatusLabel();
             lblCountRate1 = new ToolStripStatusLabel();
             lblCountRate0 = new ToolStripStatusLabel();
-            numTacq = new Label();
+            lblPowerMeter1 = new Label();
             label12 = new Label();
             richtxtLog = new RichTextBox();
             histogramPlot = new ScottPlot.WinForms.FormsPlot();
             btnRun = new Button();
+            numPMWavelength = new NumericUpDown();
+            lblPowerMeter2 = new Label();
+            lblPhotonFlux = new Label();
+            lblMeanPerPulse = new Label();
+            lblPDE = new Label();
+            label1 = new Label();
+            label10 = new Label();
+            label11 = new Label();
+            btnPM1ZeroAdjust = new Button();
             ((System.ComponentModel.ISupportInitialize)numBinning).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numAcqTime).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSyncDiv).BeginInit();
@@ -66,13 +75,14 @@
             ((System.ComponentModel.ISupportInitialize)numCFDLevel1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numCFDZeroCross1).BeginInit();
             statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numPMWavelength).BeginInit();
             SuspendLayout();
             // 
             // btnConnect
             // 
             btnConnect.Location = new Point(12, 12);
             btnConnect.Name = "btnConnect";
-            btnConnect.Size = new Size(189, 59);
+            btnConnect.Size = new Size(92, 34);
             btnConnect.TabIndex = 0;
             btnConnect.Text = "Connect";
             btnConnect.UseVisualStyleBackColor = true;
@@ -80,9 +90,9 @@
             // 
             // btnMeasure
             // 
-            btnMeasure.Location = new Point(12, 77);
+            btnMeasure.Location = new Point(12, 52);
             btnMeasure.Name = "btnMeasure";
-            btnMeasure.Size = new Size(189, 59);
+            btnMeasure.Size = new Size(92, 34);
             btnMeasure.TabIndex = 0;
             btnMeasure.Text = "Measure";
             btnMeasure.UseVisualStyleBackColor = true;
@@ -90,9 +100,9 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(12, 142);
+            btnSave.Location = new Point(12, 132);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(189, 59);
+            btnSave.Size = new Size(92, 34);
             btnSave.TabIndex = 0;
             btnSave.Text = "Save CSV";
             btnSave.UseVisualStyleBackColor = true;
@@ -149,7 +159,7 @@
             tableLayoutPanel1.Controls.Add(numCFDZeroCross1, 3, 3);
             tableLayoutPanel1.Controls.Add(lblResolution, 3, 1);
             tableLayoutPanel1.Controls.Add(label2, 0, 0);
-            tableLayoutPanel1.Location = new Point(12, 236);
+            tableLayoutPanel1.Location = new Point(12, 384);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 4;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
@@ -290,10 +300,10 @@
             // statusStrip1
             // 
             statusStrip1.Items.AddRange(new ToolStripItem[] { lblStatus, lblCountRate1, lblCountRate0 });
-            statusStrip1.Location = new Point(0, 428);
+            statusStrip1.Location = new Point(0, 613);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.RightToLeft = RightToLeft.Yes;
-            statusStrip1.Size = new Size(1170, 22);
+            statusStrip1.Size = new Size(1228, 22);
             statusStrip1.TabIndex = 5;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -315,59 +325,149 @@
             lblCountRate0.Size = new Size(74, 17);
             lblCountRate0.Text = "CountRate 0";
             // 
-            // numTacq
+            // lblPowerMeter1
             // 
-            numTacq.AutoSize = true;
-            numTacq.Location = new Point(132, 384);
-            numTacq.Name = "numTacq";
-            numTacq.Size = new Size(46, 15);
-            numTacq.TabIndex = 7;
-            numTacq.Text = "label11";
+            lblPowerMeter1.AutoSize = true;
+            lblPowerMeter1.Location = new Point(132, 532);
+            lblPowerMeter1.Name = "lblPowerMeter1";
+            lblPowerMeter1.Size = new Size(46, 15);
+            lblPowerMeter1.TabIndex = 7;
+            lblPowerMeter1.Text = "label11";
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(12, 384);
+            label12.Location = new Point(39, 532);
             label12.Name = "label12";
-            label12.Size = new Size(110, 15);
+            label12.Size = new Size(87, 15);
             label12.TabIndex = 8;
-            label12.Text = "Measurement Time";
+            label12.Text = "Average Power";
             // 
             // richtxtLog
             // 
-            richtxtLog.Location = new Point(486, 264);
+            richtxtLog.Location = new Point(916, 380);
             richtxtLog.Name = "richtxtLog";
-            richtxtLog.Size = new Size(429, 102);
+            richtxtLog.Size = new Size(231, 193);
             richtxtLog.TabIndex = 10;
             richtxtLog.Text = "";
             // 
             // histogramPlot
             // 
-            histogramPlot.Location = new Point(473, 27);
+            histogramPlot.Location = new Point(132, 12);
             histogramPlot.Name = "histogramPlot";
-            histogramPlot.Size = new Size(442, 212);
+            histogramPlot.Size = new Size(1015, 325);
             histogramPlot.TabIndex = 11;
             // 
             // btnRun
             // 
-            btnRun.Location = new Point(207, 77);
+            btnRun.Location = new Point(12, 92);
             btnRun.Name = "btnRun";
-            btnRun.Size = new Size(189, 59);
+            btnRun.Size = new Size(92, 34);
             btnRun.TabIndex = 12;
             btnRun.Text = "Run";
             btnRun.UseVisualStyleBackColor = true;
             btnRun.Click += btnRun_Click;
             // 
+            // numPMWavelength
+            // 
+            numPMWavelength.Location = new Point(132, 550);
+            numPMWavelength.Name = "numPMWavelength";
+            numPMWavelength.Size = new Size(120, 23);
+            numPMWavelength.TabIndex = 13;
+            numPMWavelength.ValueChanged += numPMWavelength_ValueChanged;
+            // 
+            // lblPowerMeter2
+            // 
+            lblPowerMeter2.AutoSize = true;
+            lblPowerMeter2.Location = new Point(132, 590);
+            lblPowerMeter2.Name = "lblPowerMeter2";
+            lblPowerMeter2.Size = new Size(46, 15);
+            lblPowerMeter2.TabIndex = 14;
+            lblPowerMeter2.Text = "label11";
+            // 
+            // lblPhotonFlux
+            // 
+            lblPhotonFlux.AutoSize = true;
+            lblPhotonFlux.Location = new Point(554, 403);
+            lblPhotonFlux.Name = "lblPhotonFlux";
+            lblPhotonFlux.Size = new Size(39, 15);
+            lblPhotonFlux.TabIndex = 15;
+            lblPhotonFlux.Text = "label1";
+            // 
+            // lblMeanPerPulse
+            // 
+            lblMeanPerPulse.AutoSize = true;
+            lblMeanPerPulse.Location = new Point(709, 404);
+            lblMeanPerPulse.Name = "lblMeanPerPulse";
+            lblMeanPerPulse.Size = new Size(39, 15);
+            lblMeanPerPulse.TabIndex = 15;
+            lblMeanPerPulse.Text = "label1";
+            // 
+            // lblPDE
+            // 
+            lblPDE.AutoSize = true;
+            lblPDE.Location = new Point(833, 404);
+            lblPDE.Name = "lblPDE";
+            lblPDE.Size = new Size(39, 15);
+            lblPDE.TabIndex = 15;
+            lblPDE.Text = "label1";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(509, 384);
+            label1.Name = "label1";
+            label1.Size = new Size(141, 15);
+            label1.TabIndex = 15;
+            label1.Text = "Incident Photon Number";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(684, 384);
+            label10.Name = "label10";
+            label10.Size = new Size(90, 15);
+            label10.TabIndex = 15;
+            label10.Text = "Mean Per Pulse";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(833, 384);
+            label11.Name = "label11";
+            label11.Size = new Size(29, 15);
+            label11.TabIndex = 15;
+            label11.Text = "PDE";
+            // 
+            // btnPM1ZeroAdjust
+            // 
+            btnPM1ZeroAdjust.Location = new Point(402, 396);
+            btnPM1ZeroAdjust.Name = "btnPM1ZeroAdjust";
+            btnPM1ZeroAdjust.Size = new Size(90, 23);
+            btnPM1ZeroAdjust.TabIndex = 16;
+            btnPM1ZeroAdjust.Text = "Background";
+            btnPM1ZeroAdjust.UseVisualStyleBackColor = true;
+            btnPM1ZeroAdjust.Click += btnPM1ZeroAdjust_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1170, 450);
+            ClientSize = new Size(1228, 635);
+            Controls.Add(btnPM1ZeroAdjust);
+            Controls.Add(label11);
+            Controls.Add(lblPDE);
+            Controls.Add(label10);
+            Controls.Add(lblMeanPerPulse);
+            Controls.Add(label1);
+            Controls.Add(lblPhotonFlux);
+            Controls.Add(lblPowerMeter2);
+            Controls.Add(numPMWavelength);
             Controls.Add(btnRun);
             Controls.Add(histogramPlot);
             Controls.Add(richtxtLog);
             Controls.Add(label12);
-            Controls.Add(numTacq);
+            Controls.Add(lblPowerMeter1);
             Controls.Add(statusStrip1);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(btnSave);
@@ -387,6 +487,7 @@
             ((System.ComponentModel.ISupportInitialize)numCFDZeroCross1).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numPMWavelength).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -417,10 +518,19 @@
         private ToolStripStatusLabel lblStatus;
         private ToolStripStatusLabel lblCountRate1;
         private ToolStripStatusLabel lblCountRate0;
-        private Label numTacq;
+        private Label lblPowerMeter1;
         private Label label12;
         private RichTextBox richtxtLog;
         private ScottPlot.WinForms.FormsPlot histogramPlot;
         private Button btnRun;
+        private NumericUpDown numPMWavelength;
+        private Label lblPowerMeter2;
+        private Label lblPhotonFlux;
+        private Label lblMeanPerPulse;
+        private Label lblPDE;
+        private Label label1;
+        private Label label10;
+        private Label label11;
+        private Button btnPM1ZeroAdjust;
     }
 }

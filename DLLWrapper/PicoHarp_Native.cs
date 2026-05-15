@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SpadApp
+namespace SpadApp.DLLWrapper
 {
-    public static class PicoHarpDevice
+    public static class PicoHarp_Native
     {
 #if X64
         const string PHLib = "phlib64";
@@ -70,7 +70,11 @@ namespace SpadApp
         public extern static int PH_CTCStatus(int devidx, ref int ctcstatus);
 
         [DllImport(PHLib, CallingConvention = CallingConvention.StdCall)]
-        public extern static int PH_GetHistogram(int devidx, uint[] chcount, int clear);
+        public extern static int PH_GetHistogram(
+            int devidx,
+            [Out] uint[] chcount, // [Out]을 붙여 Unmanaged -> Managed 방향으로만 데이터가 흐르도록 최적화
+            int block             // 매뉴얼 v3.0 스펙에 맞춰 clear가 아닌 block으로 수정
+        );
 
         [DllImport(PHLib, CallingConvention = CallingConvention.StdCall)]
         public extern static int PH_GetFlags(int devidx, ref int flags);

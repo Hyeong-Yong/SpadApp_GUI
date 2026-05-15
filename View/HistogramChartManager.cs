@@ -1,5 +1,6 @@
 ﻿using ScottPlot;
 using ScottPlot.WinForms;
+using SpadApp.DLLWrapper;
 using SpadApp.Parameters;
 
 namespace SpadApp.View
@@ -18,7 +19,7 @@ namespace SpadApp.View
         {
             _plot = plot;
             // PicoHarp 300의 표준 히스토그램 채널 수(65536)에 맞춰 배열 생성 [cite: 830, 1088]
-            _plotData = new double[PicoHarpDevice.HISTCHAN];
+            _plotData = new double[PicoHarp_Native.HISTCHAN];
             InitChart();
         }
 
@@ -72,7 +73,7 @@ namespace SpadApp.View
 
             // 1. 하드웨어에서 현재 해상도 읽기 
             double resPs = 0;
-            PicoHarpDevice.PH_GetResolution(PicoHarpInfo.DeviceIndex, ref resPs); 
+            PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resPs); 
 
             // 2. X축 시간 간격 업데이트 (ps -> ns 변환)
             double resNs = resPs / 1000.0;

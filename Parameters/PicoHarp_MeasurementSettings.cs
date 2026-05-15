@@ -4,13 +4,11 @@ using System.Text;
 
 namespace SpadApp.Parameters
 {
-    public static class MeasurementSettings
+    public static class PicoHarp_MeasurementSettings
     {
         public static int Binning { get; set; } = 0;
 
         public static int Offset { get; set; } = 0;
-
-        public static int AcqTime { get; set; } = 1000;
 
         public static int SyncDivider { get; set; } = 8;
 

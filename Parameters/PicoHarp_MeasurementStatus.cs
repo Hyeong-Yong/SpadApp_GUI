@@ -4,11 +4,11 @@ using System.Text;
 
 namespace SpadApp.Parameters
 {
-    public static class MeasurementStatus
+    public static class PicoHarp_MeasurementStatus
     {
         public static double ResolutionPs { get; set; }
 
-        public static int AcquisitionTimeMs { get; set; }
+        public static int AcquisitionTimeMs { get; set; } = 1000;
 
         public static int CountRate0 { get; set; }
 

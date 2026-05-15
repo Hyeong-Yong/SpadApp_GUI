@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SpadApp.Parameters
 {
-    public static class PicoHarpInfo
+    public static class PicoHarp_DeviceInfo
     {
         // 외부에서 접근 가능하도록 public으로 선언
         public static StringBuilder LibVer = new StringBuilder(8);
@@ -30,7 +30,7 @@ namespace SpadApp.Parameters
         public static bool IsConnected { get; set; }
 
         // 추가
-        public static  List<int> AvailableDevices { get; set; }
+        public static List<int> AvailableDevices { get; set; }
             = new();
     }
 }
