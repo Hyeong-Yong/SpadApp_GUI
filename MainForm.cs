@@ -126,21 +126,40 @@ namespace SpadApp
 
         private async void btnMeasure_Click(object sender, EventArgs e)
         {
-            if(!PicoHarp_DeviceInfo.IsConnected)
+            if (!PicoHarp_DeviceInfo.IsConnected)
             {
                 Log("Device not connected.");
                 return;
             }
 
+            // 🌟 1. 하드웨어 독점 계측을 시작하기 전, 실시간 모니터링 타이머를 중지합니다.
+            countRateMonitorTimer.Stop();
             btnMeasure.Enabled = false;
 
-            // 컨트롤러에게 측정을 시킴 (checkContinue는 항상 true 반환)
-            await _TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => true);
+            try
+            {
+                // 컨트롤러에게 단발성 측정 위임 (단발성이므로 checkContinue는 항상 true 반환하는 람다 전달)
+                await _TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => true);
 
-            // 차트 업데이트
-            _chartManager.UpdateFromHardware(_histogram.RawData);
-            Log("Single measurement done.");
-            btnMeasure.Enabled = true;
+                // 계측이 완료된 직후, 차트를 업데이트하기 전에 
+                // 화면의 레이트 미터 텍스트도 최신 값으로 한 번 수동 갱신해 주면 UI가 자연스럽습니다.
+                PicoHarpMonitorTimer_Tick(null, EventArgs.Empty);
+
+                // 차트 업데이트
+                _chartManager.UpdateFromHardware(_histogram.RawData);
+                Log("Single measurement done.");
+            }
+            catch (Exception ex)
+            {
+                Log($"Single measurement error: {ex.Message}");
+            }
+            finally
+            {
+                // 🌟 2. [핵심] 성공/실패 여부와 상관없이 계측 태스크가 완전히 끝났으므로
+                // 단발성 측정 버튼을 다시 활성화하고, 실시간 모니터링 타이머를 되살립니다.
+                btnMeasure.Enabled = true;
+                countRateMonitorTimer.Start();
+            }
         }
 
         // 중복되는 차트 업데이트 로직을 별도 뺌

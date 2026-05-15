@@ -43,29 +43,44 @@ namespace SpadApp
         {
             if (!PicoHarp_DeviceInfo.IsConnected) return;
 
-            // 1. UI에서 현재 설정값 읽어오기
-            PicoHarp_MeasurementStatus.AcquisitionTimeMs = (int)numAcqTime.Value;
-            PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
-            PicoHarp_MeasurementSettings.Binning = (int)numBinning.Value;
-            PicoHarp_MeasurementSettings.CFDLevel0 = (int)numCFDLevel0.Value;
-            PicoHarp_MeasurementSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
-            PicoHarp_MeasurementSettings.CFDLevel1 = (int)numCFDLevel1.Value;
-            PicoHarp_MeasurementSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
+            // 🌟 [핵심] 하드웨어 레지스터 설정을 바꾸는 동안 타이머와의 충돌을 원천 차단합니다.
+            countRateMonitorTimer.Stop();
 
-            // 2. 장비에 설정 적용
-            PicoHarp_Native.PH_SetSyncDiv(PicoHarp_DeviceInfo.DeviceIndex, PicoHarp_MeasurementSettings.SyncDivider);
-            PicoHarp_Native.PH_SetInputCFD(PicoHarp_DeviceInfo.DeviceIndex, 0, PicoHarp_MeasurementSettings.CFDLevel0, PicoHarp_MeasurementSettings.CFDZeroCross0);
-            PicoHarp_Native.PH_SetInputCFD(PicoHarp_DeviceInfo.DeviceIndex, 1, PicoHarp_MeasurementSettings.CFDLevel1, PicoHarp_MeasurementSettings.CFDZeroCross1);
-            PicoHarp_Native.PH_SetBinning(PicoHarp_DeviceInfo.DeviceIndex, PicoHarp_MeasurementSettings.Binning);
+            try
+            {
+                // 1. UI에서 현재 설정값 읽어오기
+                PicoHarp_MeasurementStatus.AcquisitionTimeMs = (int)numAcqTime.Value;
+                PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
+                PicoHarp_MeasurementSettings.Binning = (int)numBinning.Value;
+                PicoHarp_MeasurementSettings.CFDLevel0 = (int)numCFDLevel0.Value;
+                PicoHarp_MeasurementSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
+                PicoHarp_MeasurementSettings.CFDLevel1 = (int)numCFDLevel1.Value;
+                PicoHarp_MeasurementSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
 
+                // 2. 장비에 설정 적용 (Native API 순차 호출)
+                PicoHarp_Native.PH_SetSyncDiv(PicoHarp_DeviceInfo.DeviceIndex, PicoHarp_MeasurementSettings.SyncDivider);
+                PicoHarp_Native.PH_SetInputCFD(PicoHarp_DeviceInfo.DeviceIndex, 0, PicoHarp_MeasurementSettings.CFDLevel0, PicoHarp_MeasurementSettings.CFDZeroCross0);
+                PicoHarp_Native.PH_SetInputCFD(PicoHarp_DeviceInfo.DeviceIndex, 1, PicoHarp_MeasurementSettings.CFDLevel1, PicoHarp_MeasurementSettings.CFDZeroCross1);
+                PicoHarp_Native.PH_SetBinning(PicoHarp_DeviceInfo.DeviceIndex, PicoHarp_MeasurementSettings.Binning);
 
-            //PicoHarp 설정 변경 => 새로운 Resolution 값 취득
-            double resolution = 0;
-            PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resolution);
-            lblResolution.Text = resolution.ToString();
+                // PicoHarp 설정 변경 => 새로운 Resolution 값 취득
+                double resolution = 0;
+                PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resolution);
+                lblResolution.Text = resolution.ToString();
 
-            // 차트 매니저에게도 변경된 해상도를 알림 (X축 스케일 갱신을 위해 필요 시 호출)
-            _chartManager.UpdateTimeAxis(resolution);
+                // 차트 매니저에게도 변경된 해상도를 알림
+                _chartManager.UpdateTimeAxis(resolution);
+            }
+            catch (Exception ex)
+            {
+                Log($"설정 업데이트 중 오류 발생: {ex.Message}");
+            }
+            finally
+            {
+                // 🌟 [핵심] 설정 반영이 성공하든, 중간에 예외가 발생하든 
+                // 실시간 모니터링 타이머는 무조건 안전하게 다시 켭니다.
+                countRateMonitorTimer.Start();
+            }
         }
 
         private decimal lastSyncValue = 1;
