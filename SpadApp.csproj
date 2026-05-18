@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="x-cp20005"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -12,9 +12,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="MainForm.resx" />
+    <EmbeddedResource Include="ucMainView.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
     <PackageReference Include="ProEssentials.Chart.Net.Winforms" Version="10.0.0.24" />
     <PackageReference Include="ScottPlot.WinForms" Version="5.1.58" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MainForm - Copy.Logging.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MainForm - Copy.PowerMeter.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="MainForm - Copy.TCSPC.cs">
+      <SubType>Form</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

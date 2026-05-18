@@ -6,7 +6,7 @@ using SpadApp.Utility;
 
 namespace SpadApp
 {
-    public partial class MainForm
+    public partial class ucMainView
     {
         // ------------------------------------------------------------
         // PM100USB

@@ -5,293 +5,228 @@ using SpadApp.Parameters;
 using SpadApp.Utility;
 using SpadApp.View;
 using System.Configuration;
+using System.Runtime;
+using System.Runtime.InteropServices;
 
 namespace SpadApp
 {
-    public partial class MainForm : Form
-    {
+    public partial class MainForm : Form {
 
-        public MainForm()
-        {
+        private ucMainView _ucMainView;
+
+        //Fields
+        private int borderSize = 2;
+        private Size formSize; //Keep form size when it is minimized and restored.Since the form is resized because it takes into account the size of the title bar and borders.
+
+        // 현재 어떤 화면이 켜져 있는지 추적하는 변수
+        private UserControl _currentView;
+
+        public MainForm() {
             InitializeComponent();
+            InitializeViews();
+            CollapseMenu();
+            this.Padding = new Padding(borderSize); //Border size
+            this.BackColor = Color.FromArgb(98, 102, 244); //Border color 
 
-            //MainForm.Designer에서 생성된 histogramPlot을 매니저에게 전달
-            _chartManager = new HistogramChartManager(this.histogramPlot!);
-
-            countRateMonitorTimer.Tick += PicoHarpMonitorTimer_Tick;
-
-            powerMeterMonitorTimer1.Tick += PmMonitorTimer1_Tick;
-            powerMeterMonitorTimer2.Tick += PmMonitorTimer2_Tick;
         }
 
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            MeasurementParameterSetting();
+
+        private void InitializeViews() {
+            // [2] 화면들을 딱 한 번만 생성합니다.
+            _ucMainView = new ucMainView { Dock = DockStyle.Fill };
+
+            // [3] 메인 패널에 일단 다 올려둡니다.
+            panelMainView.Controls.Add(_ucMainView);
+
+            // [4] 처음에는 전부 다 숨겨버립니다.
+            _ucMainView.Visible = false;
+
+            // [5] 시작 화면으로 홈 화면만 켜줍니다.
+            ChangeView(_ucMainView);
         }
-        private void UpdateDeviceSettings()
-        {
-            UpdateDeviceSettings_PicoHarp();
-        }
+        // [6] 핵심: 화면 전환 함수 (Clear를 쓰지 않고 숨기기/보여주기만 작동)
+        private void ChangeView(UserControl newView) {
+            // 이미 그 화면이 켜져 있다면 아무 변화도 주지 않고 함수 종료
+            if (_currentView == newView) return;
 
-        private void btnConnect_Click(object sender, EventArgs e)
-        {
-            if (btnConnect.Text == "Connect")
-            {
-                // ------------------------------------------------------------
-                // PicoHarp300 Connect
-                // ------------------------------------------------------------
-
-                bool tcspcConnected =
-                    _TCSPCDeviceController.ConnectDevice(
-                        countRateMonitorTimer,
-                        Log);
-
-                if (!tcspcConnected)
-                {
-                    Log("PicoHarp300 connection failed.");
-                    return;
-                }
-
-                UpdateDeviceSettings();
-
-                Log("PicoHarp300 connected.");
-
-                // ------------------------------------------------------------
-                // PM100USB #0 Connect
-                // ------------------------------------------------------------
-
-                bool pm1Connected =
-                    _powerMeterController1.ConnectDevice(
-                        0,
-                        powerMeterMonitorTimer1,
-                        Log);
-
-                if (pm1Connected)
-                {
-                    Log("PM100USB #1 Connected");
-                }
-                else
-                {
-                    Log("PM100USB #1 connection failed.");
-                }
-
-                // ------------------------------------------------------------
-                // PM100USB #1 Connect
-                // ------------------------------------------------------------
-
-                bool pm2Connected =
-                    _powerMeterController2.ConnectDevice(
-                        1,
-                        powerMeterMonitorTimer2,
-                        Log);
-
-                if (pm2Connected)
-                {
-                    Log("PM100USB #2 Connected");
-                }
-                else
-                {
-                    Log("PM100USB #2 connection failed.");
-                }
-
-                // ------------------------------------------------------------
-                // UI Update
-                // ------------------------------------------------------------
-
-                btnConnect.Text = "Disconnect";
-
-                btnConnect.BackColor =
-                    Color.IndianRed;
-
-                btnMeasure.Enabled = true;
+            // 기존에 켜져 있던 화면이 있다면 숨김 처리
+            if (_currentView != null) {
+                _currentView.Visible = false;
             }
-            else
-            {
-                // ------------------------------------------------------------
-                // Disconnect All Devices
-                // ------------------------------------------------------------
 
-                _TCSPCDeviceController.DisconnectDevice(Log);
+            // 새 화면을 보임 처리
+            newView.Visible = true;
 
-                _powerMeterController1.DisconnectDevice(Log);
-
-                _powerMeterController2.DisconnectDevice(Log);
-
-                Log("All devices disconnected.");
-
-                ResetUI();
-            }
+            // 현재 화면 상태 업데이트
+            _currentView = newView;
         }
 
-        private async void btnMeasure_Click(object sender, EventArgs e)
-        {
-            if (!PicoHarp_DeviceInfo.IsConnected)
-            {
-                Log("Device not connected.");
-                return;
-            }
+        //Drag Form
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-            // 🌟 1. 하드웨어 독점 계측을 시작하기 전, 실시간 모니터링 타이머를 중지합니다.
-            countRateMonitorTimer.Stop();
-            btnMeasure.Enabled = false;
-
-            try
-            {
-                // 컨트롤러에게 단발성 측정 위임 (단발성이므로 checkContinue는 항상 true 반환하는 람다 전달)
-                await _TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => true);
-
-                // 계측이 완료된 직후, 차트를 업데이트하기 전에 
-                // 화면의 레이트 미터 텍스트도 최신 값으로 한 번 수동 갱신해 주면 UI가 자연스럽습니다.
-                PicoHarpMonitorTimer_Tick(null, EventArgs.Empty);
-
-                // 차트 업데이트
-                _chartManager.UpdateFromHardware(_histogram.RawData);
-                Log("Single measurement done.");
-            }
-            catch (Exception ex)
-            {
-                Log($"Single measurement error: {ex.Message}");
-            }
-            finally
-            {
-                // 🌟 2. [핵심] 성공/실패 여부와 상관없이 계측 태스크가 완전히 끝났으므로
-                // 단발성 측정 버튼을 다시 활성화하고, 실시간 모니터링 타이머를 되살립니다.
-                btnMeasure.Enabled = true;
-                countRateMonitorTimer.Start();
-            }
+        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e) {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
-
-        // 중복되는 차트 업데이트 로직을 별도 뺌
-        private void UpdateChartAfterMeasurement()
-        {
-
-            double res = 0;
-            PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref res);
-            _chartManager.Update(_histogram.RawData, res);
-        }
-
-        private bool _isRepeating = false;
-
-        private async void btnRun_Click(object sender, EventArgs e)
-        {
-            if (!PicoHarp_DeviceInfo.IsConnected) return;
-
-            if (!_isRepeating)
-            {
-                _isRepeating = true;
-                btnRun.Text = "Stop";
-                btnRun.BackColor = Color.IndianRed;
-
-                // 🌟 1. 계측 시작 직전 진짜 타이머를 끕니다.
-                countRateMonitorTimer.Stop();
-
-                try
+        //Overridden methods
+        protected override void WndProc(ref Message m) {
+            const int WM_NCCALCSIZE = 0x0083;//Standar Title Bar - Snap Window
+            const int WM_SYSCOMMAND = 0x0112;
+            const int SC_MINIMIZE = 0xF020; //Minimize form (Before)
+            const int SC_RESTORE = 0xF120; //Restore form (Before)
+            const int WM_NCHITTEST = 0x0084;//Win32, Mouse Input Notification: Determine what part of the window corresponds to a point, allows to resize the form.
+            const int resizeAreaSize = 10;
+            #region Form Resize
+            // Resize/WM_NCHITTEST values
+            const int HTCLIENT = 1; //Represents the client area of the window
+            const int HTLEFT = 10;  //Left border of a window, allows resize horizontally to the left
+            const int HTRIGHT = 11; //Right border of a window, allows resize horizontally to the right
+            const int HTTOP = 12;   //Upper-horizontal border of a window, allows resize vertically up
+            const int HTTOPLEFT = 13;//Upper-left corner of a window border, allows resize diagonally to the left
+            const int HTTOPRIGHT = 14;//Upper-right corner of a window border, allows resize diagonally to the right
+            const int HTBOTTOM = 15; //Lower-horizontal border of a window, allows resize vertically down
+            const int HTBOTTOMLEFT = 16;//Lower-left corner of a window border, allows resize diagonally to the left
+            const int HTBOTTOMRIGHT = 17;//Lower-right corner of a window border, allows resize diagonally to the right
+            ///<Doc> More Information: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest </Doc>
+            if (m.Msg == WM_NCHITTEST) { //If the windows m is WM_NCHITTEST
+                base.WndProc(ref m);
+                if (this.WindowState == FormWindowState.Normal)//Resize the form if it is in normal state
                 {
-                    while (_isRepeating)
+                    if ((int)m.Result == HTCLIENT)//If the result of the m (mouse pointer) is in the client area of the window
                     {
-                        await _TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => _isRepeating);
-                        if (!_isRepeating) break;
-
-                        // 루프 중간에 레이트 미터도 한 번 갱신하고 차트를 그립니다.
-                        PicoHarpMonitorTimer_Tick(null, EventArgs.Empty);
-                        UpdateChartAfterMeasurement();
+                        Point screenPoint = new Point(m.LParam.ToInt32()); //Gets screen point coordinates(X and Y coordinate of the pointer)                           
+                        Point clientPoint = this.PointToClient(screenPoint); //Computes the location of the screen point into client coordinates                          
+                        if (clientPoint.Y <= resizeAreaSize)//If the pointer is at the top of the form (within the resize area- X coordinate)
+                        {
+                            if (clientPoint.X <= resizeAreaSize) //If the pointer is at the coordinate X=0 or less than the resizing area(X=10) in 
+                                m.Result = (IntPtr)HTTOPLEFT; //Resize diagonally to the left
+                            else if (clientPoint.X < (this.Size.Width - resizeAreaSize))//If the pointer is at the coordinate X=11 or less than the width of the form(X=Form.Width-resizeArea)
+                                m.Result = (IntPtr)HTTOP; //Resize vertically up
+                            else //Resize diagonally to the right
+                                m.Result = (IntPtr)HTTOPRIGHT;
+                        }
+                        else if (clientPoint.Y <= (this.Size.Height - resizeAreaSize)) //If the pointer is inside the form at the Y coordinate(discounting the resize area size)
+                        {
+                            if (clientPoint.X <= resizeAreaSize)//Resize horizontally to the left
+                                m.Result = (IntPtr)HTLEFT;
+                            else if (clientPoint.X > (this.Width - resizeAreaSize))//Resize horizontally to the right
+                                m.Result = (IntPtr)HTRIGHT;
+                        }
+                        else {
+                            if (clientPoint.X <= resizeAreaSize)//Resize diagonally to the left
+                                m.Result = (IntPtr)HTBOTTOMLEFT;
+                            else if (clientPoint.X < (this.Size.Width - resizeAreaSize)) //Resize vertically down
+                                m.Result = (IntPtr)HTBOTTOM;
+                            else //Resize diagonally to the right
+                                m.Result = (IntPtr)HTBOTTOMRIGHT;
+                        }
                     }
                 }
-                finally
-                {
-                    _isRepeating = false;
-                    btnRun.Text = "Run";
-                    btnRun.BackColor = SystemColors.Control;
+                return;
+            }
+            #endregion
+            //Remove border and keep snap window
+            if (m.Msg == WM_NCCALCSIZE && m.WParam.ToInt32() == 1) {
+                return;
+            }
+            //Keep form size when it is minimized and restored. Since the form is resized because it takes into account the size of the title bar and borders.
+            if (m.Msg == WM_SYSCOMMAND) {
+                /// <see cref="https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand"/>
+                /// Quote:
+                /// In WM_SYSCOMMAND messages, the four low - order bits of the wParam parameter 
+                /// are used internally by the system.To obtain the correct result when testing 
+                /// the value of wParam, an application must combine the value 0xFFF0 with the 
+                /// wParam value by using the bitwise AND operator.
+                int wParam = (m.WParam.ToInt32() & 0xFFF0);
+                if (wParam == SC_MINIMIZE)  //Before
+                    formSize = this.ClientSize;
+                if (wParam == SC_RESTORE)// Restored form(Before)
+                    this.Size = formSize;
+            }
+            base.WndProc(ref m);
+        }
 
-                    // 🌟 2. 반복 계측이 완전히 정지되면 진짜 타이머를 다시 확실하게 켭니다.
-                    countRateMonitorTimer.Start();
+
+        private void Form1_SizeChanged(object sender, EventArgs e) {
+            AdjustForm();
+        }
+
+        private void AdjustForm() {
+            switch (this.WindowState) {
+                case FormWindowState.Maximized:
+                    this.Padding = new Padding(0, 12, 12, 0);
+                    break;
+                case FormWindowState.Normal:
+                    if (this.Padding.Top != borderSize)
+                        this.Padding = new Padding(borderSize);
+                    break;
+            }
+        }
+
+        private void btnMinimize_Click(object sender, EventArgs e) {
+            formSize = this.ClientSize;
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void btnMaximize_Click(object sender, EventArgs e) {
+            if (this.WindowState == FormWindowState.Normal) {
+                formSize = this.ClientSize;
+                this.WindowState = FormWindowState.Maximized;
+            }
+            else {
+                this.WindowState = FormWindowState.Normal;
+                this.Size = formSize;
+            }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e) {
+            Application.Exit();
+        }
+
+        private void btnHome_Click(object sender, EventArgs e) {
+            ChangeView(_ucMainView);
+        }
+
+        private void btnSetting_Click(object sender, EventArgs e) {
+            ChangeView(_ucMainView);
+        }
+
+        private void btnMenu_Click(object sender, EventArgs e) {
+            CollapseMenu();
+        }
+
+        private void CollapseMenu() {
+            if (this.panelMenu.Width > 250) {
+                panelMenu.Width = 100;
+                pictureBox1.Visible = false;
+                btnMenu.Dock = DockStyle.Top;
+                foreach (Button menuButton in panelMenu.Controls.OfType<Button>()) {
+                    menuButton.Text = "";
+                    menuButton.ImageAlign = ContentAlignment.MiddleCenter;
+                    menuButton.Padding = new Padding(0);
                 }
             }
-            else
-            {
-                _isRepeating = false;
+            else {
+                panelMenu.Width = 300;
+                pictureBox1.Visible = true;
+                btnMenu.Dock = DockStyle.None;
+                foreach (Button menuButton in panelMenu.Controls.OfType<Button>()) {
+                    menuButton.Text = "    " + menuButton.Tag.ToString();
+                    menuButton.ImageAlign = ContentAlignment.MiddleLeft;
+                    menuButton.Padding = new Padding(10, 15, 15, 0);
+                }
             }
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _TCSPCDeviceController.DisconnectDevice(Log);
-            ResetUI();
-            _powerMeterController1.DisconnectDevice(Log);
-            _powerMeterController2.DisconnectDevice(Log);
-        }
 
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
+        private void MainForm_Load(object sender, EventArgs e) {
+            formSize = this.ClientSize;
 
         }
-
-        private void MeasurementParameterSetting()
-        {
-
-            numPMWavelength.Minimum = 200;
-            numPMWavelength.Maximum = 2000;
-            numPMWavelength.Value = 512;
-
-            // 안전한 파싱: AppSettings에서 값이 없거나 형식이 잘못된 경우 기본값 사용
-            if (!int.TryParse(ConfigurationManager.AppSettings["AcqTime"], out int acqTime)) acqTime = 100;
-            numAcqTime.Minimum = 1; numAcqTime.Maximum = 100000;
-            numAcqTime.Value = (decimal)acqTime;
-
-            // 1. SyncDiv 설정 ({1, 2, 4, 8})
-            if (!int.TryParse(ConfigurationManager.AppSettings["SyncDiv"], out int syncDiv)) syncDiv = 1;
-            numSyncDiv.Value = (decimal)syncDiv;
-            numSyncDiv.ReadOnly = true; // 직접 타이핑 방지
-
-            // 2. Binning 설정 (0~7)
-            if (!int.TryParse(ConfigurationManager.AppSettings["Binning"], out int binning)) binning = 0;
-            numBinning.Minimum = 0; numBinning.Maximum = 7;
-            numBinning.Value = (decimal)binning;
-
-            numBinning.ReadOnly = true;
-
-            if (!int.TryParse(ConfigurationManager.AppSettings["CFDLevel0"], out int cfdLevel0)) cfdLevel0 = 50;
-            numCFDLevel0.Minimum = 0; numCFDLevel0.Maximum = 800;
-            numCFDLevel0.Value = (decimal)cfdLevel0;
-
-            if (!int.TryParse(ConfigurationManager.AppSettings["CFDLevel1"], out int cfdLevel1)) cfdLevel1 = 50;
-            numCFDLevel1.Minimum = 0; numCFDLevel1.Maximum = 800;
-            numCFDLevel1.Value = (decimal)cfdLevel1;
-
-            if (!int.TryParse(ConfigurationManager.AppSettings["CFDZeroCross0"], out int zx0)) zx0 = 0;
-            numCFDZeroCross0.Minimum = 0; numCFDZeroCross0.Maximum = 20;
-            numCFDZeroCross0.Value = (decimal)zx0;
-
-            if (!int.TryParse(ConfigurationManager.AppSettings["CFDZeroCross1"], out int zx1)) zx1 = 0;
-            numCFDZeroCross1.Minimum = 0; numCFDZeroCross1.Maximum = 20;
-            numCFDZeroCross1.Value = (decimal)zx1;
-
-            PicoHarp_MeasurementStatus.AcquisitionTimeMs = (int)numAcqTime.Value;
-            PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
-            PicoHarp_MeasurementSettings.Binning = (int)numBinning.Value;
-            PicoHarp_MeasurementSettings.CFDLevel0 = (int)numCFDLevel0.Value;
-            PicoHarp_MeasurementSettings.CFDLevel1 = (int)numCFDLevel1.Value;
-            PicoHarp_MeasurementSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
-            PicoHarp_MeasurementSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
-
-            btnPM1ZeroAdjust.BackColor = Color.LightGreen;
-            btnPM1ZeroAdjust.Text = "Background OFF";
-        }
-        /// <summary>
-        /// 연결이 끊겼을 때 UI 요소들을 초기 상태로 돌립니다.
-        /// </summary>
-        private void ResetUI()
-        {
-            btnConnect.Text = "Connect";
-            btnConnect.BackColor = SystemColors.Control;
-            btnMeasure.Enabled = false;
-            lblCountRate0.Text = "Count Rate 0 : 0";
-            lblCountRate1.Text = "Count Rate 1 : 0";
-            lblResolution.Text = "0";
-        }
-
 
     }
 

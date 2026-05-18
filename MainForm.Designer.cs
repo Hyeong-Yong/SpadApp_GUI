@@ -26,511 +26,383 @@
         ///  Required method for Designer support - do not modify
         ///  the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
-            btnConnect = new Button();
-            btnMeasure = new Button();
-            btnSave = new Button();
-            numBinning = new NumericUpDown();
-            numAcqTime = new NumericUpDown();
-            numSyncDiv = new NumericUpDown();
-            tableLayoutPanel1 = new TableLayoutPanel();
-            label9 = new Label();
-            label8 = new Label();
-            label7 = new Label();
-            label6 = new Label();
-            label5 = new Label();
-            label4 = new Label();
-            label3 = new Label();
-            numCFDLevel0 = new NumericUpDown();
-            numCFDZeroCross0 = new NumericUpDown();
-            numCFDLevel1 = new NumericUpDown();
-            numCFDZeroCross1 = new NumericUpDown();
-            lblResolution = new Label();
-            label2 = new Label();
-            statusStrip1 = new StatusStrip();
-            lblStatus = new ToolStripStatusLabel();
-            lblCountRate1 = new ToolStripStatusLabel();
-            lblCountRate0 = new ToolStripStatusLabel();
-            lblPowerMeter1 = new Label();
-            label12 = new Label();
-            richtxtLog = new RichTextBox();
-            histogramPlot = new ScottPlot.WinForms.FormsPlot();
-            btnRun = new Button();
-            numPMWavelength = new NumericUpDown();
-            lblPowerMeter2 = new Label();
-            lblPhotonFlux = new Label();
-            lblMeanPerPulse = new Label();
-            lblPDE = new Label();
+        private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            panelMainView = new Panel();
+            iconButton8 = new FontAwesome.Sharp.IconButton();
+            iconButton7 = new FontAwesome.Sharp.IconButton();
+            iconButton6 = new FontAwesome.Sharp.IconButton();
+            iconButton5 = new FontAwesome.Sharp.IconButton();
+            iconButton4 = new FontAwesome.Sharp.IconButton();
+            btnSetting = new FontAwesome.Sharp.IconButton();
+            btnHome = new FontAwesome.Sharp.IconButton();
+            btnMinimize = new FontAwesome.Sharp.IconButton();
+            btnMaximize = new FontAwesome.Sharp.IconButton();
             label1 = new Label();
-            label10 = new Label();
-            label11 = new Label();
-            btnPM1ZeroAdjust = new Button();
-            ((System.ComponentModel.ISupportInitialize)numBinning).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numAcqTime).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numSyncDiv).BeginInit();
-            tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numCFDLevel0).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numCFDZeroCross0).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numCFDLevel1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numCFDZeroCross1).BeginInit();
-            statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numPMWavelength).BeginInit();
+            btnClose = new FontAwesome.Sharp.IconButton();
+            panel1 = new Panel();
+            btnMenu = new FontAwesome.Sharp.IconButton();
+            pictureBox1 = new PictureBox();
+            panelDeskTop = new Panel();
+            panelTitleBar = new Panel();
+            panelMenu = new Panel();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            panelDeskTop.SuspendLayout();
+            panelTitleBar.SuspendLayout();
+            panelMenu.SuspendLayout();
             SuspendLayout();
             // 
-            // btnConnect
-            // 
-            btnConnect.Location = new Point(12, 12);
-            btnConnect.Name = "btnConnect";
-            btnConnect.Size = new Size(92, 34);
-            btnConnect.TabIndex = 0;
-            btnConnect.Text = "Connect";
-            btnConnect.UseVisualStyleBackColor = true;
-            btnConnect.Click += btnConnect_Click;
-            // 
-            // btnMeasure
-            // 
-            btnMeasure.Location = new Point(12, 52);
-            btnMeasure.Name = "btnMeasure";
-            btnMeasure.Size = new Size(92, 34);
-            btnMeasure.TabIndex = 0;
-            btnMeasure.Text = "Measure";
-            btnMeasure.UseVisualStyleBackColor = true;
-            btnMeasure.Click += btnMeasure_Click;
-            // 
-            // btnSave
-            // 
-            btnSave.Location = new Point(12, 132);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(92, 34);
-            btnSave.TabIndex = 0;
-            btnSave.Text = "Save CSV";
-            btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
-            // 
-            // numBinning
-            // 
-            numBinning.Dock = DockStyle.Fill;
-            numBinning.Location = new Point(5, 39);
-            numBinning.Name = "numBinning";
-            numBinning.Size = new Size(81, 23);
-            numBinning.TabIndex = 2;
-            numBinning.ValueChanged += numBinning_ValueChanged;
-            // 
-            // numAcqTime
-            // 
-            numAcqTime.Dock = DockStyle.Fill;
-            numAcqTime.Location = new Point(94, 39);
-            numAcqTime.Name = "numAcqTime";
-            numAcqTime.Size = new Size(81, 23);
-            numAcqTime.TabIndex = 2;
-            numAcqTime.ValueChanged += numAcqTime_ValueChanged;
-            // 
-            // numSyncDiv
-            // 
-            numSyncDiv.Dock = DockStyle.Fill;
-            numSyncDiv.Location = new Point(183, 39);
-            numSyncDiv.Name = "numSyncDiv";
-            numSyncDiv.Size = new Size(81, 23);
-            numSyncDiv.TabIndex = 2;
-            numSyncDiv.ValueChanged += numSyncDiv_ValueChanged;
-            // 
-            // tableLayoutPanel1
-            // 
-            tableLayoutPanel1.CellBorderStyle = TableLayoutPanelCellBorderStyle.Outset;
-            tableLayoutPanel1.ColumnCount = 4;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.Controls.Add(label9, 3, 2);
-            tableLayoutPanel1.Controls.Add(label8, 2, 2);
-            tableLayoutPanel1.Controls.Add(label7, 1, 2);
-            tableLayoutPanel1.Controls.Add(label6, 0, 2);
-            tableLayoutPanel1.Controls.Add(label5, 3, 0);
-            tableLayoutPanel1.Controls.Add(label4, 2, 0);
-            tableLayoutPanel1.Controls.Add(label3, 1, 0);
-            tableLayoutPanel1.Controls.Add(numBinning, 0, 1);
-            tableLayoutPanel1.Controls.Add(numAcqTime, 1, 1);
-            tableLayoutPanel1.Controls.Add(numSyncDiv, 2, 1);
-            tableLayoutPanel1.Controls.Add(numCFDLevel0, 0, 3);
-            tableLayoutPanel1.Controls.Add(numCFDZeroCross0, 1, 3);
-            tableLayoutPanel1.Controls.Add(numCFDLevel1, 2, 3);
-            tableLayoutPanel1.Controls.Add(numCFDZeroCross1, 3, 3);
-            tableLayoutPanel1.Controls.Add(lblResolution, 3, 1);
-            tableLayoutPanel1.Controls.Add(label2, 0, 0);
-            tableLayoutPanel1.Location = new Point(12, 384);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 4;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.Size = new Size(360, 139);
-            tableLayoutPanel1.TabIndex = 4;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Dock = DockStyle.Fill;
-            label9.Location = new Point(272, 70);
-            label9.Name = "label9";
-            label9.Size = new Size(83, 32);
-            label9.TabIndex = 14;
-            label9.Text = "Ch1 ZeroX";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Dock = DockStyle.Fill;
-            label8.Location = new Point(183, 70);
-            label8.Name = "label8";
-            label8.Size = new Size(81, 32);
-            label8.TabIndex = 13;
-            label8.Text = "Ch1 CFD Level";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Dock = DockStyle.Fill;
-            label7.Location = new Point(94, 70);
-            label7.Name = "label7";
-            label7.Size = new Size(81, 32);
-            label7.TabIndex = 12;
-            label7.Text = "Ch0 ZeroX";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Dock = DockStyle.Fill;
-            label6.Location = new Point(5, 70);
-            label6.Name = "label6";
-            label6.Size = new Size(81, 32);
-            label6.TabIndex = 9;
-            label6.Text = "Ch0 CFD level";
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Dock = DockStyle.Fill;
-            label5.Location = new Point(272, 2);
-            label5.Name = "label5";
-            label5.Size = new Size(83, 32);
-            label5.TabIndex = 11;
-            label5.Text = "Resolution";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Dock = DockStyle.Fill;
-            label4.Location = new Point(183, 2);
-            label4.Name = "label4";
-            label4.Size = new Size(81, 32);
-            label4.TabIndex = 10;
-            label4.Text = "Sync div";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Fill;
-            label3.Location = new Point(94, 2);
-            label3.Name = "label3";
-            label3.Size = new Size(81, 32);
-            label3.TabIndex = 9;
-            label3.Text = "Acq. Time";
-            // 
-            // numCFDLevel0
-            // 
-            numCFDLevel0.Dock = DockStyle.Fill;
-            numCFDLevel0.Location = new Point(5, 107);
-            numCFDLevel0.Name = "numCFDLevel0";
-            numCFDLevel0.Size = new Size(81, 23);
-            numCFDLevel0.TabIndex = 3;
-            numCFDLevel0.ValueChanged += numCFDLevel0_ValueChanged;
-            // 
-            // numCFDZeroCross0
-            // 
-            numCFDZeroCross0.Dock = DockStyle.Fill;
-            numCFDZeroCross0.Location = new Point(94, 107);
-            numCFDZeroCross0.Name = "numCFDZeroCross0";
-            numCFDZeroCross0.Size = new Size(81, 23);
-            numCFDZeroCross0.TabIndex = 4;
-            numCFDZeroCross0.ValueChanged += numCFDZeroCross0_ValueChanged;
-            // 
-            // numCFDLevel1
-            // 
-            numCFDLevel1.Dock = DockStyle.Fill;
-            numCFDLevel1.Location = new Point(183, 107);
-            numCFDLevel1.Name = "numCFDLevel1";
-            numCFDLevel1.Size = new Size(81, 23);
-            numCFDLevel1.TabIndex = 5;
-            numCFDLevel1.ValueChanged += numCFDLevel1_ValueChanged;
-            // 
-            // numCFDZeroCross1
-            // 
-            numCFDZeroCross1.Dock = DockStyle.Fill;
-            numCFDZeroCross1.Location = new Point(272, 107);
-            numCFDZeroCross1.Name = "numCFDZeroCross1";
-            numCFDZeroCross1.Size = new Size(83, 23);
-            numCFDZeroCross1.TabIndex = 6;
-            numCFDZeroCross1.ValueChanged += numCFDZeroCross1_ValueChanged;
-            // 
-            // lblResolution
-            // 
-            lblResolution.AutoSize = true;
-            lblResolution.BackColor = SystemColors.ButtonFace;
-            lblResolution.BorderStyle = BorderStyle.FixedSingle;
-            lblResolution.Dock = DockStyle.Fill;
-            lblResolution.Location = new Point(272, 36);
-            lblResolution.Name = "lblResolution";
-            lblResolution.Size = new Size(83, 32);
-            lblResolution.TabIndex = 7;
-            lblResolution.Text = "label1";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Fill;
-            label2.Location = new Point(5, 2);
-            label2.Name = "label2";
-            label2.Size = new Size(81, 32);
-            label2.TabIndex = 8;
-            label2.Text = "Binning";
-            // 
-            // statusStrip1
-            // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { lblStatus, lblCountRate1, lblCountRate0 });
-            statusStrip1.Location = new Point(0, 613);
-            statusStrip1.Name = "statusStrip1";
-            statusStrip1.RightToLeft = RightToLeft.Yes;
-            statusStrip1.Size = new Size(1228, 22);
-            statusStrip1.TabIndex = 5;
-            statusStrip1.Text = "statusStrip1";
-            // 
-            // lblStatus
-            // 
-            lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(40, 17);
-            lblStatus.Text = "Status";
-            // 
-            // lblCountRate1
-            // 
-            lblCountRate1.Name = "lblCountRate1";
-            lblCountRate1.Size = new Size(74, 17);
-            lblCountRate1.Text = "CountRate 1";
-            // 
-            // lblCountRate0
-            // 
-            lblCountRate0.Name = "lblCountRate0";
-            lblCountRate0.Size = new Size(74, 17);
-            lblCountRate0.Text = "CountRate 0";
-            // 
-            // lblPowerMeter1
-            // 
-            lblPowerMeter1.AutoSize = true;
-            lblPowerMeter1.Location = new Point(132, 532);
-            lblPowerMeter1.Name = "lblPowerMeter1";
-            lblPowerMeter1.Size = new Size(46, 15);
-            lblPowerMeter1.TabIndex = 7;
-            lblPowerMeter1.Text = "label11";
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Location = new Point(39, 532);
-            label12.Name = "label12";
-            label12.Size = new Size(87, 15);
-            label12.TabIndex = 8;
-            label12.Text = "Average Power";
-            // 
-            // richtxtLog
-            // 
-            richtxtLog.Location = new Point(916, 380);
-            richtxtLog.Name = "richtxtLog";
-            richtxtLog.Size = new Size(231, 193);
-            richtxtLog.TabIndex = 10;
-            richtxtLog.Text = "";
-            // 
-            // histogramPlot
-            // 
-            histogramPlot.Location = new Point(132, 12);
-            histogramPlot.Name = "histogramPlot";
-            histogramPlot.Size = new Size(1015, 325);
-            histogramPlot.TabIndex = 11;
-            // 
-            // btnRun
-            // 
-            btnRun.Location = new Point(12, 92);
-            btnRun.Name = "btnRun";
-            btnRun.Size = new Size(92, 34);
-            btnRun.TabIndex = 12;
-            btnRun.Text = "Run";
-            btnRun.UseVisualStyleBackColor = true;
-            btnRun.Click += btnRun_Click;
-            // 
-            // numPMWavelength
-            // 
-            numPMWavelength.Location = new Point(132, 550);
-            numPMWavelength.Name = "numPMWavelength";
-            numPMWavelength.Size = new Size(120, 23);
-            numPMWavelength.TabIndex = 13;
-            numPMWavelength.ValueChanged += numPMWavelength_ValueChanged;
-            // 
-            // lblPowerMeter2
-            // 
-            lblPowerMeter2.AutoSize = true;
-            lblPowerMeter2.Location = new Point(132, 590);
-            lblPowerMeter2.Name = "lblPowerMeter2";
-            lblPowerMeter2.Size = new Size(46, 15);
-            lblPowerMeter2.TabIndex = 14;
-            lblPowerMeter2.Text = "label11";
-            // 
-            // lblPhotonFlux
-            // 
-            lblPhotonFlux.AutoSize = true;
-            lblPhotonFlux.Location = new Point(554, 403);
-            lblPhotonFlux.Name = "lblPhotonFlux";
-            lblPhotonFlux.Size = new Size(39, 15);
-            lblPhotonFlux.TabIndex = 15;
-            lblPhotonFlux.Text = "label1";
-            // 
-            // lblMeanPerPulse
-            // 
-            lblMeanPerPulse.AutoSize = true;
-            lblMeanPerPulse.Location = new Point(709, 404);
-            lblMeanPerPulse.Name = "lblMeanPerPulse";
-            lblMeanPerPulse.Size = new Size(39, 15);
-            lblMeanPerPulse.TabIndex = 15;
-            lblMeanPerPulse.Text = "label1";
-            // 
-            // lblPDE
-            // 
-            lblPDE.AutoSize = true;
-            lblPDE.Location = new Point(833, 404);
-            lblPDE.Name = "lblPDE";
-            lblPDE.Size = new Size(39, 15);
-            lblPDE.TabIndex = 15;
-            lblPDE.Text = "label1";
+            // panelMainView
+            // 
+            panelMainView.Dock = DockStyle.Fill;
+            panelMainView.Location = new Point(0, 0);
+            panelMainView.Name = "panelMainView";
+            panelMainView.Size = new Size(2160, 1315);
+            panelMainView.TabIndex = 0;
+            // 
+            // iconButton8
+            // 
+            iconButton8.AutoSize = true;
+            iconButton8.Dock = DockStyle.Bottom;
+            iconButton8.FlatAppearance.BorderSize = 0;
+            iconButton8.FlatStyle = FlatStyle.Flat;
+            iconButton8.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton8.ForeColor = Color.White;
+            iconButton8.IconChar = FontAwesome.Sharp.IconChar.SignOutAlt;
+            iconButton8.IconColor = Color.White;
+            iconButton8.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton8.IconSize = 30;
+            iconButton8.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton8.Location = new Point(0, 1295);
+            iconButton8.Name = "iconButton8";
+            iconButton8.Padding = new Padding(10, 0, 0, 10);
+            iconButton8.Size = new Size(296, 60);
+            iconButton8.TabIndex = 7;
+            iconButton8.Tag = "Exit";
+            iconButton8.Text = "  iconButton2";
+            iconButton8.TextAlign = ContentAlignment.MiddleLeft;
+            iconButton8.TextImageRelation = TextImageRelation.ImageBeforeText;
+            iconButton8.UseVisualStyleBackColor = true;
+            // 
+            // iconButton7
+            // 
+            iconButton7.AutoSize = true;
+            iconButton7.Dock = DockStyle.Top;
+            iconButton7.FlatAppearance.BorderSize = 0;
+            iconButton7.FlatStyle = FlatStyle.Flat;
+            iconButton7.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton7.ForeColor = Color.White;
+            iconButton7.IconChar = FontAwesome.Sharp.IconChar.LandmarkAlt;
+            iconButton7.IconColor = Color.White;
+            iconButton7.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton7.IconSize = 30;
+            iconButton7.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton7.Location = new Point(0, 375);
+            iconButton7.Name = "iconButton7";
+            iconButton7.Padding = new Padding(10, 15, 15, 0);
+            iconButton7.Size = new Size(296, 57);
+            iconButton7.TabIndex = 6;
+            iconButton7.Tag = "House";
+            iconButton7.Text = "  iconButton2";
+            iconButton7.TextAlign = ContentAlignment.MiddleLeft;
+            iconButton7.TextImageRelation = TextImageRelation.ImageBeforeText;
+            iconButton7.UseVisualStyleBackColor = true;
+            // 
+            // iconButton6
+            // 
+            iconButton6.AutoSize = true;
+            iconButton6.Dock = DockStyle.Top;
+            iconButton6.FlatAppearance.BorderSize = 0;
+            iconButton6.FlatStyle = FlatStyle.Flat;
+            iconButton6.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton6.ForeColor = Color.White;
+            iconButton6.IconChar = FontAwesome.Sharp.IconChar.Institution;
+            iconButton6.IconColor = Color.White;
+            iconButton6.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton6.IconSize = 30;
+            iconButton6.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton6.Location = new Point(0, 318);
+            iconButton6.Name = "iconButton6";
+            iconButton6.Padding = new Padding(10, 15, 15, 0);
+            iconButton6.Size = new Size(296, 57);
+            iconButton6.TabIndex = 5;
+            iconButton6.Tag = "Bank";
+            iconButton6.Text = "  iconButton2";
+            iconButton6.TextAlign = ContentAlignment.MiddleLeft;
+            iconButton6.TextImageRelation = TextImageRelation.ImageBeforeText;
+            iconButton6.UseVisualStyleBackColor = true;
+            // 
+            // iconButton5
+            // 
+            iconButton5.AutoSize = true;
+            iconButton5.Dock = DockStyle.Top;
+            iconButton5.FlatAppearance.BorderSize = 0;
+            iconButton5.FlatStyle = FlatStyle.Flat;
+            iconButton5.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton5.ForeColor = Color.White;
+            iconButton5.IconChar = FontAwesome.Sharp.IconChar.HouseFlag;
+            iconButton5.IconColor = Color.White;
+            iconButton5.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton5.IconSize = 30;
+            iconButton5.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton5.Location = new Point(0, 261);
+            iconButton5.Name = "iconButton5";
+            iconButton5.Padding = new Padding(10, 15, 15, 0);
+            iconButton5.Size = new Size(296, 57);
+            iconButton5.TabIndex = 4;
+            iconButton5.Tag = "School";
+            iconButton5.Text = "  iconButton2";
+            iconButton5.TextAlign = ContentAlignment.MiddleLeft;
+            iconButton5.TextImageRelation = TextImageRelation.ImageBeforeText;
+            iconButton5.UseVisualStyleBackColor = true;
+            // 
+            // iconButton4
+            // 
+            iconButton4.AutoSize = true;
+            iconButton4.Dock = DockStyle.Top;
+            iconButton4.FlatAppearance.BorderSize = 0;
+            iconButton4.FlatStyle = FlatStyle.Flat;
+            iconButton4.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton4.ForeColor = Color.White;
+            iconButton4.IconChar = FontAwesome.Sharp.IconChar.IdCardClip;
+            iconButton4.IconColor = Color.White;
+            iconButton4.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton4.IconSize = 30;
+            iconButton4.ImageAlign = ContentAlignment.MiddleLeft;
+            iconButton4.Location = new Point(0, 204);
+            iconButton4.Name = "iconButton4";
+            iconButton4.Padding = new Padding(10, 15, 15, 0);
+            iconButton4.Size = new Size(296, 57);
+            iconButton4.TabIndex = 3;
+            iconButton4.Tag = "Hospital";
+            iconButton4.Text = "  iconButton2";
+            iconButton4.TextAlign = ContentAlignment.MiddleLeft;
+            iconButton4.TextImageRelation = TextImageRelation.ImageBeforeText;
+            iconButton4.UseVisualStyleBackColor = true;
+            // 
+            // btnSetting
+            // 
+            btnSetting.AutoSize = true;
+            btnSetting.Dock = DockStyle.Top;
+            btnSetting.FlatAppearance.BorderSize = 0;
+            btnSetting.FlatStyle = FlatStyle.Flat;
+            btnSetting.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSetting.ForeColor = Color.White;
+            btnSetting.IconChar = FontAwesome.Sharp.IconChar.HockeyPuck;
+            btnSetting.IconColor = Color.White;
+            btnSetting.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnSetting.IconSize = 30;
+            btnSetting.ImageAlign = ContentAlignment.MiddleLeft;
+            btnSetting.Location = new Point(0, 147);
+            btnSetting.Name = "btnSetting";
+            btnSetting.Padding = new Padding(10, 15, 15, 0);
+            btnSetting.Size = new Size(296, 57);
+            btnSetting.TabIndex = 2;
+            btnSetting.Tag = "Horse";
+            btnSetting.Text = "  iconButton2";
+            btnSetting.TextAlign = ContentAlignment.MiddleLeft;
+            btnSetting.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnSetting.UseVisualStyleBackColor = true;
+            // 
+            // btnHome
+            // 
+            btnHome.AutoSize = true;
+            btnHome.Dock = DockStyle.Top;
+            btnHome.FlatAppearance.BorderSize = 0;
+            btnHome.FlatStyle = FlatStyle.Flat;
+            btnHome.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnHome.ForeColor = Color.White;
+            btnHome.IconChar = FontAwesome.Sharp.IconChar.HomeUser;
+            btnHome.IconColor = Color.White;
+            btnHome.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnHome.IconSize = 30;
+            btnHome.ImageAlign = ContentAlignment.MiddleLeft;
+            btnHome.Location = new Point(0, 90);
+            btnHome.Name = "btnHome";
+            btnHome.Padding = new Padding(10, 15, 15, 0);
+            btnHome.Size = new Size(296, 57);
+            btnHome.TabIndex = 1;
+            btnHome.Tag = "Home";
+            btnHome.Text = "  iconButton2";
+            btnHome.TextAlign = ContentAlignment.MiddleLeft;
+            btnHome.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnHome.UseVisualStyleBackColor = true;
+            // 
+            // btnMinimize
+            // 
+            btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMinimize.BackColor = Color.DarkTurquoise;
+            btnMinimize.FlatAppearance.BorderSize = 0;
+            btnMinimize.FlatStyle = FlatStyle.Flat;
+            btnMinimize.IconChar = FontAwesome.Sharp.IconChar.Tasks;
+            btnMinimize.IconColor = Color.White;
+            btnMinimize.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnMinimize.IconSize = 25;
+            btnMinimize.Location = new Point(3365, 3);
+            btnMinimize.Name = "btnMinimize";
+            btnMinimize.Size = new Size(60, 30);
+            btnMinimize.TabIndex = 5;
+            btnMinimize.UseVisualStyleBackColor = false;
+            // 
+            // btnMaximize
+            // 
+            btnMaximize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMaximize.BackColor = Color.RoyalBlue;
+            btnMaximize.FlatAppearance.BorderSize = 0;
+            btnMaximize.FlatStyle = FlatStyle.Flat;
+            btnMaximize.IconChar = FontAwesome.Sharp.IconChar.Square;
+            btnMaximize.IconColor = Color.White;
+            btnMaximize.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnMaximize.IconSize = 25;
+            btnMaximize.Location = new Point(3422, 3);
+            btnMaximize.Name = "btnMaximize";
+            btnMaximize.Size = new Size(60, 30);
+            btnMaximize.TabIndex = 4;
+            btnMaximize.UseVisualStyleBackColor = false;
             // 
             // label1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(509, 384);
+            label1.Dock = DockStyle.Left;
+            label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(141, 15);
-            label1.TabIndex = 15;
-            label1.Text = "Incident Photon Number";
+            label1.Size = new Size(222, 40);
+            label1.TabIndex = 3;
+            label1.Text = "SPAD TEST APP";
+            label1.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // label10
+            // btnClose
             // 
-            label10.AutoSize = true;
-            label10.Location = new Point(684, 384);
-            label10.Name = "label10";
-            label10.Size = new Size(90, 15);
-            label10.TabIndex = 15;
-            label10.Text = "Mean Per Pulse";
+            btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClose.BackColor = Color.FromArgb(255, 74, 130);
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.IconChar = FontAwesome.Sharp.IconChar.Close;
+            btnClose.IconColor = Color.White;
+            btnClose.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnClose.IconSize = 25;
+            btnClose.Location = new Point(3476, 3);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(60, 30);
+            btnClose.TabIndex = 2;
+            btnClose.UseVisualStyleBackColor = false;
             // 
-            // label11
+            // panel1
             // 
-            label11.AutoSize = true;
-            label11.Location = new Point(833, 384);
-            label11.Name = "label11";
-            label11.Size = new Size(29, 15);
-            label11.TabIndex = 15;
-            label11.Text = "PDE";
+            panel1.Controls.Add(btnMenu);
+            panel1.Controls.Add(pictureBox1);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(296, 90);
+            panel1.TabIndex = 0;
             // 
-            // btnPM1ZeroAdjust
+            // btnMenu
             // 
-            btnPM1ZeroAdjust.Location = new Point(402, 396);
-            btnPM1ZeroAdjust.Name = "btnPM1ZeroAdjust";
-            btnPM1ZeroAdjust.Size = new Size(90, 23);
-            btnPM1ZeroAdjust.TabIndex = 16;
-            btnPM1ZeroAdjust.Text = "Background";
-            btnPM1ZeroAdjust.UseVisualStyleBackColor = true;
-            btnPM1ZeroAdjust.Click += btnPM1ZeroAdjust_Click;
+            btnMenu.FlatAppearance.BorderSize = 0;
+            btnMenu.FlatStyle = FlatStyle.Flat;
+            btnMenu.IconChar = FontAwesome.Sharp.IconChar.Bars;
+            btnMenu.IconColor = Color.White;
+            btnMenu.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnMenu.IconSize = 30;
+            btnMenu.Location = new Point(236, 0);
+            btnMenu.Name = "btnMenu";
+            btnMenu.Size = new Size(60, 74);
+            btnMenu.TabIndex = 1;
+            btnMenu.UseVisualStyleBackColor = true;
+            btnMenu.Click += btnMenu_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(0, 7);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(241, 60);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            // 
+            // panelDeskTop
+            // 
+            panelDeskTop.BackColor = Color.FromArgb(245, 245, 255);
+            panelDeskTop.Controls.Add(panelMainView);
+            panelDeskTop.Dock = DockStyle.Fill;
+            panelDeskTop.Location = new Point(296, 40);
+            panelDeskTop.Name = "panelDeskTop";
+            panelDeskTop.Size = new Size(2160, 1315);
+            panelDeskTop.TabIndex = 5;
+            panelDeskTop.Tag = "Horse";
+            // 
+            // panelTitleBar
+            // 
+            panelTitleBar.BackColor = Color.White;
+            panelTitleBar.Controls.Add(btnMinimize);
+            panelTitleBar.Controls.Add(btnMaximize);
+            panelTitleBar.Controls.Add(label1);
+            panelTitleBar.Controls.Add(btnClose);
+            panelTitleBar.Dock = DockStyle.Top;
+            panelTitleBar.Location = new Point(296, 0);
+            panelTitleBar.Name = "panelTitleBar";
+            panelTitleBar.Size = new Size(2160, 40);
+            panelTitleBar.TabIndex = 4;
+            // 
+            // panelMenu
+            // 
+            panelMenu.BackColor = Color.FromArgb(98, 102, 242);
+            panelMenu.Controls.Add(iconButton8);
+            panelMenu.Controls.Add(iconButton7);
+            panelMenu.Controls.Add(iconButton6);
+            panelMenu.Controls.Add(iconButton5);
+            panelMenu.Controls.Add(iconButton4);
+            panelMenu.Controls.Add(btnSetting);
+            panelMenu.Controls.Add(btnHome);
+            panelMenu.Controls.Add(panel1);
+            panelMenu.Dock = DockStyle.Left;
+            panelMenu.Location = new Point(0, 0);
+            panelMenu.Name = "panelMenu";
+            panelMenu.Size = new Size(296, 1355);
+            panelMenu.TabIndex = 3;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(14F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1228, 635);
-            Controls.Add(btnPM1ZeroAdjust);
-            Controls.Add(label11);
-            Controls.Add(lblPDE);
-            Controls.Add(label10);
-            Controls.Add(lblMeanPerPulse);
-            Controls.Add(label1);
-            Controls.Add(lblPhotonFlux);
-            Controls.Add(lblPowerMeter2);
-            Controls.Add(numPMWavelength);
-            Controls.Add(btnRun);
-            Controls.Add(histogramPlot);
-            Controls.Add(richtxtLog);
-            Controls.Add(label12);
-            Controls.Add(lblPowerMeter1);
-            Controls.Add(statusStrip1);
-            Controls.Add(tableLayoutPanel1);
-            Controls.Add(btnSave);
-            Controls.Add(btnMeasure);
-            Controls.Add(btnConnect);
+            ClientSize = new Size(2456, 1355);
+            Controls.Add(panelDeskTop);
+            Controls.Add(panelTitleBar);
+            Controls.Add(panelMenu);
+            Margin = new Padding(6);
             Name = "MainForm";
             Text = "Form1";
             Load += MainForm_Load;
-            ((System.ComponentModel.ISupportInitialize)numBinning).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numAcqTime).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numSyncDiv).EndInit();
-            tableLayoutPanel1.ResumeLayout(false);
-            tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numCFDLevel0).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numCFDZeroCross0).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numCFDLevel1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numCFDZeroCross1).EndInit();
-            statusStrip1.ResumeLayout(false);
-            statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numPMWavelength).EndInit();
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            panelDeskTop.ResumeLayout(false);
+            panelTitleBar.ResumeLayout(false);
+            panelMenu.ResumeLayout(false);
+            panelMenu.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private Button btnConnect;
-        private Button btnMeasure;
-        private Button btnSave;
-        private NumericUpDown numBinning;
-        private NumericUpDown numAcqTime;
-        private NumericUpDown numSyncDiv;
-        private TableLayoutPanel tableLayoutPanel1;
-        private Label label5;
-        private Label label4;
-        private Label label3;
-        private NumericUpDown numCFDLevel0;
-        private NumericUpDown numCFDZeroCross0;
-        private NumericUpDown numCFDLevel1;
-        private NumericUpDown numCFDZeroCross1;
-        private Label lblResolution;
-        private Label label2;
-        private Label label9;
-        private Label label8;
-        private Label label7;
-        private Label label6;
-        private StatusStrip statusStrip1;
-        private ToolStripStatusLabel lblStatus;
-        private ToolStripStatusLabel lblCountRate1;
-        private ToolStripStatusLabel lblCountRate0;
-        private Label lblPowerMeter1;
-        private Label label12;
-        private RichTextBox richtxtLog;
-        private ScottPlot.WinForms.FormsPlot histogramPlot;
-        private Button btnRun;
-        private NumericUpDown numPMWavelength;
-        private Label lblPowerMeter2;
-        private Label lblPhotonFlux;
-        private Label lblMeanPerPulse;
-        private Label lblPDE;
+        private Panel panelMainView;
+        private FontAwesome.Sharp.IconButton iconButton8;
+        private FontAwesome.Sharp.IconButton iconButton7;
+        private FontAwesome.Sharp.IconButton iconButton6;
+        private FontAwesome.Sharp.IconButton iconButton5;
+        private FontAwesome.Sharp.IconButton iconButton4;
+        private FontAwesome.Sharp.IconButton btnSetting;
+        private FontAwesome.Sharp.IconButton btnHome;
+        private FontAwesome.Sharp.IconButton btnMinimize;
+        private FontAwesome.Sharp.IconButton btnMaximize;
         private Label label1;
-        private Label label10;
-        private Label label11;
-        private Button btnPM1ZeroAdjust;
+        private FontAwesome.Sharp.IconButton btnClose;
+        private Panel panel1;
+        private FontAwesome.Sharp.IconButton btnMenu;
+        private PictureBox pictureBox1;
+        private Panel panelDeskTop;
+        private Panel panelTitleBar;
+        private Panel panelMenu;
     }
 }

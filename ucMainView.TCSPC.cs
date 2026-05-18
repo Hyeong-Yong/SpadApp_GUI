@@ -6,7 +6,7 @@ using SpadApp.View;
 
 namespace SpadApp
 {
-    public partial class MainForm
+    public partial class ucMainView
     {
 
         // ------------------------------------------------------------

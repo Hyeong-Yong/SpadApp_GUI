@@ -1,6 +1,6 @@
 ﻿namespace SpadApp
 {
-    public partial class MainForm
+    public partial class ucMainView
     {
         private void Log(string msg)
         {
