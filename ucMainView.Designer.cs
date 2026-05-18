@@ -110,6 +110,7 @@
             numPMWavelength.Name = "numPMWavelength";
             numPMWavelength.Size = new Size(240, 39);
             numPMWavelength.TabIndex = 27;
+            numPMWavelength.ValueChanged += numPMWavelength_ValueChanged;
             // 
             // btnRun
             // 
@@ -224,6 +225,7 @@
             numBinning.Name = "numBinning";
             numBinning.Size = new Size(165, 39);
             numBinning.TabIndex = 2;
+            numBinning.ValueChanged += numBinning_ValueChanged;
             // 
             // numAcqTime
             // 
@@ -233,6 +235,7 @@
             numAcqTime.Name = "numAcqTime";
             numAcqTime.Size = new Size(165, 39);
             numAcqTime.TabIndex = 2;
+            numAcqTime.ValueChanged += numAcqTime_ValueChanged;
             // 
             // numSyncDiv
             // 
@@ -242,6 +245,7 @@
             numSyncDiv.Name = "numSyncDiv";
             numSyncDiv.Size = new Size(165, 39);
             numSyncDiv.TabIndex = 2;
+            numSyncDiv.ValueChanged += numSyncDiv_ValueChanged;
             // 
             // numCFDLevel0
             // 
@@ -251,6 +255,7 @@
             numCFDLevel0.Name = "numCFDLevel0";
             numCFDLevel0.Size = new Size(165, 39);
             numCFDLevel0.TabIndex = 3;
+            numCFDLevel0.ValueChanged += numCFDLevel0_ValueChanged;
             // 
             // numCFDZeroCross0
             // 
@@ -260,6 +265,7 @@
             numCFDZeroCross0.Name = "numCFDZeroCross0";
             numCFDZeroCross0.Size = new Size(165, 39);
             numCFDZeroCross0.TabIndex = 4;
+            numCFDZeroCross0.ValueChanged += numCFDZeroCross0_ValueChanged;
             // 
             // numCFDLevel1
             // 
@@ -269,6 +275,7 @@
             numCFDLevel1.Name = "numCFDLevel1";
             numCFDLevel1.Size = new Size(165, 39);
             numCFDLevel1.TabIndex = 5;
+            numCFDLevel1.ValueChanged += numCFDLevel1_ValueChanged;
             // 
             // numCFDZeroCross1
             // 
@@ -278,6 +285,7 @@
             numCFDZeroCross1.Name = "numCFDZeroCross1";
             numCFDZeroCross1.Size = new Size(167, 39);
             numCFDZeroCross1.TabIndex = 6;
+            numCFDZeroCross1.ValueChanged += numCFDZeroCross1_ValueChanged;
             // 
             // btnPM1ZeroAdjust
             // 
@@ -288,6 +296,7 @@
             btnPM1ZeroAdjust.TabIndex = 35;
             btnPM1ZeroAdjust.Text = "Background";
             btnPM1ZeroAdjust.UseVisualStyleBackColor = true;
+            btnPM1ZeroAdjust.Click += btnPM1ZeroAdjust_Click;
             // 
             // lblPDE
             // 
@@ -458,6 +467,7 @@
             btnMeasure.TabIndex = 19;
             btnMeasure.Text = "Measure";
             btnMeasure.UseVisualStyleBackColor = true;
+            btnMeasure.Click += btnMeasure_Click;
             // 
             // btnConnect
             // 

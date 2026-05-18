@@ -27,10 +27,7 @@ namespace SpadApp
             CollapseMenu();
             this.Padding = new Padding(borderSize); //Border size
             this.BackColor = Color.FromArgb(98, 102, 244); //Border color 
-
         }
-
-
 
         private void InitializeViews() {
             // [2] 화면들을 딱 한 번만 생성합니다.
@@ -45,6 +42,9 @@ namespace SpadApp
             // [5] 시작 화면으로 홈 화면만 켜줍니다.
             ChangeView(_ucMainView);
         }
+
+
+
         // [6] 핵심: 화면 전환 함수 (Clear를 쓰지 않고 숨기기/보여주기만 작동)
         private void ChangeView(UserControl newView) {
             // 이미 그 화면이 켜져 있다면 아무 변화도 주지 않고 함수 종료
@@ -69,9 +69,29 @@ namespace SpadApp
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         private void panelTitleBar_MouseDown(object sender, MouseEventArgs e) {
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
+            // 마우스 왼쪽 버튼을 눌렀을 때만 작동
+            if (e.Button == MouseButtons.Left) {
+                // ★ 핵심: 현재 클릭이 '더블클릭(2번째 클릭)'인지 확인합니다.
+                if (e.Clicks == 2) {
+                    // [더블클릭 처리: 전체화면 토글]
+                    if (this.WindowState == FormWindowState.Normal) {
+                        formSize = this.ClientSize;
+                        SendMessage(this.Handle, 0x112, 0xF030, 0); // 최대화(Maximized)
+                    }
+                    else {
+                        SendMessage(this.Handle, 0x112, 0xF120, 0); // 복원(Normal)
+                        this.Size = formSize;
+                    }
+                }
+                else {
+                    // [일반 클릭 처리: 창 드래그 이동]
+                    // 더블클릭이 아닐 때(첫 번째 클릭일 때)만 드래그 신호를 보냅니다.
+                    ReleaseCapture();
+                    SendMessage(this.Handle, 0x112, 0xf012, 0);
+                }
+            }
         }
+
         //Overridden methods
         protected override void WndProc(ref Message m) {
             const int WM_NCCALCSIZE = 0x0083;//Standar Title Bar - Snap Window
@@ -150,11 +170,6 @@ namespace SpadApp
             base.WndProc(ref m);
         }
 
-
-        private void Form1_SizeChanged(object sender, EventArgs e) {
-            AdjustForm();
-        }
-
         private void AdjustForm() {
             switch (this.WindowState) {
                 case FormWindowState.Maximized:
@@ -167,27 +182,8 @@ namespace SpadApp
             }
         }
 
-        private void btnMinimize_Click(object sender, EventArgs e) {
-            formSize = this.ClientSize;
-            this.WindowState = FormWindowState.Minimized;
-        }
 
-        private void btnMaximize_Click(object sender, EventArgs e) {
-            if (this.WindowState == FormWindowState.Normal) {
-                formSize = this.ClientSize;
-                this.WindowState = FormWindowState.Maximized;
-            }
-            else {
-                this.WindowState = FormWindowState.Normal;
-                this.Size = formSize;
-            }
-        }
-
-        private void btnClose_Click(object sender, EventArgs e) {
-            Application.Exit();
-        }
-
-        private void btnHome_Click(object sender, EventArgs e) {
+        private void btnMainView_Click(object sender, EventArgs e) {
             ChangeView(_ucMainView);
         }
 
@@ -221,13 +217,63 @@ namespace SpadApp
                 }
             }
         }
-
-
         private void MainForm_Load(object sender, EventArgs e) {
             formSize = this.ClientSize;
-
         }
 
+        private void btnClose_Click(object sender, EventArgs e) {
+            Application.Exit();
+
+        }
+        private void btnMaximize_Click(object sender, EventArgs e) {
+            if (this.WindowState == FormWindowState.Normal) {
+                formSize = this.ClientSize;
+                this.WindowState = FormWindowState.Maximized;
+            }
+            else {
+                this.WindowState = FormWindowState.Normal;
+                this.Size = formSize;
+            }
+        }
+
+        private void btnMinimize_Click(object sender, EventArgs e) {
+            formSize = this.ClientSize;
+            this.WindowState = FormWindowState.Minimized;
+        }
+        private void MainForm_SizeChanged(object sender, EventArgs e) {
+            AdjustForm();
+        }
+        private void panelTitleBar_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) {
+
+                // 1. 더블클릭(따닥!) 감지 시
+                if (e.Clicks == 2) {
+                    if (this.WindowState == FormWindowState.Normal) {
+                        // [최대화 처리]
+                        formSize = this.ClientSize; // 현재 크기 백업
+
+                        // ★ API 대신 WinForms 자체 기능으로 안전하게 최대화합니다.
+                        this.WindowState = FormWindowState.Maximized;
+                    }
+                    else {
+                        // [이전 크기 복원 처리]
+                        // ★ 안전하게 일반 창 상태로 돌려놓고 백업해둔 사이즈로 환원합니다.
+                        this.WindowState = FormWindowState.Normal;
+                        this.Size = formSize;
+                    }
+                }
+                else {
+                    // 2. 일반 클릭(드래그 이동) 감지 시
+                    // 이 코드는 마우스 드래그를 위해 기존 그대로 유지합니다.
+                    ReleaseCapture();
+                    SendMessage(this.Handle, 0x112, 0xf012, 0);
+                }
+            }
+        }
+
+        private void iconButton7_Click(object sender, EventArgs e) {
+
+        }
     }
 
 }

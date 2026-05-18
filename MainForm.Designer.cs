@@ -29,23 +29,23 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             panelMainView = new Panel();
-            iconButton8 = new FontAwesome.Sharp.IconButton();
-            iconButton7 = new FontAwesome.Sharp.IconButton();
-            iconButton6 = new FontAwesome.Sharp.IconButton();
-            iconButton5 = new FontAwesome.Sharp.IconButton();
-            iconButton4 = new FontAwesome.Sharp.IconButton();
-            btnSetting = new FontAwesome.Sharp.IconButton();
-            btnHome = new FontAwesome.Sharp.IconButton();
             btnMinimize = new FontAwesome.Sharp.IconButton();
             btnMaximize = new FontAwesome.Sharp.IconButton();
-            label1 = new Label();
             btnClose = new FontAwesome.Sharp.IconButton();
+            iconButton8 = new FontAwesome.Sharp.IconButton();
+            btnAppView = new FontAwesome.Sharp.IconButton();
+            btnJitterView = new FontAwesome.Sharp.IconButton();
+            iconButton4 = new FontAwesome.Sharp.IconButton();
+            btnSetting = new FontAwesome.Sharp.IconButton();
+            btnMainView = new FontAwesome.Sharp.IconButton();
+            label1 = new Label();
             panel1 = new Panel();
             btnMenu = new FontAwesome.Sharp.IconButton();
             pictureBox1 = new PictureBox();
             panelDeskTop = new Panel();
             panelTitleBar = new Panel();
             panelMenu = new Panel();
+            btnSPCview = new FontAwesome.Sharp.IconButton();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panelDeskTop.SuspendLayout();
@@ -58,8 +58,59 @@
             panelMainView.Dock = DockStyle.Fill;
             panelMainView.Location = new Point(0, 0);
             panelMainView.Name = "panelMainView";
-            panelMainView.Size = new Size(2160, 1315);
+            panelMainView.Size = new Size(2160, 1304);
             panelMainView.TabIndex = 0;
+            // 
+            // btnMinimize
+            // 
+            btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMinimize.BackColor = Color.DarkTurquoise;
+            btnMinimize.FlatAppearance.BorderSize = 0;
+            btnMinimize.FlatStyle = FlatStyle.Flat;
+            btnMinimize.IconChar = FontAwesome.Sharp.IconChar.Tasks;
+            btnMinimize.IconColor = Color.White;
+            btnMinimize.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnMinimize.IconSize = 25;
+            btnMinimize.Location = new Point(1989, 0);
+            btnMinimize.Name = "btnMinimize";
+            btnMinimize.Size = new Size(60, 30);
+            btnMinimize.TabIndex = 6;
+            btnMinimize.UseVisualStyleBackColor = false;
+            btnMinimize.Click += btnMinimize_Click;
+            // 
+            // btnMaximize
+            // 
+            btnMaximize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMaximize.BackColor = Color.RoyalBlue;
+            btnMaximize.FlatAppearance.BorderSize = 0;
+            btnMaximize.FlatStyle = FlatStyle.Flat;
+            btnMaximize.IconChar = FontAwesome.Sharp.IconChar.Square;
+            btnMaximize.IconColor = Color.White;
+            btnMaximize.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnMaximize.IconSize = 25;
+            btnMaximize.Location = new Point(2044, 0);
+            btnMaximize.Name = "btnMaximize";
+            btnMaximize.Size = new Size(60, 30);
+            btnMaximize.TabIndex = 7;
+            btnMaximize.UseVisualStyleBackColor = false;
+            btnMaximize.Click += btnMaximize_Click;
+            // 
+            // btnClose
+            // 
+            btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClose.BackColor = Color.FromArgb(255, 74, 130);
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.IconChar = FontAwesome.Sharp.IconChar.Close;
+            btnClose.IconColor = Color.White;
+            btnClose.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnClose.IconSize = 25;
+            btnClose.Location = new Point(2100, 0);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(60, 30);
+            btnClose.TabIndex = 7;
+            btnClose.UseVisualStyleBackColor = false;
+            btnClose.Click += btnClose_Click;
             // 
             // iconButton8
             // 
@@ -85,77 +136,53 @@
             iconButton8.TextImageRelation = TextImageRelation.ImageBeforeText;
             iconButton8.UseVisualStyleBackColor = true;
             // 
-            // iconButton7
+            // btnAppView
             // 
-            iconButton7.AutoSize = true;
-            iconButton7.Dock = DockStyle.Top;
-            iconButton7.FlatAppearance.BorderSize = 0;
-            iconButton7.FlatStyle = FlatStyle.Flat;
-            iconButton7.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            iconButton7.ForeColor = Color.White;
-            iconButton7.IconChar = FontAwesome.Sharp.IconChar.LandmarkAlt;
-            iconButton7.IconColor = Color.White;
-            iconButton7.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton7.IconSize = 30;
-            iconButton7.ImageAlign = ContentAlignment.MiddleLeft;
-            iconButton7.Location = new Point(0, 375);
-            iconButton7.Name = "iconButton7";
-            iconButton7.Padding = new Padding(10, 15, 15, 0);
-            iconButton7.Size = new Size(296, 57);
-            iconButton7.TabIndex = 6;
-            iconButton7.Tag = "House";
-            iconButton7.Text = "  iconButton2";
-            iconButton7.TextAlign = ContentAlignment.MiddleLeft;
-            iconButton7.TextImageRelation = TextImageRelation.ImageBeforeText;
-            iconButton7.UseVisualStyleBackColor = true;
+            btnAppView.AutoSize = true;
+            btnAppView.Dock = DockStyle.Top;
+            btnAppView.FlatAppearance.BorderSize = 0;
+            btnAppView.FlatStyle = FlatStyle.Flat;
+            btnAppView.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAppView.ForeColor = Color.White;
+            btnAppView.IconChar = FontAwesome.Sharp.IconChar.Institution;
+            btnAppView.IconColor = Color.White;
+            btnAppView.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnAppView.IconSize = 30;
+            btnAppView.ImageAlign = ContentAlignment.MiddleLeft;
+            btnAppView.Location = new Point(0, 318);
+            btnAppView.Name = "btnAppView";
+            btnAppView.Padding = new Padding(10, 15, 15, 0);
+            btnAppView.Size = new Size(296, 57);
+            btnAppView.TabIndex = 5;
+            btnAppView.Tag = "APP";
+            btnAppView.Text = "  APP";
+            btnAppView.TextAlign = ContentAlignment.MiddleLeft;
+            btnAppView.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnAppView.UseVisualStyleBackColor = true;
             // 
-            // iconButton6
+            // btnJitterView
             // 
-            iconButton6.AutoSize = true;
-            iconButton6.Dock = DockStyle.Top;
-            iconButton6.FlatAppearance.BorderSize = 0;
-            iconButton6.FlatStyle = FlatStyle.Flat;
-            iconButton6.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            iconButton6.ForeColor = Color.White;
-            iconButton6.IconChar = FontAwesome.Sharp.IconChar.Institution;
-            iconButton6.IconColor = Color.White;
-            iconButton6.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton6.IconSize = 30;
-            iconButton6.ImageAlign = ContentAlignment.MiddleLeft;
-            iconButton6.Location = new Point(0, 318);
-            iconButton6.Name = "iconButton6";
-            iconButton6.Padding = new Padding(10, 15, 15, 0);
-            iconButton6.Size = new Size(296, 57);
-            iconButton6.TabIndex = 5;
-            iconButton6.Tag = "Bank";
-            iconButton6.Text = "  iconButton2";
-            iconButton6.TextAlign = ContentAlignment.MiddleLeft;
-            iconButton6.TextImageRelation = TextImageRelation.ImageBeforeText;
-            iconButton6.UseVisualStyleBackColor = true;
-            // 
-            // iconButton5
-            // 
-            iconButton5.AutoSize = true;
-            iconButton5.Dock = DockStyle.Top;
-            iconButton5.FlatAppearance.BorderSize = 0;
-            iconButton5.FlatStyle = FlatStyle.Flat;
-            iconButton5.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            iconButton5.ForeColor = Color.White;
-            iconButton5.IconChar = FontAwesome.Sharp.IconChar.HouseFlag;
-            iconButton5.IconColor = Color.White;
-            iconButton5.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton5.IconSize = 30;
-            iconButton5.ImageAlign = ContentAlignment.MiddleLeft;
-            iconButton5.Location = new Point(0, 261);
-            iconButton5.Name = "iconButton5";
-            iconButton5.Padding = new Padding(10, 15, 15, 0);
-            iconButton5.Size = new Size(296, 57);
-            iconButton5.TabIndex = 4;
-            iconButton5.Tag = "School";
-            iconButton5.Text = "  iconButton2";
-            iconButton5.TextAlign = ContentAlignment.MiddleLeft;
-            iconButton5.TextImageRelation = TextImageRelation.ImageBeforeText;
-            iconButton5.UseVisualStyleBackColor = true;
+            btnJitterView.AutoSize = true;
+            btnJitterView.Dock = DockStyle.Top;
+            btnJitterView.FlatAppearance.BorderSize = 0;
+            btnJitterView.FlatStyle = FlatStyle.Flat;
+            btnJitterView.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnJitterView.ForeColor = Color.White;
+            btnJitterView.IconChar = FontAwesome.Sharp.IconChar.HouseFlag;
+            btnJitterView.IconColor = Color.White;
+            btnJitterView.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnJitterView.IconSize = 30;
+            btnJitterView.ImageAlign = ContentAlignment.MiddleLeft;
+            btnJitterView.Location = new Point(0, 261);
+            btnJitterView.Name = "btnJitterView";
+            btnJitterView.Padding = new Padding(10, 15, 15, 0);
+            btnJitterView.Size = new Size(296, 57);
+            btnJitterView.TabIndex = 4;
+            btnJitterView.Tag = "Jitter";
+            btnJitterView.Text = "  Jitter";
+            btnJitterView.TextAlign = ContentAlignment.MiddleLeft;
+            btnJitterView.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnJitterView.UseVisualStyleBackColor = true;
             // 
             // iconButton4
             // 
@@ -176,7 +203,7 @@
             iconButton4.Size = new Size(296, 57);
             iconButton4.TabIndex = 3;
             iconButton4.Tag = "Hospital";
-            iconButton4.Text = "  iconButton2";
+            iconButton4.Text = "  PDE";
             iconButton4.TextAlign = ContentAlignment.MiddleLeft;
             iconButton4.TextImageRelation = TextImageRelation.ImageBeforeText;
             iconButton4.UseVisualStyleBackColor = true;
@@ -200,92 +227,46 @@
             btnSetting.Size = new Size(296, 57);
             btnSetting.TabIndex = 2;
             btnSetting.Tag = "Horse";
-            btnSetting.Text = "  iconButton2";
+            btnSetting.Text = "  DCR";
             btnSetting.TextAlign = ContentAlignment.MiddleLeft;
             btnSetting.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnSetting.UseVisualStyleBackColor = true;
             // 
-            // btnHome
+            // btnMainView
             // 
-            btnHome.AutoSize = true;
-            btnHome.Dock = DockStyle.Top;
-            btnHome.FlatAppearance.BorderSize = 0;
-            btnHome.FlatStyle = FlatStyle.Flat;
-            btnHome.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnHome.ForeColor = Color.White;
-            btnHome.IconChar = FontAwesome.Sharp.IconChar.HomeUser;
-            btnHome.IconColor = Color.White;
-            btnHome.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnHome.IconSize = 30;
-            btnHome.ImageAlign = ContentAlignment.MiddleLeft;
-            btnHome.Location = new Point(0, 90);
-            btnHome.Name = "btnHome";
-            btnHome.Padding = new Padding(10, 15, 15, 0);
-            btnHome.Size = new Size(296, 57);
-            btnHome.TabIndex = 1;
-            btnHome.Tag = "Home";
-            btnHome.Text = "  iconButton2";
-            btnHome.TextAlign = ContentAlignment.MiddleLeft;
-            btnHome.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnHome.UseVisualStyleBackColor = true;
-            // 
-            // btnMinimize
-            // 
-            btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnMinimize.BackColor = Color.DarkTurquoise;
-            btnMinimize.FlatAppearance.BorderSize = 0;
-            btnMinimize.FlatStyle = FlatStyle.Flat;
-            btnMinimize.IconChar = FontAwesome.Sharp.IconChar.Tasks;
-            btnMinimize.IconColor = Color.White;
-            btnMinimize.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnMinimize.IconSize = 25;
-            btnMinimize.Location = new Point(3365, 3);
-            btnMinimize.Name = "btnMinimize";
-            btnMinimize.Size = new Size(60, 30);
-            btnMinimize.TabIndex = 5;
-            btnMinimize.UseVisualStyleBackColor = false;
-            // 
-            // btnMaximize
-            // 
-            btnMaximize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnMaximize.BackColor = Color.RoyalBlue;
-            btnMaximize.FlatAppearance.BorderSize = 0;
-            btnMaximize.FlatStyle = FlatStyle.Flat;
-            btnMaximize.IconChar = FontAwesome.Sharp.IconChar.Square;
-            btnMaximize.IconColor = Color.White;
-            btnMaximize.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnMaximize.IconSize = 25;
-            btnMaximize.Location = new Point(3422, 3);
-            btnMaximize.Name = "btnMaximize";
-            btnMaximize.Size = new Size(60, 30);
-            btnMaximize.TabIndex = 4;
-            btnMaximize.UseVisualStyleBackColor = false;
+            btnMainView.AutoSize = true;
+            btnMainView.Dock = DockStyle.Top;
+            btnMainView.FlatAppearance.BorderSize = 0;
+            btnMainView.FlatStyle = FlatStyle.Flat;
+            btnMainView.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMainView.ForeColor = Color.White;
+            btnMainView.IconChar = FontAwesome.Sharp.IconChar.HomeUser;
+            btnMainView.IconColor = Color.White;
+            btnMainView.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnMainView.IconSize = 30;
+            btnMainView.ImageAlign = ContentAlignment.MiddleLeft;
+            btnMainView.Location = new Point(0, 90);
+            btnMainView.Name = "btnMainView";
+            btnMainView.Padding = new Padding(10, 15, 15, 0);
+            btnMainView.Size = new Size(296, 57);
+            btnMainView.TabIndex = 1;
+            btnMainView.Tag = "Home";
+            btnMainView.Text = "  MainView";
+            btnMainView.TextAlign = ContentAlignment.MiddleLeft;
+            btnMainView.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnMainView.UseVisualStyleBackColor = true;
+            btnMainView.Click += btnMainView_Click;
             // 
             // label1
             // 
             label1.Dock = DockStyle.Left;
+            label1.Font = new Font("Pretendard", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 129);
             label1.Location = new Point(0, 0);
             label1.Name = "label1";
-            label1.Size = new Size(222, 40);
+            label1.Size = new Size(222, 51);
             label1.TabIndex = 3;
             label1.Text = "SPAD TEST APP";
             label1.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // btnClose
-            // 
-            btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnClose.BackColor = Color.FromArgb(255, 74, 130);
-            btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.IconChar = FontAwesome.Sharp.IconChar.Close;
-            btnClose.IconColor = Color.White;
-            btnClose.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnClose.IconSize = 25;
-            btnClose.Location = new Point(3476, 3);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(60, 30);
-            btnClose.TabIndex = 2;
-            btnClose.UseVisualStyleBackColor = false;
             // 
             // panel1
             // 
@@ -304,8 +285,8 @@
             btnMenu.IconChar = FontAwesome.Sharp.IconChar.Bars;
             btnMenu.IconColor = Color.White;
             btnMenu.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnMenu.IconSize = 30;
-            btnMenu.Location = new Point(236, 0);
+            btnMenu.IconSize = 40;
+            btnMenu.Location = new Point(236, 5);
             btnMenu.Name = "btnMenu";
             btnMenu.Size = new Size(60, 74);
             btnMenu.TabIndex = 1;
@@ -327,9 +308,9 @@
             panelDeskTop.BackColor = Color.FromArgb(245, 245, 255);
             panelDeskTop.Controls.Add(panelMainView);
             panelDeskTop.Dock = DockStyle.Fill;
-            panelDeskTop.Location = new Point(296, 40);
+            panelDeskTop.Location = new Point(296, 51);
             panelDeskTop.Name = "panelDeskTop";
-            panelDeskTop.Size = new Size(2160, 1315);
+            panelDeskTop.Size = new Size(2160, 1304);
             panelDeskTop.TabIndex = 5;
             panelDeskTop.Tag = "Horse";
             // 
@@ -338,30 +319,56 @@
             panelTitleBar.BackColor = Color.White;
             panelTitleBar.Controls.Add(btnMinimize);
             panelTitleBar.Controls.Add(btnMaximize);
-            panelTitleBar.Controls.Add(label1);
             panelTitleBar.Controls.Add(btnClose);
+            panelTitleBar.Controls.Add(label1);
             panelTitleBar.Dock = DockStyle.Top;
             panelTitleBar.Location = new Point(296, 0);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(2160, 40);
+            panelTitleBar.Size = new Size(2160, 51);
             panelTitleBar.TabIndex = 4;
+            panelTitleBar.MouseDoubleClick += panelTitleBar_MouseDoubleClick;
+            panelTitleBar.MouseDown += panelTitleBar_MouseDown;
             // 
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(98, 102, 242);
+            panelMenu.Controls.Add(btnSPCview);
             panelMenu.Controls.Add(iconButton8);
-            panelMenu.Controls.Add(iconButton7);
-            panelMenu.Controls.Add(iconButton6);
-            panelMenu.Controls.Add(iconButton5);
+            panelMenu.Controls.Add(btnAppView);
+            panelMenu.Controls.Add(btnJitterView);
             panelMenu.Controls.Add(iconButton4);
             panelMenu.Controls.Add(btnSetting);
-            panelMenu.Controls.Add(btnHome);
+            panelMenu.Controls.Add(btnMainView);
             panelMenu.Controls.Add(panel1);
             panelMenu.Dock = DockStyle.Left;
             panelMenu.Location = new Point(0, 0);
             panelMenu.Name = "panelMenu";
             panelMenu.Size = new Size(296, 1355);
             panelMenu.TabIndex = 3;
+            // 
+            // btnSPCview
+            // 
+            btnSPCview.AutoSize = true;
+            btnSPCview.Dock = DockStyle.Top;
+            btnSPCview.FlatAppearance.BorderSize = 0;
+            btnSPCview.FlatStyle = FlatStyle.Flat;
+            btnSPCview.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSPCview.ForeColor = Color.White;
+            btnSPCview.IconChar = FontAwesome.Sharp.IconChar.Institution;
+            btnSPCview.IconColor = Color.White;
+            btnSPCview.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnSPCview.IconSize = 30;
+            btnSPCview.ImageAlign = ContentAlignment.MiddleLeft;
+            btnSPCview.Location = new Point(0, 375);
+            btnSPCview.Name = "btnSPCview";
+            btnSPCview.Padding = new Padding(10, 15, 15, 0);
+            btnSPCview.Size = new Size(296, 57);
+            btnSPCview.TabIndex = 8;
+            btnSPCview.Tag = "SPC";
+            btnSPCview.Text = "  SPC";
+            btnSPCview.TextAlign = ContentAlignment.MiddleLeft;
+            btnSPCview.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnSPCview.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -375,6 +382,7 @@
             Name = "MainForm";
             Text = "Form1";
             Load += MainForm_Load;
+            SizeChanged += MainForm_SizeChanged;
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panelDeskTop.ResumeLayout(false);
@@ -389,20 +397,23 @@
         private Panel panelMainView;
         private FontAwesome.Sharp.IconButton iconButton8;
         private FontAwesome.Sharp.IconButton iconButton7;
-        private FontAwesome.Sharp.IconButton iconButton6;
-        private FontAwesome.Sharp.IconButton iconButton5;
+        private FontAwesome.Sharp.IconButton btnAppView;
+        private FontAwesome.Sharp.IconButton btnJitterView;
         private FontAwesome.Sharp.IconButton iconButton4;
         private FontAwesome.Sharp.IconButton btnSetting;
-        private FontAwesome.Sharp.IconButton btnHome;
-        private FontAwesome.Sharp.IconButton btnMinimize;
-        private FontAwesome.Sharp.IconButton btnMaximize;
+        private FontAwesome.Sharp.IconButton btnMainView;
         private Label label1;
-        private FontAwesome.Sharp.IconButton btnClose;
+
         private Panel panel1;
         private FontAwesome.Sharp.IconButton btnMenu;
         private PictureBox pictureBox1;
         private Panel panelDeskTop;
         private Panel panelTitleBar;
         private Panel panelMenu;
+        private FontAwesome.Sharp.IconButton btnSPCview;
+        private FontAwesome.Sharp.IconButton iconButton2;
+        private FontAwesome.Sharp.IconButton btnMinimize;
+        private FontAwesome.Sharp.IconButton btnClose;
+        private FontAwesome.Sharp.IconButton btnMaximize;
     }
 }
