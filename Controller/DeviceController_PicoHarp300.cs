@@ -14,23 +14,83 @@ namespace SpadApp.Controller
         private System.Windows.Forms.Timer? _monitorTimer;
 
         public bool IsConnected => _device.IsConnected;
+        // ============================================================
+        // Events
+        // ============================================================
 
         /// <summary>
-        /// 장치 연결 및 모니터링 타이머 설정
+        /// CountRate 업데이트 이벤트
         /// </summary>
-        public bool ConnectDevice(System.Windows.Forms.Timer timer, Action<string> logAction)
+        public event Action<int, int>? CountRateUpdated;
+
+        // ============================================================
+        // Constructor
+        // ============================================================
+
+        public DeviceController_PicoHarp300()
+        {
+            _monitorTimer = new System.Windows.Forms.Timer();
+            _monitorTimer.Interval = 100;
+            _monitorTimer.Tick += MonitorTimer_Tick;
+        }
+        // ============================================================
+        // Monitor Timer
+        // ============================================================
+
+        private void MonitorTimer_Tick(object? sender, EventArgs e)
+        {
+            if (!_device.IsConnected)
+                return;
+
+            int rate0 = 0;
+            int rate1 = 0;
+
+            int ret0 = PicoHarp_Native.PH_GetCountRate(
+                PicoHarp_DeviceInfo.DeviceIndex,
+                0,
+                ref rate0);
+
+            int ret1 = PicoHarp_Native.PH_GetCountRate(
+                PicoHarp_DeviceInfo.DeviceIndex,
+                1,
+                ref rate1);
+
+            if (ret0 >= 0)
+                PicoHarp_MeasurementStatus.CountRate0 = rate0;
+
+            if (ret1 >= 0)
+                PicoHarp_MeasurementStatus.CountRate1 = rate1;
+
+            // UI에 이벤트 전달
+            CountRateUpdated?.Invoke(rate0, rate1);
+        }
+
+
+
+        // ============================================================
+        // Connect
+        // ============================================================
+
+        public bool ConnectDevice(Action<string> logAction)
         {
             try
             {
-                // 1. Library Version Check (정적 메서드로 즉시 호출)
+                // 1. Library Version Check
                 PicoHarp_DeviceInfo.LibVer.Clear();
-                string libVersion = PicoHarpDevice.GetLibraryVersion();
+
+                string libVersion =
+                    PicoHarpDevice.GetLibraryVersion();
+
                 PicoHarp_DeviceInfo.LibVer.Append(libVersion);
 
                 // 2. Search Devices
-                List<int> devices = PicoHarpDevice.FindDevices();
+                List<int> devices =
+                    PicoHarpDevice.FindDevices();
+
                 PicoHarp_DeviceInfo.AvailableDevices.Clear();
-                PicoHarp_DeviceInfo.AvailableDevices.AddRange(devices);
+
+                PicoHarp_DeviceInfo.AvailableDevices
+                    .AddRange(devices);
 
                 if (PicoHarp_DeviceInfo.AvailableDevices.Count == 0)
                 {
@@ -38,23 +98,28 @@ namespace SpadApp.Controller
                     return false;
                 }
 
-                // 3. Connect & Initialize (첫 번째 장비 자동 연결)
-                int targetIndex = PicoHarp_DeviceInfo.AvailableDevices[0];
+                // 3. Connect
+                int targetIndex =
+                    PicoHarp_DeviceInfo.AvailableDevices[0];
 
-                // 2층 API를 통해 연결 및 초기화 한 번에 수행
-                string serial = _device.Connect(targetIndex, PicoHarp_Native.MODE_HIST);
+                string serial =
+                    _device.Connect(
+                        targetIndex,
+                        PicoHarp_Native.MODE_HIST);
 
-                // 전역 데이터 모델 업데이트
+                // Global Model Update
                 PicoHarp_DeviceInfo.DeviceIndex = targetIndex;
+
                 PicoHarp_DeviceInfo.Serial.Clear();
+
                 PicoHarp_DeviceInfo.Serial.Append(serial);
+
                 PicoHarp_DeviceInfo.IsConnected = true;
 
-                logAction($"Connected to Device {targetIndex} (S/N: {serial}). Monitoring started.");
+                logAction(
+                    $"Connected to Device {targetIndex} (S/N: {serial})");
 
-                // 4. 모니터링 타이머 구동
-                _monitorTimer = timer;
-                _monitorTimer.Interval = 100; // 매뉴얼 권장 게이트 타임 100ms 설정
+                // 4. Start Monitor
                 _monitorTimer.Start();
 
                 return true;
@@ -71,19 +136,23 @@ namespace SpadApp.Controller
             }
         }
 
-        /// <summary>
-        /// 안전하게 장치 연결 해제
-        /// </summary>
+
+        // ============================================================
+        // Disconnect
+        // ============================================================
+
         public void DisconnectDevice(Action<string> logAction)
         {
             try
             {
-                _monitorTimer?.Stop();
+                _monitorTimer.Stop();
 
                 if (_device.IsConnected)
                 {
                     _device.Disconnect();
+
                     PicoHarp_DeviceInfo.IsConnected = false;
+
                     logAction("Device disconnected safely.");
                 }
             }
@@ -92,6 +161,29 @@ namespace SpadApp.Controller
                 logAction($"Disconnect Error: {ex.Message}");
             }
         }
+        public void DisconnectDevice()
+        {
+            try
+            {
+                _monitorTimer.Stop();
+
+                if (_device.IsConnected)
+                {
+                    _device.Disconnect();
+
+                    PicoHarp_DeviceInfo.IsConnected = false;
+
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+
+
+
         public async Task ExecuteMeasurementAsync(uint[] targetBuffer, Func<bool> checkContinue)
         {
             if (!_device.IsConnected) return;
@@ -118,6 +210,36 @@ namespace SpadApp.Controller
             });
         }
 
+
+        // ============================================================
+        // CountRate Getter
+        // ============================================================
+
+        public int GetCountRate(int channel)
+        {
+            int rate = 0;
+
+            int ret = PicoHarp_Native.PH_GetCountRate(
+                PicoHarp_DeviceInfo.DeviceIndex,
+                channel,
+                ref rate);
+
+            return rate;
+        }
+
+        // ============================================================
+        // Monitor Control
+        // ============================================================
+
+        public void StartMonitoring()
+        {
+            _monitorTimer.Start();
+        }
+
+        public void StopMonitoring()
+        {
+            _monitorTimer.Stop();
+        }
 
     }
 }

@@ -1,25 +1,21 @@
-﻿using Microsoft.VisualBasic.Logging;
-using SpadApp.DLLWrapper;
+﻿using SpadApp.DLLWrapper;
 using SpadApp.Parameters;
 using SpadApp.View;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace SpadApp {
     public partial class ucMainView : UserControl {
+
         public ucMainView() {
             InitializeComponent();
 
             //MainForm.Designer에서 생성된 histogramPlot을 매니저에게 전달
             _chartManager = new HistogramChartManager(this.histogramPlot!);
 
-            countRateMonitorTimer.Tick += PicoHarpMonitorTimer_Tick;
+            TCSPCDeviceController.CountRateUpdated += OnCountRateUpdated;
+
+            powerMeterController1.PowerUpdated += OnPowerMeter1Updated;
+            powerMeterController2.PowerUpdated += OnPowerMeter2Updated;
 
             powerMeterMonitorTimer1.Tick += PmMonitorTimer1_Tick;
             powerMeterMonitorTimer2.Tick += PmMonitorTimer2_Tick;
@@ -30,6 +26,7 @@ namespace SpadApp {
 
         }
 
+
         private void btnConnect_Click(object sender, EventArgs e) {
             if (btnConnect.Text == "Connect") {
                 // ------------------------------------------------------------
@@ -37,9 +34,7 @@ namespace SpadApp {
                 // ------------------------------------------------------------
 
                 bool tcspcConnected =
-                    _TCSPCDeviceController.ConnectDevice(
-                        countRateMonitorTimer,
-                        Log);
+                    TCSPCDeviceController.ConnectDevice(Log);
 
                 if (!tcspcConnected) {
                     Log("PicoHarp300 connection failed.");
@@ -55,9 +50,8 @@ namespace SpadApp {
                 // ------------------------------------------------------------
 
                 bool pm1Connected =
-                    _powerMeterController1.ConnectDevice(
+                    powerMeterController1.ConnectDevice(
                         0,
-                        powerMeterMonitorTimer1,
                         Log);
 
                 if (pm1Connected) {
@@ -72,9 +66,8 @@ namespace SpadApp {
                 // ------------------------------------------------------------
 
                 bool pm2Connected =
-                    _powerMeterController2.ConnectDevice(
+                    powerMeterController2.ConnectDevice(
                         1,
-                        powerMeterMonitorTimer2,
                         Log);
 
                 if (pm2Connected) {
@@ -100,11 +93,11 @@ namespace SpadApp {
                 // Disconnect All Devices
                 // ------------------------------------------------------------
 
-                _TCSPCDeviceController.DisconnectDevice(Log);
+                TCSPCDeviceController.DisconnectDevice(Log);
 
-                _powerMeterController1.DisconnectDevice(Log);
+                powerMeterController1.DisconnectDevice(Log);
 
-                _powerMeterController2.DisconnectDevice(Log);
+                powerMeterController2.DisconnectDevice(Log);
 
                 Log("All devices disconnected.");
 
@@ -123,16 +116,12 @@ namespace SpadApp {
             }
 
             // 🌟 1. 하드웨어 독점 계측을 시작하기 전, 실시간 모니터링 타이머를 중지합니다.
-            countRateMonitorTimer.Stop();
+            TCSPCDeviceController.StopMonitoring();
             btnMeasure.Enabled = false;
 
             try {
                 // 컨트롤러에게 단발성 측정 위임 (단발성이므로 checkContinue는 항상 true 반환하는 람다 전달)
-                await _TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => true);
-
-                // 계측이 완료된 직후, 차트를 업데이트하기 전에 
-                // 화면의 레이트 미터 텍스트도 최신 값으로 한 번 수동 갱신해 주면 UI가 자연스럽습니다.
-                PicoHarpMonitorTimer_Tick(null, EventArgs.Empty);
+                await TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => true);
 
                 // 차트 업데이트
                 _chartManager.UpdateFromHardware(_histogram.RawData);
@@ -145,7 +134,7 @@ namespace SpadApp {
                 // 🌟 2. [핵심] 성공/실패 여부와 상관없이 계측 태스크가 완전히 끝났으므로
                 // 단발성 측정 버튼을 다시 활성화하고, 실시간 모니터링 타이머를 되살립니다.
                 btnMeasure.Enabled = true;
-                countRateMonitorTimer.Start();
+                TCSPCDeviceController.StartMonitoring();
             }
         }
 
@@ -166,17 +155,16 @@ namespace SpadApp {
                 _isRepeating = true;
                 btnRun.Text = "Stop";
                 btnRun.BackColor = Color.IndianRed;
-
                 // 🌟 1. 계측 시작 직전 진짜 타이머를 끕니다.
-                countRateMonitorTimer.Stop();
+                TCSPCDeviceController.StopMonitoring();
 
-                try {
+                try
+                {
                     while (_isRepeating) {
-                        await _TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => _isRepeating);
+                        await TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => _isRepeating);
                         if (!_isRepeating) break;
 
                         // 루프 중간에 레이트 미터도 한 번 갱신하고 차트를 그립니다.
-                        PicoHarpMonitorTimer_Tick(null, EventArgs.Empty);
                         UpdateChartAfterMeasurement();
                     }
                 }
@@ -186,19 +174,12 @@ namespace SpadApp {
                     btnRun.BackColor = SystemColors.Control;
 
                     // 🌟 2. 반복 계측이 완전히 정지되면 진짜 타이머를 다시 확실하게 켭니다.
-                    countRateMonitorTimer.Start();
+                    TCSPCDeviceController.StartMonitoring();
                 }
             }
             else {
                 _isRepeating = false;
             }
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
-            _TCSPCDeviceController.DisconnectDevice(Log);
-            ResetUI();
-            _powerMeterController1.DisconnectDevice(Log);
-            _powerMeterController2.DisconnectDevice(Log);
         }
 
 

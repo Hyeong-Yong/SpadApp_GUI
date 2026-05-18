@@ -14,8 +14,7 @@ namespace SpadApp
         // ------------------------------------------------------------
         private HistogramBuffer _histogram = new();
         private HistogramChartManager _chartManager;
-        private System.Windows.Forms.Timer countRateMonitorTimer = new();
-        private DeviceController_PicoHarp300 _TCSPCDeviceController = new();
+        public DeviceController_PicoHarp300 TCSPCDeviceController = new();
 
         private void PicoHarpMonitorTimer_Tick(object? sender, EventArgs e)
         {
@@ -44,7 +43,7 @@ namespace SpadApp
             if (!PicoHarp_DeviceInfo.IsConnected) return;
 
             // 🌟 [핵심] 하드웨어 레지스터 설정을 바꾸는 동안 타이머와의 충돌을 원천 차단합니다.
-            countRateMonitorTimer.Stop();
+            TCSPCDeviceController.StopMonitoring();
 
             try
             {
@@ -79,8 +78,18 @@ namespace SpadApp
             {
                 // 🌟 [핵심] 설정 반영이 성공하든, 중간에 예외가 발생하든 
                 // 실시간 모니터링 타이머는 무조건 안전하게 다시 켭니다.
-                countRateMonitorTimer.Start();
+                TCSPCDeviceController.StartMonitoring();
             }
+        }
+
+
+        private void OnCountRateUpdated(int rate0, int rate1)
+        {
+            lblCountRate0.Text =
+                $"Count Rate 0 : {rate0}";
+
+            lblCountRate1.Text =
+                $"Count Rate 1 : {rate1}";
         }
 
         private decimal lastSyncValue = 1;

@@ -22,7 +22,8 @@
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             lblMeanPerPulse = new Label();
             lblPhotonFlux = new Label();
             lblPowerMeter2 = new Label();
@@ -76,48 +77,43 @@
             // lblMeanPerPulse
             // 
             lblMeanPerPulse.AutoSize = true;
-            lblMeanPerPulse.Location = new Point(1352, 681);
-            lblMeanPerPulse.Margin = new Padding(6, 0, 6, 0);
+            lblMeanPerPulse.Location = new Point(676, 319);
             lblMeanPerPulse.Name = "lblMeanPerPulse";
-            lblMeanPerPulse.Size = new Size(78, 32);
+            lblMeanPerPulse.Size = new Size(39, 15);
             lblMeanPerPulse.TabIndex = 34;
             lblMeanPerPulse.Text = "label1";
             // 
             // lblPhotonFlux
             // 
             lblPhotonFlux.AutoSize = true;
-            lblPhotonFlux.Location = new Point(1098, 679);
-            lblPhotonFlux.Margin = new Padding(6, 0, 6, 0);
+            lblPhotonFlux.Location = new Point(549, 318);
             lblPhotonFlux.Name = "lblPhotonFlux";
-            lblPhotonFlux.Size = new Size(78, 32);
+            lblPhotonFlux.Size = new Size(39, 15);
             lblPhotonFlux.TabIndex = 32;
             lblPhotonFlux.Text = "label1";
             // 
             // lblPowerMeter2
             // 
             lblPowerMeter2.AutoSize = true;
-            lblPowerMeter2.Location = new Point(257, 1213);
-            lblPowerMeter2.Margin = new Padding(6, 0, 6, 0);
+            lblPowerMeter2.Location = new Point(128, 569);
             lblPowerMeter2.Name = "lblPowerMeter2";
-            lblPowerMeter2.Size = new Size(91, 32);
+            lblPowerMeter2.Size = new Size(46, 15);
             lblPowerMeter2.TabIndex = 28;
             lblPowerMeter2.Text = "label11";
             // 
             // numPMWavelength
             // 
-            numPMWavelength.Location = new Point(254, 992);
-            numPMWavelength.Margin = new Padding(6);
+            numPMWavelength.Location = new Point(127, 465);
             numPMWavelength.Name = "numPMWavelength";
-            numPMWavelength.Size = new Size(240, 39);
+            numPMWavelength.Size = new Size(120, 23);
             numPMWavelength.TabIndex = 27;
             numPMWavelength.ValueChanged += numPMWavelength_ValueChanged;
             // 
             // btnRun
             // 
-            btnRun.Location = new Point(17, 242);
-            btnRun.Margin = new Padding(6);
+            btnRun.Location = new Point(8, 113);
             btnRun.Name = "btnRun";
-            btnRun.Size = new Size(184, 73);
+            btnRun.Size = new Size(92, 34);
             btnRun.TabIndex = 26;
             btnRun.Text = "Run";
             btnRun.UseVisualStyleBackColor = true;
@@ -125,18 +121,16 @@
             // 
             // histogramPlot
             // 
-            histogramPlot.Location = new Point(268, 56);
-            histogramPlot.Margin = new Padding(6);
+            histogramPlot.Location = new Point(134, 26);
             histogramPlot.Name = "histogramPlot";
-            histogramPlot.Size = new Size(1844, 542);
+            histogramPlot.Size = new Size(922, 254);
             histogramPlot.TabIndex = 25;
             // 
             // richtxtLog
             // 
-            richtxtLog.Location = new Point(1694, 635);
-            richtxtLog.Margin = new Padding(6);
+            richtxtLog.Location = new Point(847, 298);
             richtxtLog.Name = "richtxtLog";
-            richtxtLog.Size = new Size(458, 407);
+            richtxtLog.Size = new Size(231, 193);
             richtxtLog.TabIndex = 24;
             richtxtLog.Text = "";
             // 
@@ -144,10 +138,9 @@
             // 
             label9.AutoSize = true;
             label9.Dock = DockStyle.Fill;
-            label9.Location = new Point(545, 148);
-            label9.Margin = new Padding(6, 0, 6, 0);
+            label9.Location = new Point(272, 70);
             label9.Name = "label9";
-            label9.Size = new Size(167, 71);
+            label9.Size = new Size(83, 32);
             label9.TabIndex = 14;
             label9.Text = "Ch1 ZeroX";
             // 
@@ -155,10 +148,9 @@
             // 
             label8.AutoSize = true;
             label8.Dock = DockStyle.Fill;
-            label8.Location = new Point(366, 148);
-            label8.Margin = new Padding(6, 0, 6, 0);
+            label8.Location = new Point(183, 70);
             label8.Name = "label8";
-            label8.Size = new Size(165, 71);
+            label8.Size = new Size(81, 32);
             label8.TabIndex = 13;
             label8.Text = "Ch1 CFD Level";
             // 
@@ -166,10 +158,9 @@
             // 
             label7.AutoSize = true;
             label7.Dock = DockStyle.Fill;
-            label7.Location = new Point(187, 148);
-            label7.Margin = new Padding(6, 0, 6, 0);
+            label7.Location = new Point(94, 70);
             label7.Name = "label7";
-            label7.Size = new Size(165, 71);
+            label7.Size = new Size(81, 32);
             label7.TabIndex = 12;
             label7.Text = "Ch0 ZeroX";
             // 
@@ -177,10 +168,9 @@
             // 
             label6.AutoSize = true;
             label6.Dock = DockStyle.Fill;
-            label6.Location = new Point(8, 148);
-            label6.Margin = new Padding(6, 0, 6, 0);
+            label6.Location = new Point(5, 70);
             label6.Name = "label6";
-            label6.Size = new Size(165, 71);
+            label6.Size = new Size(81, 32);
             label6.TabIndex = 9;
             label6.Text = "Ch0 CFD level";
             // 
@@ -188,10 +178,9 @@
             // 
             label5.AutoSize = true;
             label5.Dock = DockStyle.Fill;
-            label5.Location = new Point(545, 2);
-            label5.Margin = new Padding(6, 0, 6, 0);
+            label5.Location = new Point(272, 2);
             label5.Name = "label5";
-            label5.Size = new Size(167, 71);
+            label5.Size = new Size(83, 32);
             label5.TabIndex = 11;
             label5.Text = "Resolution";
             // 
@@ -199,10 +188,9 @@
             // 
             label4.AutoSize = true;
             label4.Dock = DockStyle.Fill;
-            label4.Location = new Point(366, 2);
-            label4.Margin = new Padding(6, 0, 6, 0);
+            label4.Location = new Point(183, 2);
             label4.Name = "label4";
-            label4.Size = new Size(165, 71);
+            label4.Size = new Size(81, 32);
             label4.TabIndex = 10;
             label4.Text = "Sync div";
             // 
@@ -210,89 +198,80 @@
             // 
             label3.AutoSize = true;
             label3.Dock = DockStyle.Fill;
-            label3.Location = new Point(187, 2);
-            label3.Margin = new Padding(6, 0, 6, 0);
+            label3.Location = new Point(94, 2);
             label3.Name = "label3";
-            label3.Size = new Size(165, 71);
+            label3.Size = new Size(81, 32);
             label3.TabIndex = 9;
             label3.Text = "Acq. Time";
             // 
             // numBinning
             // 
             numBinning.Dock = DockStyle.Fill;
-            numBinning.Location = new Point(8, 81);
-            numBinning.Margin = new Padding(6);
+            numBinning.Location = new Point(5, 39);
             numBinning.Name = "numBinning";
-            numBinning.Size = new Size(165, 39);
+            numBinning.Size = new Size(81, 23);
             numBinning.TabIndex = 2;
             numBinning.ValueChanged += numBinning_ValueChanged;
             // 
             // numAcqTime
             // 
             numAcqTime.Dock = DockStyle.Fill;
-            numAcqTime.Location = new Point(187, 81);
-            numAcqTime.Margin = new Padding(6);
+            numAcqTime.Location = new Point(94, 39);
             numAcqTime.Name = "numAcqTime";
-            numAcqTime.Size = new Size(165, 39);
+            numAcqTime.Size = new Size(81, 23);
             numAcqTime.TabIndex = 2;
             numAcqTime.ValueChanged += numAcqTime_ValueChanged;
             // 
             // numSyncDiv
             // 
             numSyncDiv.Dock = DockStyle.Fill;
-            numSyncDiv.Location = new Point(366, 81);
-            numSyncDiv.Margin = new Padding(6);
+            numSyncDiv.Location = new Point(183, 39);
             numSyncDiv.Name = "numSyncDiv";
-            numSyncDiv.Size = new Size(165, 39);
+            numSyncDiv.Size = new Size(81, 23);
             numSyncDiv.TabIndex = 2;
             numSyncDiv.ValueChanged += numSyncDiv_ValueChanged;
             // 
             // numCFDLevel0
             // 
             numCFDLevel0.Dock = DockStyle.Fill;
-            numCFDLevel0.Location = new Point(8, 227);
-            numCFDLevel0.Margin = new Padding(6);
+            numCFDLevel0.Location = new Point(5, 107);
             numCFDLevel0.Name = "numCFDLevel0";
-            numCFDLevel0.Size = new Size(165, 39);
+            numCFDLevel0.Size = new Size(81, 23);
             numCFDLevel0.TabIndex = 3;
             numCFDLevel0.ValueChanged += numCFDLevel0_ValueChanged;
             // 
             // numCFDZeroCross0
             // 
             numCFDZeroCross0.Dock = DockStyle.Fill;
-            numCFDZeroCross0.Location = new Point(187, 227);
-            numCFDZeroCross0.Margin = new Padding(6);
+            numCFDZeroCross0.Location = new Point(94, 107);
             numCFDZeroCross0.Name = "numCFDZeroCross0";
-            numCFDZeroCross0.Size = new Size(165, 39);
+            numCFDZeroCross0.Size = new Size(81, 23);
             numCFDZeroCross0.TabIndex = 4;
             numCFDZeroCross0.ValueChanged += numCFDZeroCross0_ValueChanged;
             // 
             // numCFDLevel1
             // 
             numCFDLevel1.Dock = DockStyle.Fill;
-            numCFDLevel1.Location = new Point(366, 227);
-            numCFDLevel1.Margin = new Padding(6);
+            numCFDLevel1.Location = new Point(183, 107);
             numCFDLevel1.Name = "numCFDLevel1";
-            numCFDLevel1.Size = new Size(165, 39);
+            numCFDLevel1.Size = new Size(81, 23);
             numCFDLevel1.TabIndex = 5;
             numCFDLevel1.ValueChanged += numCFDLevel1_ValueChanged;
             // 
             // numCFDZeroCross1
             // 
             numCFDZeroCross1.Dock = DockStyle.Fill;
-            numCFDZeroCross1.Location = new Point(545, 227);
-            numCFDZeroCross1.Margin = new Padding(6);
+            numCFDZeroCross1.Location = new Point(272, 107);
             numCFDZeroCross1.Name = "numCFDZeroCross1";
-            numCFDZeroCross1.Size = new Size(167, 39);
+            numCFDZeroCross1.Size = new Size(83, 23);
             numCFDZeroCross1.TabIndex = 6;
             numCFDZeroCross1.ValueChanged += numCFDZeroCross1_ValueChanged;
             // 
             // btnPM1ZeroAdjust
             // 
-            btnPM1ZeroAdjust.Location = new Point(794, 664);
-            btnPM1ZeroAdjust.Margin = new Padding(6);
+            btnPM1ZeroAdjust.Location = new Point(397, 311);
             btnPM1ZeroAdjust.Name = "btnPM1ZeroAdjust";
-            btnPM1ZeroAdjust.Size = new Size(180, 49);
+            btnPM1ZeroAdjust.Size = new Size(90, 23);
             btnPM1ZeroAdjust.TabIndex = 35;
             btnPM1ZeroAdjust.Text = "Background";
             btnPM1ZeroAdjust.UseVisualStyleBackColor = true;
@@ -301,30 +280,27 @@
             // lblPDE
             // 
             lblPDE.AutoSize = true;
-            lblPDE.Location = new Point(1520, 683);
-            lblPDE.Margin = new Padding(6, 0, 6, 0);
+            lblPDE.Location = new Point(760, 320);
             lblPDE.Name = "lblPDE";
-            lblPDE.Size = new Size(78, 32);
+            lblPDE.Size = new Size(39, 15);
             lblPDE.TabIndex = 31;
             lblPDE.Text = "label1";
             // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(1302, 638);
-            label10.Margin = new Padding(6, 0, 6, 0);
+            label10.Location = new Point(651, 299);
             label10.Name = "label10";
-            label10.Size = new Size(183, 32);
+            label10.Size = new Size(90, 15);
             label10.TabIndex = 30;
             label10.Text = "Mean Per Pulse";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(1008, 638);
-            label1.Margin = new Padding(6, 0, 6, 0);
+            label1.Location = new Point(504, 299);
             label1.Name = "label1";
-            label1.Size = new Size(282, 32);
+            label1.Size = new Size(141, 15);
             label1.TabIndex = 33;
             label1.Text = "Incident Photon Number";
             // 
@@ -334,50 +310,47 @@
             lblResolution.BackColor = SystemColors.ButtonFace;
             lblResolution.BorderStyle = BorderStyle.FixedSingle;
             lblResolution.Dock = DockStyle.Fill;
-            lblResolution.Location = new Point(545, 75);
-            lblResolution.Margin = new Padding(6, 0, 6, 0);
+            lblResolution.Location = new Point(272, 36);
             lblResolution.Name = "lblResolution";
-            lblResolution.Size = new Size(167, 71);
+            lblResolution.Size = new Size(83, 32);
             lblResolution.TabIndex = 7;
             lblResolution.Text = "label1";
             // 
             // lblPowerMeter1
             // 
             lblPowerMeter1.AutoSize = true;
-            lblPowerMeter1.Location = new Point(254, 954);
-            lblPowerMeter1.Margin = new Padding(6, 0, 6, 0);
+            lblPowerMeter1.Location = new Point(127, 447);
             lblPowerMeter1.Name = "lblPowerMeter1";
-            lblPowerMeter1.Size = new Size(91, 32);
+            lblPowerMeter1.Size = new Size(46, 15);
             lblPowerMeter1.TabIndex = 22;
             lblPowerMeter1.Text = "label11";
             // 
             // lblCountRate0
             // 
             lblCountRate0.Name = "lblCountRate0";
-            lblCountRate0.Size = new Size(148, 32);
+            lblCountRate0.Size = new Size(74, 17);
             lblCountRate0.Text = "CountRate 0";
             // 
             // lblCountRate1
             // 
             lblCountRate1.Name = "lblCountRate1";
-            lblCountRate1.Size = new Size(148, 32);
+            lblCountRate1.Size = new Size(74, 17);
             lblCountRate1.Text = "CountRate 1";
             // 
             // lblStatus
             // 
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(79, 32);
+            lblStatus.Size = new Size(40, 17);
             lblStatus.Text = "Status";
             // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(32, 32);
             statusStrip1.Items.AddRange(new ToolStripItem[] { lblStatus, lblCountRate1, lblCountRate0 });
-            statusStrip1.Location = new Point(0, 1072);
+            statusStrip1.Location = new Point(0, 500);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Padding = new Padding(28, 0, 2, 0);
             statusStrip1.RightToLeft = RightToLeft.Yes;
-            statusStrip1.Size = new Size(2236, 42);
+            statusStrip1.Size = new Size(1118, 22);
             statusStrip1.TabIndex = 21;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -385,30 +358,27 @@
             // 
             label2.AutoSize = true;
             label2.Dock = DockStyle.Fill;
-            label2.Location = new Point(8, 2);
-            label2.Margin = new Padding(6, 0, 6, 0);
+            label2.Location = new Point(5, 2);
             label2.Name = "label2";
-            label2.Size = new Size(165, 71);
+            label2.Size = new Size(81, 32);
             label2.TabIndex = 8;
             label2.Text = "Binning";
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(1520, 640);
-            label11.Margin = new Padding(6, 0, 6, 0);
+            label11.Location = new Point(760, 300);
             label11.Name = "label11";
-            label11.Size = new Size(57, 32);
+            label11.Size = new Size(29, 15);
             label11.TabIndex = 29;
             label11.Text = "PDE";
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(68, 954);
-            label12.Margin = new Padding(6, 0, 6, 0);
+            label12.Location = new Point(34, 447);
             label12.Name = "label12";
-            label12.Size = new Size(177, 32);
+            label12.Size = new Size(87, 15);
             label12.TabIndex = 23;
             label12.Text = "Average Power";
             // 
@@ -436,23 +406,21 @@
             tableLayoutPanel1.Controls.Add(numCFDZeroCross1, 3, 3);
             tableLayoutPanel1.Controls.Add(lblResolution, 3, 1);
             tableLayoutPanel1.Controls.Add(label2, 0, 0);
-            tableLayoutPanel1.Location = new Point(14, 638);
-            tableLayoutPanel1.Margin = new Padding(6);
+            tableLayoutPanel1.Location = new Point(7, 299);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 4;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel1.Size = new Size(720, 297);
+            tableLayoutPanel1.Size = new Size(360, 139);
             tableLayoutPanel1.TabIndex = 20;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(17, 328);
-            btnSave.Margin = new Padding(6);
+            btnSave.Location = new Point(8, 154);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(184, 73);
+            btnSave.Size = new Size(92, 34);
             btnSave.TabIndex = 18;
             btnSave.Text = "Save CSV";
             btnSave.UseVisualStyleBackColor = true;
@@ -460,10 +428,9 @@
             // 
             // btnMeasure
             // 
-            btnMeasure.Location = new Point(17, 157);
-            btnMeasure.Margin = new Padding(6);
+            btnMeasure.Location = new Point(8, 74);
             btnMeasure.Name = "btnMeasure";
-            btnMeasure.Size = new Size(184, 73);
+            btnMeasure.Size = new Size(92, 34);
             btnMeasure.TabIndex = 19;
             btnMeasure.Text = "Measure";
             btnMeasure.UseVisualStyleBackColor = true;
@@ -471,10 +438,9 @@
             // 
             // btnConnect
             // 
-            btnConnect.Location = new Point(17, 72);
-            btnConnect.Margin = new Padding(6);
+            btnConnect.Location = new Point(8, 34);
             btnConnect.Name = "btnConnect";
-            btnConnect.Size = new Size(184, 73);
+            btnConnect.Size = new Size(92, 34);
             btnConnect.TabIndex = 17;
             btnConnect.Text = "Connect";
             btnConnect.UseVisualStyleBackColor = true;
@@ -482,7 +448,7 @@
             // 
             // ucMainView
             // 
-            AutoScaleDimensions = new SizeF(14F, 32F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(lblMeanPerPulse);
             Controls.Add(lblPhotonFlux);
@@ -503,8 +469,9 @@
             Controls.Add(btnSave);
             Controls.Add(btnMeasure);
             Controls.Add(btnConnect);
+            Margin = new Padding(2, 1, 2, 1);
             Name = "ucMainView";
-            Size = new Size(2236, 1114);
+            Size = new Size(1118, 522);
             Load += ucMainView_Load;
             ((System.ComponentModel.ISupportInitialize)numPMWavelength).EndInit();
             ((System.ComponentModel.ISupportInitialize)numBinning).EndInit();

@@ -11,8 +11,8 @@ namespace SpadApp
         // ------------------------------------------------------------
         // PM100USB
         // ------------------------------------------------------------
-        private DeviceController_PM100USB _powerMeterController1 = new();
-        private DeviceController_PM100USB _powerMeterController2 = new();
+        public DeviceController_PM100USB powerMeterController1 = new();
+        public DeviceController_PM100USB powerMeterController2 = new();
 
         private System.Windows.Forms.Timer powerMeterMonitorTimer1 = new();
         private System.Windows.Forms.Timer powerMeterMonitorTimer2 = new();
@@ -21,19 +21,30 @@ namespace SpadApp
         private double _attenuationDb = 30;
         private double _pm1ZeroOffset = 0.0;
         private bool _pm1ZeroEnabled = false;
+
         // ------------------------------------------------------------
         // PM Timer Monitor
         // ------------------------------------------------------------
+        private void OnPowerMeter1Updated(double power)
+        {
+            // 예시: UI 레이블에 실시간 파워 출력 처리
+            lblPowerMeter1.Text = $"PM #1 Power : {power:E3} W";
+        }
+
+        private void OnPowerMeter2Updated(double power)
+        {
+            // lblPower2.Text = $"PM #2 Power : {power:E3} W";
+        }
 
 
         private async void PmMonitorTimer1_Tick(object? sender, EventArgs e)
         {
-            if (!_powerMeterController1.IsConnected)
+            if (!powerMeterController1.IsConnected)
                 return;
 
             try
             {
-                double power = await _powerMeterController1.ExecuteMeasurementAsync();
+                double power = await powerMeterController1.ExecuteMeasurementAsync();
                 if (_pm1ZeroEnabled)
                 {
                     power -= _pm1ZeroOffset;
@@ -43,7 +54,7 @@ namespace SpadApp
                         power = 0;
                 }
 
-                _powerMeterController1.MeasurementStatus.CurrentPower = power;
+                powerMeterController1.MeasurementStatus.CurrentPower = power;
 
                 lblPowerMeter1.Text =
                     $"{power * 1e6:F3}μW";
@@ -59,12 +70,12 @@ namespace SpadApp
 
         private async void PmMonitorTimer2_Tick(object? sender, EventArgs e)
         {
-            if (!_powerMeterController2.IsConnected)
+            if (!powerMeterController2.IsConnected)
                 return;
 
             try
             {
-                double power = await _powerMeterController2.ExecuteMeasurementAsync();
+                double power = await powerMeterController2.ExecuteMeasurementAsync();
 
                 lblPowerMeter2.Text = $"{power:E3} W";
             }
@@ -76,13 +87,13 @@ namespace SpadApp
 
 
         private void numPMWavelength_ValueChanged(object sender, EventArgs e) {
-            if (_powerMeterController1.IsConnected == false) return;
-            _powerMeterController1.MeasurementStatus.CurrentWavelength = (double)numPMWavelength.Value;
+            if (powerMeterController1.IsConnected == false) return;
+            powerMeterController1.MeasurementStatus.CurrentWavelength = (double)numPMWavelength.Value;
 
-            double wavelength = _powerMeterController1.MeasurementStatus.CurrentWavelength;
-            _powerMeterController1.SetWavelength(wavelength);
+            double wavelength = powerMeterController1.MeasurementStatus.CurrentWavelength;
+            powerMeterController1.SetWavelength(wavelength);
 
-            double A = _powerMeterController1.GetWavelength();
+            double A = powerMeterController1.GetWavelength();
             Log($"Wavelength set to {A} nm");
         }
 
@@ -95,13 +106,13 @@ namespace SpadApp
 
                 double detectedPhotonRate = PicoHarp_MeasurementStatus.CountRate1;
 
-                double power = _powerMeterController1.MeasurementStatus.CurrentPower;
+                double power = powerMeterController1.MeasurementStatus.CurrentPower;
 
 
                 // --------------------------------------------------------
                 // calculate
                 // --------------------------------------------------------
-                double wavelength = _powerMeterController1.MeasurementStatus.CurrentWavelength;
+                double wavelength = powerMeterController1.MeasurementStatus.CurrentWavelength;
 
                 PhotonStatistics stat = PhotonCalculator.Calculate(power, repetitionRate, detectedPhotonRate, _attenuationDb, wavelength);
 
@@ -121,7 +132,7 @@ namespace SpadApp
 
         private async void btnPM1ZeroAdjust_Click(object sender, EventArgs e)
         {
-            if (!_powerMeterController1.IsConnected)
+            if (!powerMeterController1.IsConnected)
                 return;
 
             try
@@ -137,7 +148,7 @@ namespace SpadApp
                     // 평균으로 안정적인 background 측정
                     for (int i = 0; i < 20; i++)
                     {
-                        sum += await _powerMeterController1.ExecuteMeasurementAsync();
+                        sum += await powerMeterController1.ExecuteMeasurementAsync();
 
                         await Task.Delay(20);
                     }

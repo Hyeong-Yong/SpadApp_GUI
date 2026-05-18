@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic.Logging;
 using SpadApp.Controller;
 using SpadApp.DLLWrapper;
 using SpadApp.Model;
@@ -10,9 +11,11 @@ using System.Runtime.InteropServices;
 
 namespace SpadApp
 {
-    public partial class MainForm : Form {
+    public partial class MainForm : Form
+    {
 
         private ucMainView _ucMainView;
+        private ucDCR _ucDCR;
 
         //Fields
         private int borderSize = 2;
@@ -21,7 +24,8 @@ namespace SpadApp
         // 현재 어떤 화면이 켜져 있는지 추적하는 변수
         private UserControl _currentView;
 
-        public MainForm() {
+        public MainForm()
+        {
             InitializeComponent();
             InitializeViews();
             CollapseMenu();
@@ -29,29 +33,32 @@ namespace SpadApp
             this.BackColor = Color.FromArgb(98, 102, 244); //Border color 
         }
 
-        private void InitializeViews() {
-            // [2] 화면들을 딱 한 번만 생성합니다.
+        private void InitializeViews()
+        {
+            // 메인 뷰를 먼저 생성, "TCSPCDeviceController" ucDCR에 주입 및 생성
             _ucMainView = new ucMainView { Dock = DockStyle.Fill };
+            _ucDCR = new ucDCR(_ucMainView.TCSPCDeviceController) { Dock = DockStyle.Fill };
 
-            // [3] 메인 패널에 일단 다 올려둡니다.
+            // 메인 패널에 화면 등록
             panelMainView.Controls.Add(_ucMainView);
+            panelMainView.Controls.Add(_ucDCR);
 
-            // [4] 처음에는 전부 다 숨겨버립니다.
+            // 초기 숨김 처리
             _ucMainView.Visible = false;
-
-            // [5] 시작 화면으로 홈 화면만 켜줍니다.
+            _ucDCR.Visible = false; // DCR 화면도 처음엔 숨깁니다.
+            // 시작 화면으로 홈 화면만 켜줍니다.
             ChangeView(_ucMainView);
         }
 
-
-
         // [6] 핵심: 화면 전환 함수 (Clear를 쓰지 않고 숨기기/보여주기만 작동)
-        private void ChangeView(UserControl newView) {
+        private void ChangeView(UserControl newView)
+        {
             // 이미 그 화면이 켜져 있다면 아무 변화도 주지 않고 함수 종료
             if (_currentView == newView) return;
 
             // 기존에 켜져 있던 화면이 있다면 숨김 처리
-            if (_currentView != null) {
+            if (_currentView != null)
+            {
                 _currentView.Visible = false;
             }
 
@@ -68,22 +75,28 @@ namespace SpadApp
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e) {
+        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
+        {
             // 마우스 왼쪽 버튼을 눌렀을 때만 작동
-            if (e.Button == MouseButtons.Left) {
+            if (e.Button == MouseButtons.Left)
+            {
                 // ★ 핵심: 현재 클릭이 '더블클릭(2번째 클릭)'인지 확인합니다.
-                if (e.Clicks == 2) {
+                if (e.Clicks == 2)
+                {
                     // [더블클릭 처리: 전체화면 토글]
-                    if (this.WindowState == FormWindowState.Normal) {
+                    if (this.WindowState == FormWindowState.Normal)
+                    {
                         formSize = this.ClientSize;
                         SendMessage(this.Handle, 0x112, 0xF030, 0); // 최대화(Maximized)
                     }
-                    else {
+                    else
+                    {
                         SendMessage(this.Handle, 0x112, 0xF120, 0); // 복원(Normal)
                         this.Size = formSize;
                     }
                 }
-                else {
+                else
+                {
                     // [일반 클릭 처리: 창 드래그 이동]
                     // 더블클릭이 아닐 때(첫 번째 클릭일 때)만 드래그 신호를 보냅니다.
                     ReleaseCapture();
@@ -93,7 +106,8 @@ namespace SpadApp
         }
 
         //Overridden methods
-        protected override void WndProc(ref Message m) {
+        protected override void WndProc(ref Message m)
+        {
             const int WM_NCCALCSIZE = 0x0083;//Standar Title Bar - Snap Window
             const int WM_SYSCOMMAND = 0x0112;
             const int SC_MINIMIZE = 0xF020; //Minimize form (Before)
@@ -112,7 +126,8 @@ namespace SpadApp
             const int HTBOTTOMLEFT = 16;//Lower-left corner of a window border, allows resize diagonally to the left
             const int HTBOTTOMRIGHT = 17;//Lower-right corner of a window border, allows resize diagonally to the right
             ///<Doc> More Information: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest </Doc>
-            if (m.Msg == WM_NCHITTEST) { //If the windows m is WM_NCHITTEST
+            if (m.Msg == WM_NCHITTEST)
+            { //If the windows m is WM_NCHITTEST
                 base.WndProc(ref m);
                 if (this.WindowState == FormWindowState.Normal)//Resize the form if it is in normal state
                 {
@@ -136,7 +151,8 @@ namespace SpadApp
                             else if (clientPoint.X > (this.Width - resizeAreaSize))//Resize horizontally to the right
                                 m.Result = (IntPtr)HTRIGHT;
                         }
-                        else {
+                        else
+                        {
                             if (clientPoint.X <= resizeAreaSize)//Resize diagonally to the left
                                 m.Result = (IntPtr)HTBOTTOMLEFT;
                             else if (clientPoint.X < (this.Size.Width - resizeAreaSize)) //Resize vertically down
@@ -150,11 +166,13 @@ namespace SpadApp
             }
             #endregion
             //Remove border and keep snap window
-            if (m.Msg == WM_NCCALCSIZE && m.WParam.ToInt32() == 1) {
+            if (m.Msg == WM_NCCALCSIZE && m.WParam.ToInt32() == 1)
+            {
                 return;
             }
             //Keep form size when it is minimized and restored. Since the form is resized because it takes into account the size of the title bar and borders.
-            if (m.Msg == WM_SYSCOMMAND) {
+            if (m.Msg == WM_SYSCOMMAND)
+            {
                 /// <see cref="https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand"/>
                 /// Quote:
                 /// In WM_SYSCOMMAND messages, the four low - order bits of the wParam parameter 
@@ -170,8 +188,10 @@ namespace SpadApp
             base.WndProc(ref m);
         }
 
-        private void AdjustForm() {
-            switch (this.WindowState) {
+        private void AdjustForm()
+        {
+            switch (this.WindowState)
+            {
                 case FormWindowState.Maximized:
                     this.Padding = new Padding(0, 12, 12, 0);
                     break;
@@ -183,86 +203,106 @@ namespace SpadApp
         }
 
 
-        private void btnMainView_Click(object sender, EventArgs e) {
+        private void btnMainView_Click(object sender, EventArgs e)
+        {
             ChangeView(_ucMainView);
         }
 
-        private void btnSetting_Click(object sender, EventArgs e) {
-            ChangeView(_ucMainView);
-        }
 
-        private void btnMenu_Click(object sender, EventArgs e) {
+        private void btnMenu_Click(object sender, EventArgs e)
+        {
             CollapseMenu();
         }
 
-        private void CollapseMenu() {
-            if (this.panelMenu.Width > 250) {
+        private void CollapseMenu()
+        {
+            if (this.panelMenu.Width > 250)
+            {
                 panelMenu.Width = 100;
                 pictureBox1.Visible = false;
                 btnMenu.Dock = DockStyle.Top;
-                foreach (Button menuButton in panelMenu.Controls.OfType<Button>()) {
+                foreach (Button menuButton in panelMenu.Controls.OfType<Button>())
+                {
                     menuButton.Text = "";
                     menuButton.ImageAlign = ContentAlignment.MiddleCenter;
                     menuButton.Padding = new Padding(0);
                 }
             }
-            else {
+            else
+            {
                 panelMenu.Width = 300;
                 pictureBox1.Visible = true;
                 btnMenu.Dock = DockStyle.None;
-                foreach (Button menuButton in panelMenu.Controls.OfType<Button>()) {
+                foreach (Button menuButton in panelMenu.Controls.OfType<Button>())
+                {
                     menuButton.Text = "    " + menuButton.Tag.ToString();
                     menuButton.ImageAlign = ContentAlignment.MiddleLeft;
                     menuButton.Padding = new Padding(10, 15, 15, 0);
                 }
             }
         }
-        private void MainForm_Load(object sender, EventArgs e) {
+        private void MainForm_Load(object sender, EventArgs e)
+        {
             formSize = this.ClientSize;
         }
 
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             Application.Exit();
+            _ucMainView.TCSPCDeviceController.DisconnectDevice();
+            _ucMainView.powerMeterController1.DisconnectDevice();
+            _ucMainView.powerMeterController2.DisconnectDevice();
 
         }
-        private void btnMaximize_Click(object sender, EventArgs e) {
-            if (this.WindowState == FormWindowState.Normal) {
+        private void btnMaximize_Click(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Normal)
+            {
                 formSize = this.ClientSize;
                 this.WindowState = FormWindowState.Maximized;
             }
-            else {
+            else
+            {
                 this.WindowState = FormWindowState.Normal;
                 this.Size = formSize;
             }
         }
 
-        private void btnMinimize_Click(object sender, EventArgs e) {
+        private void btnMinimize_Click(object sender, EventArgs e)
+        {
             formSize = this.ClientSize;
             this.WindowState = FormWindowState.Minimized;
         }
-        private void MainForm_SizeChanged(object sender, EventArgs e) {
+        private void MainForm_SizeChanged(object sender, EventArgs e)
+        {
             AdjustForm();
         }
-        private void panelTitleBar_MouseDoubleClick(object sender, MouseEventArgs e) {
-            if (e.Button == MouseButtons.Left) {
+        private void panelTitleBar_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
 
                 // 1. 더블클릭(따닥!) 감지 시
-                if (e.Clicks == 2) {
-                    if (this.WindowState == FormWindowState.Normal) {
+                if (e.Clicks == 2)
+                {
+                    if (this.WindowState == FormWindowState.Normal)
+                    {
                         // [최대화 처리]
                         formSize = this.ClientSize; // 현재 크기 백업
 
                         // ★ API 대신 WinForms 자체 기능으로 안전하게 최대화합니다.
                         this.WindowState = FormWindowState.Maximized;
                     }
-                    else {
+                    else
+                    {
                         // [이전 크기 복원 처리]
                         // ★ 안전하게 일반 창 상태로 돌려놓고 백업해둔 사이즈로 환원합니다.
                         this.WindowState = FormWindowState.Normal;
                         this.Size = formSize;
                     }
                 }
-                else {
+                else
+                {
                     // 2. 일반 클릭(드래그 이동) 감지 시
                     // 이 코드는 마우스 드래그를 위해 기존 그대로 유지합니다.
                     ReleaseCapture();
@@ -271,7 +311,9 @@ namespace SpadApp
             }
         }
 
-        private void iconButton7_Click(object sender, EventArgs e) {
+        private void btnDCRview_Click(object sender, EventArgs e)
+        {
+            ChangeView(_ucDCR);
 
         }
     }

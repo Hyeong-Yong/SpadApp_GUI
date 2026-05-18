@@ -26,7 +26,8 @@
         ///  Required method for Designer support - do not modify
         ///  the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             panelMainView = new Panel();
             btnMinimize = new FontAwesome.Sharp.IconButton();
@@ -36,7 +37,7 @@
             btnAppView = new FontAwesome.Sharp.IconButton();
             btnJitterView = new FontAwesome.Sharp.IconButton();
             iconButton4 = new FontAwesome.Sharp.IconButton();
-            btnSetting = new FontAwesome.Sharp.IconButton();
+            btnDCRview = new FontAwesome.Sharp.IconButton();
             btnMainView = new FontAwesome.Sharp.IconButton();
             label1 = new Label();
             panel1 = new Panel();
@@ -57,8 +58,9 @@
             // 
             panelMainView.Dock = DockStyle.Fill;
             panelMainView.Location = new Point(0, 0);
+            panelMainView.Margin = new Padding(2, 1, 2, 1);
             panelMainView.Name = "panelMainView";
-            panelMainView.Size = new Size(2160, 1304);
+            panelMainView.Size = new Size(1188, 590);
             panelMainView.TabIndex = 0;
             // 
             // btnMinimize
@@ -71,9 +73,10 @@
             btnMinimize.IconColor = Color.White;
             btnMinimize.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnMinimize.IconSize = 25;
-            btnMinimize.Location = new Point(1989, 0);
+            btnMinimize.Location = new Point(1094, 2);
+            btnMinimize.Margin = new Padding(2, 1, 2, 1);
             btnMinimize.Name = "btnMinimize";
-            btnMinimize.Size = new Size(60, 30);
+            btnMinimize.Size = new Size(30, 20);
             btnMinimize.TabIndex = 6;
             btnMinimize.UseVisualStyleBackColor = false;
             btnMinimize.Click += btnMinimize_Click;
@@ -88,9 +91,10 @@
             btnMaximize.IconColor = Color.White;
             btnMaximize.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnMaximize.IconSize = 25;
-            btnMaximize.Location = new Point(2044, 0);
+            btnMaximize.Location = new Point(1125, 2);
+            btnMaximize.Margin = new Padding(2, 1, 2, 1);
             btnMaximize.Name = "btnMaximize";
-            btnMaximize.Size = new Size(60, 30);
+            btnMaximize.Size = new Size(30, 20);
             btnMaximize.TabIndex = 7;
             btnMaximize.UseVisualStyleBackColor = false;
             btnMaximize.Click += btnMaximize_Click;
@@ -105,9 +109,10 @@
             btnClose.IconColor = Color.White;
             btnClose.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnClose.IconSize = 25;
-            btnClose.Location = new Point(2100, 0);
+            btnClose.Location = new Point(1156, 2);
+            btnClose.Margin = new Padding(2, 1, 2, 1);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(60, 30);
+            btnClose.Size = new Size(30, 20);
             btnClose.TabIndex = 7;
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
@@ -118,17 +123,18 @@
             iconButton8.Dock = DockStyle.Bottom;
             iconButton8.FlatAppearance.BorderSize = 0;
             iconButton8.FlatStyle = FlatStyle.Flat;
-            iconButton8.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton8.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             iconButton8.ForeColor = Color.White;
             iconButton8.IconChar = FontAwesome.Sharp.IconChar.SignOutAlt;
             iconButton8.IconColor = Color.White;
             iconButton8.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconButton8.IconSize = 30;
             iconButton8.ImageAlign = ContentAlignment.MiddleLeft;
-            iconButton8.Location = new Point(0, 1295);
+            iconButton8.Location = new Point(0, 573);
+            iconButton8.Margin = new Padding(2, 1, 2, 1);
             iconButton8.Name = "iconButton8";
-            iconButton8.Padding = new Padding(10, 0, 0, 10);
-            iconButton8.Size = new Size(296, 60);
+            iconButton8.Padding = new Padding(5, 0, 0, 5);
+            iconButton8.Size = new Size(148, 41);
             iconButton8.TabIndex = 7;
             iconButton8.Tag = "Exit";
             iconButton8.Text = "  iconButton2";
@@ -142,17 +148,18 @@
             btnAppView.Dock = DockStyle.Top;
             btnAppView.FlatAppearance.BorderSize = 0;
             btnAppView.FlatStyle = FlatStyle.Flat;
-            btnAppView.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnAppView.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAppView.ForeColor = Color.White;
             btnAppView.IconChar = FontAwesome.Sharp.IconChar.Institution;
             btnAppView.IconColor = Color.White;
             btnAppView.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnAppView.IconSize = 30;
             btnAppView.ImageAlign = ContentAlignment.MiddleLeft;
-            btnAppView.Location = new Point(0, 318);
+            btnAppView.Location = new Point(0, 214);
+            btnAppView.Margin = new Padding(2, 1, 2, 1);
             btnAppView.Name = "btnAppView";
-            btnAppView.Padding = new Padding(10, 15, 15, 0);
-            btnAppView.Size = new Size(296, 57);
+            btnAppView.Padding = new Padding(5, 7, 8, 0);
+            btnAppView.Size = new Size(148, 43);
             btnAppView.TabIndex = 5;
             btnAppView.Tag = "APP";
             btnAppView.Text = "  APP";
@@ -166,17 +173,18 @@
             btnJitterView.Dock = DockStyle.Top;
             btnJitterView.FlatAppearance.BorderSize = 0;
             btnJitterView.FlatStyle = FlatStyle.Flat;
-            btnJitterView.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnJitterView.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnJitterView.ForeColor = Color.White;
             btnJitterView.IconChar = FontAwesome.Sharp.IconChar.HouseFlag;
             btnJitterView.IconColor = Color.White;
             btnJitterView.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnJitterView.IconSize = 30;
             btnJitterView.ImageAlign = ContentAlignment.MiddleLeft;
-            btnJitterView.Location = new Point(0, 261);
+            btnJitterView.Location = new Point(0, 171);
+            btnJitterView.Margin = new Padding(2, 1, 2, 1);
             btnJitterView.Name = "btnJitterView";
-            btnJitterView.Padding = new Padding(10, 15, 15, 0);
-            btnJitterView.Size = new Size(296, 57);
+            btnJitterView.Padding = new Padding(5, 7, 8, 0);
+            btnJitterView.Size = new Size(148, 43);
             btnJitterView.TabIndex = 4;
             btnJitterView.Tag = "Jitter";
             btnJitterView.Text = "  Jitter";
@@ -190,47 +198,50 @@
             iconButton4.Dock = DockStyle.Top;
             iconButton4.FlatAppearance.BorderSize = 0;
             iconButton4.FlatStyle = FlatStyle.Flat;
-            iconButton4.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            iconButton4.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             iconButton4.ForeColor = Color.White;
             iconButton4.IconChar = FontAwesome.Sharp.IconChar.IdCardClip;
             iconButton4.IconColor = Color.White;
             iconButton4.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconButton4.IconSize = 30;
             iconButton4.ImageAlign = ContentAlignment.MiddleLeft;
-            iconButton4.Location = new Point(0, 204);
+            iconButton4.Location = new Point(0, 128);
+            iconButton4.Margin = new Padding(2, 1, 2, 1);
             iconButton4.Name = "iconButton4";
-            iconButton4.Padding = new Padding(10, 15, 15, 0);
-            iconButton4.Size = new Size(296, 57);
+            iconButton4.Padding = new Padding(5, 7, 8, 0);
+            iconButton4.Size = new Size(148, 43);
             iconButton4.TabIndex = 3;
-            iconButton4.Tag = "Hospital";
+            iconButton4.Tag = "PDE";
             iconButton4.Text = "  PDE";
             iconButton4.TextAlign = ContentAlignment.MiddleLeft;
             iconButton4.TextImageRelation = TextImageRelation.ImageBeforeText;
             iconButton4.UseVisualStyleBackColor = true;
             // 
-            // btnSetting
+            // btnDCRview
             // 
-            btnSetting.AutoSize = true;
-            btnSetting.Dock = DockStyle.Top;
-            btnSetting.FlatAppearance.BorderSize = 0;
-            btnSetting.FlatStyle = FlatStyle.Flat;
-            btnSetting.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSetting.ForeColor = Color.White;
-            btnSetting.IconChar = FontAwesome.Sharp.IconChar.HockeyPuck;
-            btnSetting.IconColor = Color.White;
-            btnSetting.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            btnSetting.IconSize = 30;
-            btnSetting.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSetting.Location = new Point(0, 147);
-            btnSetting.Name = "btnSetting";
-            btnSetting.Padding = new Padding(10, 15, 15, 0);
-            btnSetting.Size = new Size(296, 57);
-            btnSetting.TabIndex = 2;
-            btnSetting.Tag = "Horse";
-            btnSetting.Text = "  DCR";
-            btnSetting.TextAlign = ContentAlignment.MiddleLeft;
-            btnSetting.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btnSetting.UseVisualStyleBackColor = true;
+            btnDCRview.AutoSize = true;
+            btnDCRview.Dock = DockStyle.Top;
+            btnDCRview.FlatAppearance.BorderSize = 0;
+            btnDCRview.FlatStyle = FlatStyle.Flat;
+            btnDCRview.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDCRview.ForeColor = Color.White;
+            btnDCRview.IconChar = FontAwesome.Sharp.IconChar.HockeyPuck;
+            btnDCRview.IconColor = Color.White;
+            btnDCRview.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnDCRview.IconSize = 30;
+            btnDCRview.ImageAlign = ContentAlignment.MiddleLeft;
+            btnDCRview.Location = new Point(0, 85);
+            btnDCRview.Margin = new Padding(2, 1, 2, 1);
+            btnDCRview.Name = "btnDCRview";
+            btnDCRview.Padding = new Padding(5, 7, 8, 0);
+            btnDCRview.Size = new Size(148, 43);
+            btnDCRview.TabIndex = 2;
+            btnDCRview.Tag = "DCR";
+            btnDCRview.Text = "  DCR";
+            btnDCRview.TextAlign = ContentAlignment.MiddleLeft;
+            btnDCRview.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnDCRview.UseVisualStyleBackColor = true;
+            btnDCRview.Click += btnDCRview_Click;
             // 
             // btnMainView
             // 
@@ -238,19 +249,20 @@
             btnMainView.Dock = DockStyle.Top;
             btnMainView.FlatAppearance.BorderSize = 0;
             btnMainView.FlatStyle = FlatStyle.Flat;
-            btnMainView.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMainView.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnMainView.ForeColor = Color.White;
             btnMainView.IconChar = FontAwesome.Sharp.IconChar.HomeUser;
             btnMainView.IconColor = Color.White;
             btnMainView.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnMainView.IconSize = 30;
             btnMainView.ImageAlign = ContentAlignment.MiddleLeft;
-            btnMainView.Location = new Point(0, 90);
+            btnMainView.Location = new Point(0, 42);
+            btnMainView.Margin = new Padding(2, 1, 2, 1);
             btnMainView.Name = "btnMainView";
-            btnMainView.Padding = new Padding(10, 15, 15, 0);
-            btnMainView.Size = new Size(296, 57);
+            btnMainView.Padding = new Padding(5, 7, 8, 0);
+            btnMainView.Size = new Size(148, 43);
             btnMainView.TabIndex = 1;
-            btnMainView.Tag = "Home";
+            btnMainView.Tag = "Main";
             btnMainView.Text = "  MainView";
             btnMainView.TextAlign = ContentAlignment.MiddleLeft;
             btnMainView.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -260,10 +272,11 @@
             // label1
             // 
             label1.Dock = DockStyle.Left;
-            label1.Font = new Font("Pretendard", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 129);
+            label1.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 129);
             label1.Location = new Point(0, 0);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(222, 51);
+            label1.Size = new Size(111, 24);
             label1.TabIndex = 3;
             label1.Text = "SPAD TEST APP";
             label1.TextAlign = ContentAlignment.MiddleLeft;
@@ -274,8 +287,9 @@
             panel1.Controls.Add(pictureBox1);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(2, 1, 2, 1);
             panel1.Name = "panel1";
-            panel1.Size = new Size(296, 90);
+            panel1.Size = new Size(148, 42);
             panel1.TabIndex = 0;
             // 
             // btnMenu
@@ -286,9 +300,10 @@
             btnMenu.IconColor = Color.White;
             btnMenu.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnMenu.IconSize = 40;
-            btnMenu.Location = new Point(236, 5);
+            btnMenu.Location = new Point(118, 2);
+            btnMenu.Margin = new Padding(2, 1, 2, 1);
             btnMenu.Name = "btnMenu";
-            btnMenu.Size = new Size(60, 74);
+            btnMenu.Size = new Size(30, 35);
             btnMenu.TabIndex = 1;
             btnMenu.UseVisualStyleBackColor = true;
             btnMenu.Click += btnMenu_Click;
@@ -296,9 +311,10 @@
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(0, 7);
+            pictureBox1.Location = new Point(0, 3);
+            pictureBox1.Margin = new Padding(2, 1, 2, 1);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(241, 60);
+            pictureBox1.Size = new Size(120, 28);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -308,9 +324,10 @@
             panelDeskTop.BackColor = Color.FromArgb(245, 245, 255);
             panelDeskTop.Controls.Add(panelMainView);
             panelDeskTop.Dock = DockStyle.Fill;
-            panelDeskTop.Location = new Point(296, 51);
+            panelDeskTop.Location = new Point(148, 24);
+            panelDeskTop.Margin = new Padding(2, 1, 2, 1);
             panelDeskTop.Name = "panelDeskTop";
-            panelDeskTop.Size = new Size(2160, 1304);
+            panelDeskTop.Size = new Size(1188, 590);
             panelDeskTop.TabIndex = 5;
             panelDeskTop.Tag = "Horse";
             // 
@@ -322,9 +339,10 @@
             panelTitleBar.Controls.Add(btnClose);
             panelTitleBar.Controls.Add(label1);
             panelTitleBar.Dock = DockStyle.Top;
-            panelTitleBar.Location = new Point(296, 0);
+            panelTitleBar.Location = new Point(148, 0);
+            panelTitleBar.Margin = new Padding(2, 1, 2, 1);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(2160, 51);
+            panelTitleBar.Size = new Size(1188, 24);
             panelTitleBar.TabIndex = 4;
             panelTitleBar.MouseDoubleClick += panelTitleBar_MouseDoubleClick;
             panelTitleBar.MouseDown += panelTitleBar_MouseDown;
@@ -337,13 +355,14 @@
             panelMenu.Controls.Add(btnAppView);
             panelMenu.Controls.Add(btnJitterView);
             panelMenu.Controls.Add(iconButton4);
-            panelMenu.Controls.Add(btnSetting);
+            panelMenu.Controls.Add(btnDCRview);
             panelMenu.Controls.Add(btnMainView);
             panelMenu.Controls.Add(panel1);
             panelMenu.Dock = DockStyle.Left;
             panelMenu.Location = new Point(0, 0);
+            panelMenu.Margin = new Padding(2, 1, 2, 1);
             panelMenu.Name = "panelMenu";
-            panelMenu.Size = new Size(296, 1355);
+            panelMenu.Size = new Size(148, 614);
             panelMenu.TabIndex = 3;
             // 
             // btnSPCview
@@ -352,17 +371,18 @@
             btnSPCview.Dock = DockStyle.Top;
             btnSPCview.FlatAppearance.BorderSize = 0;
             btnSPCview.FlatStyle = FlatStyle.Flat;
-            btnSPCview.Font = new Font("Pretendard SemiBold", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSPCview.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSPCview.ForeColor = Color.White;
             btnSPCview.IconChar = FontAwesome.Sharp.IconChar.Institution;
             btnSPCview.IconColor = Color.White;
             btnSPCview.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnSPCview.IconSize = 30;
             btnSPCview.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSPCview.Location = new Point(0, 375);
+            btnSPCview.Location = new Point(0, 257);
+            btnSPCview.Margin = new Padding(2, 1, 2, 1);
             btnSPCview.Name = "btnSPCview";
-            btnSPCview.Padding = new Padding(10, 15, 15, 0);
-            btnSPCview.Size = new Size(296, 57);
+            btnSPCview.Padding = new Padding(5, 7, 8, 0);
+            btnSPCview.Size = new Size(148, 43);
             btnSPCview.TabIndex = 8;
             btnSPCview.Tag = "SPC";
             btnSPCview.Text = "  SPC";
@@ -372,13 +392,12 @@
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(14F, 32F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(2456, 1355);
+            ClientSize = new Size(1336, 614);
             Controls.Add(panelDeskTop);
             Controls.Add(panelTitleBar);
             Controls.Add(panelMenu);
-            Margin = new Padding(6);
             Name = "MainForm";
             Text = "Form1";
             Load += MainForm_Load;
@@ -400,7 +419,7 @@
         private FontAwesome.Sharp.IconButton btnAppView;
         private FontAwesome.Sharp.IconButton btnJitterView;
         private FontAwesome.Sharp.IconButton iconButton4;
-        private FontAwesome.Sharp.IconButton btnSetting;
+        private FontAwesome.Sharp.IconButton btnDCRview;
         private FontAwesome.Sharp.IconButton btnMainView;
         private Label label1;
 
