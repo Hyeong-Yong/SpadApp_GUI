@@ -1,12 +1,3 @@
-using Microsoft.VisualBasic.Logging;
-using SpadApp.Controller;
-using SpadApp.DLLWrapper;
-using SpadApp.Model;
-using SpadApp.Parameters;
-using SpadApp.Utility;
-using SpadApp.View;
-using System.Configuration;
-using System.Runtime;
 using System.Runtime.InteropServices;
 
 namespace SpadApp
@@ -14,15 +5,15 @@ namespace SpadApp
     public partial class MainForm : Form
     {
 
-        private ucMainView _ucMainView;
-        private ucDCR _ucDCR;
-
-        //Fields
-        private int borderSize = 2;
-        private Size formSize; //Keep form size when it is minimized and restored.Since the form is resized because it takes into account the size of the title bar and borders.
-
         // 현재 어떤 화면이 켜져 있는지 추적하는 변수
         private UserControl _currentView;
+
+        private ucMainView _ucMainView;
+        private ucDCR _ucDCRview;
+        private ucPDE _ucPDEview;
+
+        private int borderSize = 2;
+        private Size formSize; //Keep form size when it is minimized and restored.Since the form is resized because it takes into account the size of the title bar and borders.
 
         public MainForm()
         {
@@ -37,20 +28,26 @@ namespace SpadApp
         {
             // 메인 뷰를 먼저 생성, "TCSPCDeviceController" ucDCR에 주입 및 생성
             _ucMainView = new ucMainView { Dock = DockStyle.Fill };
-            _ucDCR = new ucDCR(_ucMainView.TCSPCDeviceController) { Dock = DockStyle.Fill };
+            _ucDCRview = new ucDCR(_ucMainView.TCSPCDeviceController) { Dock = DockStyle.Fill };
+            _ucPDEview = new ucPDE(_ucMainView.TCSPCDeviceController, _ucDCRview) { Dock = DockStyle.Fill };
+
+            // 🌟 ucMainView에서 PhotonFlux 이벤트가 발생하면, ucPDE의 텍스트박스(N_inc)에 실시간 주입
+            _ucMainView.PhotonFluxUpdated += (flux) => _ucPDEview.UpdateIncidentPhotonNumber(flux);
 
             // 메인 패널에 화면 등록
             panelMainView.Controls.Add(_ucMainView);
-            panelMainView.Controls.Add(_ucDCR);
+            panelMainView.Controls.Add(_ucDCRview);
+            panelMainView.Controls.Add(_ucPDEview);
 
             // 초기 숨김 처리
             _ucMainView.Visible = false;
-            _ucDCR.Visible = false; // DCR 화면도 처음엔 숨깁니다.
+            _ucDCRview.Visible = false;
+            _ucPDEview.Visible = false;
+
             // 시작 화면으로 홈 화면만 켜줍니다.
             ChangeView(_ucMainView);
         }
 
-        // [6] 핵심: 화면 전환 함수 (Clear를 쓰지 않고 숨기기/보여주기만 작동)
         private void ChangeView(UserControl newView)
         {
             // 이미 그 화면이 켜져 있다면 아무 변화도 주지 않고 함수 종료
@@ -68,152 +65,6 @@ namespace SpadApp
             // 현재 화면 상태 업데이트
             _currentView = newView;
         }
-
-        //Drag Form
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-
-        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
-        {
-            // 마우스 왼쪽 버튼을 눌렀을 때만 작동
-            if (e.Button == MouseButtons.Left)
-            {
-                // ★ 핵심: 현재 클릭이 '더블클릭(2번째 클릭)'인지 확인합니다.
-                if (e.Clicks == 2)
-                {
-                    // [더블클릭 처리: 전체화면 토글]
-                    if (this.WindowState == FormWindowState.Normal)
-                    {
-                        formSize = this.ClientSize;
-                        SendMessage(this.Handle, 0x112, 0xF030, 0); // 최대화(Maximized)
-                    }
-                    else
-                    {
-                        SendMessage(this.Handle, 0x112, 0xF120, 0); // 복원(Normal)
-                        this.Size = formSize;
-                    }
-                }
-                else
-                {
-                    // [일반 클릭 처리: 창 드래그 이동]
-                    // 더블클릭이 아닐 때(첫 번째 클릭일 때)만 드래그 신호를 보냅니다.
-                    ReleaseCapture();
-                    SendMessage(this.Handle, 0x112, 0xf012, 0);
-                }
-            }
-        }
-
-        //Overridden methods
-        protected override void WndProc(ref Message m)
-        {
-            const int WM_NCCALCSIZE = 0x0083;//Standar Title Bar - Snap Window
-            const int WM_SYSCOMMAND = 0x0112;
-            const int SC_MINIMIZE = 0xF020; //Minimize form (Before)
-            const int SC_RESTORE = 0xF120; //Restore form (Before)
-            const int WM_NCHITTEST = 0x0084;//Win32, Mouse Input Notification: Determine what part of the window corresponds to a point, allows to resize the form.
-            const int resizeAreaSize = 10;
-            #region Form Resize
-            // Resize/WM_NCHITTEST values
-            const int HTCLIENT = 1; //Represents the client area of the window
-            const int HTLEFT = 10;  //Left border of a window, allows resize horizontally to the left
-            const int HTRIGHT = 11; //Right border of a window, allows resize horizontally to the right
-            const int HTTOP = 12;   //Upper-horizontal border of a window, allows resize vertically up
-            const int HTTOPLEFT = 13;//Upper-left corner of a window border, allows resize diagonally to the left
-            const int HTTOPRIGHT = 14;//Upper-right corner of a window border, allows resize diagonally to the right
-            const int HTBOTTOM = 15; //Lower-horizontal border of a window, allows resize vertically down
-            const int HTBOTTOMLEFT = 16;//Lower-left corner of a window border, allows resize diagonally to the left
-            const int HTBOTTOMRIGHT = 17;//Lower-right corner of a window border, allows resize diagonally to the right
-            ///<Doc> More Information: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-nchittest </Doc>
-            if (m.Msg == WM_NCHITTEST)
-            { //If the windows m is WM_NCHITTEST
-                base.WndProc(ref m);
-                if (this.WindowState == FormWindowState.Normal)//Resize the form if it is in normal state
-                {
-                    if ((int)m.Result == HTCLIENT)//If the result of the m (mouse pointer) is in the client area of the window
-                    {
-                        Point screenPoint = new Point(m.LParam.ToInt32()); //Gets screen point coordinates(X and Y coordinate of the pointer)                           
-                        Point clientPoint = this.PointToClient(screenPoint); //Computes the location of the screen point into client coordinates                          
-                        if (clientPoint.Y <= resizeAreaSize)//If the pointer is at the top of the form (within the resize area- X coordinate)
-                        {
-                            if (clientPoint.X <= resizeAreaSize) //If the pointer is at the coordinate X=0 or less than the resizing area(X=10) in 
-                                m.Result = (IntPtr)HTTOPLEFT; //Resize diagonally to the left
-                            else if (clientPoint.X < (this.Size.Width - resizeAreaSize))//If the pointer is at the coordinate X=11 or less than the width of the form(X=Form.Width-resizeArea)
-                                m.Result = (IntPtr)HTTOP; //Resize vertically up
-                            else //Resize diagonally to the right
-                                m.Result = (IntPtr)HTTOPRIGHT;
-                        }
-                        else if (clientPoint.Y <= (this.Size.Height - resizeAreaSize)) //If the pointer is inside the form at the Y coordinate(discounting the resize area size)
-                        {
-                            if (clientPoint.X <= resizeAreaSize)//Resize horizontally to the left
-                                m.Result = (IntPtr)HTLEFT;
-                            else if (clientPoint.X > (this.Width - resizeAreaSize))//Resize horizontally to the right
-                                m.Result = (IntPtr)HTRIGHT;
-                        }
-                        else
-                        {
-                            if (clientPoint.X <= resizeAreaSize)//Resize diagonally to the left
-                                m.Result = (IntPtr)HTBOTTOMLEFT;
-                            else if (clientPoint.X < (this.Size.Width - resizeAreaSize)) //Resize vertically down
-                                m.Result = (IntPtr)HTBOTTOM;
-                            else //Resize diagonally to the right
-                                m.Result = (IntPtr)HTBOTTOMRIGHT;
-                        }
-                    }
-                }
-                return;
-            }
-            #endregion
-            //Remove border and keep snap window
-            if (m.Msg == WM_NCCALCSIZE && m.WParam.ToInt32() == 1)
-            {
-                return;
-            }
-            //Keep form size when it is minimized and restored. Since the form is resized because it takes into account the size of the title bar and borders.
-            if (m.Msg == WM_SYSCOMMAND)
-            {
-                /// <see cref="https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand"/>
-                /// Quote:
-                /// In WM_SYSCOMMAND messages, the four low - order bits of the wParam parameter 
-                /// are used internally by the system.To obtain the correct result when testing 
-                /// the value of wParam, an application must combine the value 0xFFF0 with the 
-                /// wParam value by using the bitwise AND operator.
-                int wParam = (m.WParam.ToInt32() & 0xFFF0);
-                if (wParam == SC_MINIMIZE)  //Before
-                    formSize = this.ClientSize;
-                if (wParam == SC_RESTORE)// Restored form(Before)
-                    this.Size = formSize;
-            }
-            base.WndProc(ref m);
-        }
-
-        private void AdjustForm()
-        {
-            switch (this.WindowState)
-            {
-                case FormWindowState.Maximized:
-                    this.Padding = new Padding(0, 12, 12, 0);
-                    break;
-                case FormWindowState.Normal:
-                    if (this.Padding.Top != borderSize)
-                        this.Padding = new Padding(borderSize);
-                    break;
-            }
-        }
-
-
-        private void btnMainView_Click(object sender, EventArgs e)
-        {
-            ChangeView(_ucMainView);
-        }
-
-
-        private void btnMenu_Click(object sender, EventArgs e)
-        {
-            CollapseMenu();
-        }
-
         private void CollapseMenu()
         {
             if (this.panelMenu.Width > 250)
@@ -241,80 +92,44 @@ namespace SpadApp
                 }
             }
         }
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e) => formSize = this.ClientSize;
+        private void btnMainView_Click(object sender, EventArgs e) => ChangeView(_ucMainView);
+        private void btnDCRview_Click(object sender, EventArgs e) => ChangeView(_ucDCRview);
+        private void btnPDEview_Click(object sender, EventArgs e) => ChangeView(_ucPDEview);
+        private void btnMenu_Click(object sender, EventArgs e) => CollapseMenu();
+        private void btnClose_Click(object sender, EventArgs e) => this.Close();
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            formSize = this.ClientSize;
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-            _ucMainView.TCSPCDeviceController.DisconnectDevice();
-            _ucMainView.powerMeterController1.DisconnectDevice();
-            _ucMainView.powerMeterController2.DisconnectDevice();
-
-        }
-        private void btnMaximize_Click(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Normal)
+            // 🌟 우측 상단 X 버튼, Alt+F4, 혹은 btnClose 클릭 등 '어떤 방식'으로든 
+            // 폼이 닫힐 때 하드웨어 연결을 가장 먼저 안전하게 차단합니다.
+            try
             {
-                formSize = this.ClientSize;
-                this.WindowState = FormWindowState.Maximized;
-            }
-            else
-            {
-                this.WindowState = FormWindowState.Normal;
-                this.Size = formSize;
-            }
-        }
-
-        private void btnMinimize_Click(object sender, EventArgs e)
-        {
-            formSize = this.ClientSize;
-            this.WindowState = FormWindowState.Minimized;
-        }
-        private void MainForm_SizeChanged(object sender, EventArgs e)
-        {
-            AdjustForm();
-        }
-        private void panelTitleBar_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-
-                // 1. 더블클릭(따닥!) 감지 시
-                if (e.Clicks == 2)
+                if (_ucMainView != null)
                 {
-                    if (this.WindowState == FormWindowState.Normal)
+                    // 1. PicoHarp300 실시간 모니터링 타이머 중지 및 장비 해제
+                    if (_ucMainView.TCSPCDeviceController != null && _ucMainView.TCSPCDeviceController.IsConnected)
                     {
-                        // [최대화 처리]
-                        formSize = this.ClientSize; // 현재 크기 백업
-
-                        // ★ API 대신 WinForms 자체 기능으로 안전하게 최대화합니다.
-                        this.WindowState = FormWindowState.Maximized;
+                        _ucMainView.TCSPCDeviceController.DisconnectDevice();
                     }
-                    else
+
+                    // 2. 파워미터 #1 내부 타이머 중지 및 장비 해제
+                    if (_ucMainView.powerMeterController1 != null && _ucMainView.powerMeterController1.IsConnected)
                     {
-                        // [이전 크기 복원 처리]
-                        // ★ 안전하게 일반 창 상태로 돌려놓고 백업해둔 사이즈로 환원합니다.
-                        this.WindowState = FormWindowState.Normal;
-                        this.Size = formSize;
+                        _ucMainView.powerMeterController1.DisconnectDevice();
+                    }
+
+                    // 3. 파워미터 #2 내부 타이머 중지 및 장비 해제
+                    if (_ucMainView.powerMeterController2 != null && _ucMainView.powerMeterController2.IsConnected)
+                    {
+                        _ucMainView.powerMeterController2.DisconnectDevice();
                     }
                 }
-                else
-                {
-                    // 2. 일반 클릭(드래그 이동) 감지 시
-                    // 이 코드는 마우스 드래그를 위해 기존 그대로 유지합니다.
-                    ReleaseCapture();
-                    SendMessage(this.Handle, 0x112, 0xf012, 0);
-                }
             }
-        }
-
-        private void btnDCRview_Click(object sender, EventArgs e)
-        {
-            ChangeView(_ucDCR);
-
+            catch (Exception ex)
+            {
+                // 종료 시 발생하는 예외가 시스템을 크래시하지 않도록 방어막 형성
+                System.Diagnostics.Debug.WriteLine($"FormClosing 하드웨어 해제 중 에러: {ex.Message}");
+            }
         }
     }
 

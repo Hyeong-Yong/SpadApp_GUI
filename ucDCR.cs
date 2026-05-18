@@ -13,6 +13,7 @@ namespace SpadApp
     {
         private readonly List<double> dcrData = new();
         private readonly DeviceController_PicoHarp300 _TCSPCDeviceController;
+        public double? LatestAverageDCR { get; private set; } = null;
 
         // 생성자: 컨트롤러 내부에 타이머 제어 기능이 있으므로 Timer 주입 단자를 제거하여 결합도를 낮춥니다.
         public ucDCR(DeviceController_PicoHarp300 tcspc)
@@ -88,6 +89,8 @@ namespace SpadApp
                 }
 
                 double finalAverage = sum / avgCount;
+                LatestAverageDCR = finalAverage;
+
                 MessageBox.Show($"Final Average DCR = {finalAverage:F0} cps");
             }
             catch (Exception ex)

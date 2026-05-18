@@ -16,28 +16,6 @@ namespace SpadApp
         private HistogramChartManager _chartManager;
         public DeviceController_PicoHarp300 TCSPCDeviceController = new();
 
-        private void PicoHarpMonitorTimer_Tick(object? sender, EventArgs e)
-        {
-            if (!PicoHarp_DeviceInfo.IsConnected) return;
-
-            int rate0 = 0;
-            int rate1 = 0;
-
-            // 채널 0 (Sync) 레이트 취득 
-            int ret0 = PicoHarp_Native.PH_GetCountRate(PicoHarp_DeviceInfo.DeviceIndex, 0, ref rate0);
-            PicoHarp_MeasurementStatus.CountRate0 = rate0;
-            // 채널 1 (Photon) 레이트 취득 
-            int ret1 = PicoHarp_Native.PH_GetCountRate(PicoHarp_DeviceInfo.DeviceIndex, 1, ref rate1);
-            PicoHarp_MeasurementStatus.CountRate1 = rate1;
-
-            // UI 업데이트 (ToolStripStatusLabel)
-            if (ret0 >= 0)
-                lblCountRate0.Text = $"Count Rate 0 : {rate0}";
-
-            if (ret1 >= 0)
-                lblCountRate1.Text = $"Count Rate 1 : {rate1}";
-        }
-
         private void UpdateDeviceSettings_PicoHarp()
         {
             if (!PicoHarp_DeviceInfo.IsConnected) return;
@@ -82,15 +60,9 @@ namespace SpadApp
             }
         }
 
+        private void OnCountRateUpdated(int rate0, int rate1) =>
+            (lblCountRate0.Text, lblCountRate1.Text) = ($"Count Rate 0 : {rate0}", $"Count Rate 1 : {rate1}");
 
-        private void OnCountRateUpdated(int rate0, int rate1)
-        {
-            lblCountRate0.Text =
-                $"Count Rate 0 : {rate0}";
-
-            lblCountRate1.Text =
-                $"Count Rate 1 : {rate1}";
-        }
 
         private decimal lastSyncValue = 1;
         private void numSyncDiv_ValueChanged(object sender, EventArgs e)

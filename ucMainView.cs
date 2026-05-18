@@ -16,9 +16,6 @@ namespace SpadApp {
 
             powerMeterController1.PowerUpdated += OnPowerMeter1Updated;
             powerMeterController2.PowerUpdated += OnPowerMeter2Updated;
-
-            powerMeterMonitorTimer1.Tick += PmMonitorTimer1_Tick;
-            powerMeterMonitorTimer2.Tick += PmMonitorTimer2_Tick;
         }
 
         private void ucMainView_Load(object sender, EventArgs e) {

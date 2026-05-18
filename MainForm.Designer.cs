@@ -36,7 +36,7 @@
             iconButton8 = new FontAwesome.Sharp.IconButton();
             btnAppView = new FontAwesome.Sharp.IconButton();
             btnJitterView = new FontAwesome.Sharp.IconButton();
-            iconButton4 = new FontAwesome.Sharp.IconButton();
+            btnPDEview = new FontAwesome.Sharp.IconButton();
             btnDCRview = new FontAwesome.Sharp.IconButton();
             btnMainView = new FontAwesome.Sharp.IconButton();
             label1 = new Label();
@@ -192,30 +192,31 @@
             btnJitterView.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnJitterView.UseVisualStyleBackColor = true;
             // 
-            // iconButton4
+            // btnPDEview
             // 
-            iconButton4.AutoSize = true;
-            iconButton4.Dock = DockStyle.Top;
-            iconButton4.FlatAppearance.BorderSize = 0;
-            iconButton4.FlatStyle = FlatStyle.Flat;
-            iconButton4.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            iconButton4.ForeColor = Color.White;
-            iconButton4.IconChar = FontAwesome.Sharp.IconChar.IdCardClip;
-            iconButton4.IconColor = Color.White;
-            iconButton4.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton4.IconSize = 30;
-            iconButton4.ImageAlign = ContentAlignment.MiddleLeft;
-            iconButton4.Location = new Point(0, 128);
-            iconButton4.Margin = new Padding(2, 1, 2, 1);
-            iconButton4.Name = "iconButton4";
-            iconButton4.Padding = new Padding(5, 7, 8, 0);
-            iconButton4.Size = new Size(148, 43);
-            iconButton4.TabIndex = 3;
-            iconButton4.Tag = "PDE";
-            iconButton4.Text = "  PDE";
-            iconButton4.TextAlign = ContentAlignment.MiddleLeft;
-            iconButton4.TextImageRelation = TextImageRelation.ImageBeforeText;
-            iconButton4.UseVisualStyleBackColor = true;
+            btnPDEview.AutoSize = true;
+            btnPDEview.Dock = DockStyle.Top;
+            btnPDEview.FlatAppearance.BorderSize = 0;
+            btnPDEview.FlatStyle = FlatStyle.Flat;
+            btnPDEview.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPDEview.ForeColor = Color.White;
+            btnPDEview.IconChar = FontAwesome.Sharp.IconChar.IdCardClip;
+            btnPDEview.IconColor = Color.White;
+            btnPDEview.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnPDEview.IconSize = 30;
+            btnPDEview.ImageAlign = ContentAlignment.MiddleLeft;
+            btnPDEview.Location = new Point(0, 128);
+            btnPDEview.Margin = new Padding(2, 1, 2, 1);
+            btnPDEview.Name = "btnPDEview";
+            btnPDEview.Padding = new Padding(5, 7, 8, 0);
+            btnPDEview.Size = new Size(148, 43);
+            btnPDEview.TabIndex = 3;
+            btnPDEview.Tag = "PDE";
+            btnPDEview.Text = "  PDE";
+            btnPDEview.TextAlign = ContentAlignment.MiddleLeft;
+            btnPDEview.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnPDEview.UseVisualStyleBackColor = true;
+            btnPDEview.Click += btnPDEview_Click;
             // 
             // btnDCRview
             // 
@@ -303,7 +304,7 @@
             btnMenu.Location = new Point(118, 2);
             btnMenu.Margin = new Padding(2, 1, 2, 1);
             btnMenu.Name = "btnMenu";
-            btnMenu.Size = new Size(30, 35);
+            btnMenu.Size = new Size(30, 38);
             btnMenu.TabIndex = 1;
             btnMenu.UseVisualStyleBackColor = true;
             btnMenu.Click += btnMenu_Click;
@@ -354,7 +355,7 @@
             panelMenu.Controls.Add(iconButton8);
             panelMenu.Controls.Add(btnAppView);
             panelMenu.Controls.Add(btnJitterView);
-            panelMenu.Controls.Add(iconButton4);
+            panelMenu.Controls.Add(btnPDEview);
             panelMenu.Controls.Add(btnDCRview);
             panelMenu.Controls.Add(btnMainView);
             panelMenu.Controls.Add(panel1);
@@ -400,6 +401,7 @@
             Controls.Add(panelMenu);
             Name = "MainForm";
             Text = "Form1";
+            FormClosing += MainForm_FormClosing;
             Load += MainForm_Load;
             SizeChanged += MainForm_SizeChanged;
             panel1.ResumeLayout(false);
@@ -418,7 +420,7 @@
         private FontAwesome.Sharp.IconButton iconButton7;
         private FontAwesome.Sharp.IconButton btnAppView;
         private FontAwesome.Sharp.IconButton btnJitterView;
-        private FontAwesome.Sharp.IconButton iconButton4;
+        private FontAwesome.Sharp.IconButton btnPDEview;
         private FontAwesome.Sharp.IconButton btnDCRview;
         private FontAwesome.Sharp.IconButton btnMainView;
         private Label label1;

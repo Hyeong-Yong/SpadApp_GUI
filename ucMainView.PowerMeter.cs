@@ -14,9 +14,7 @@ namespace SpadApp
         public DeviceController_PM100USB powerMeterController1 = new();
         public DeviceController_PM100USB powerMeterController2 = new();
 
-        private System.Windows.Forms.Timer powerMeterMonitorTimer1 = new();
-        private System.Windows.Forms.Timer powerMeterMonitorTimer2 = new();
-        private bool _isPowerMonitoring = false;
+        public event Action<double>? PhotonFluxUpdated;
 
         private double _attenuationDb = 30;
         private double _pm1ZeroOffset = 0.0;
@@ -25,26 +23,14 @@ namespace SpadApp
         // ------------------------------------------------------------
         // PM Timer Monitor
         // ------------------------------------------------------------
+        /// <summary>
+        /// 파워미터 1번의 내부 타이머가 데이터를 읽어올 때마다 실시간 실행됩니다.
+        /// </summary>
         private void OnPowerMeter1Updated(double power)
         {
-            // 예시: UI 레이블에 실시간 파워 출력 처리
-            lblPowerMeter1.Text = $"PM #1 Power : {power:E3} W";
-        }
-
-        private void OnPowerMeter2Updated(double power)
-        {
-            // lblPower2.Text = $"PM #2 Power : {power:E3} W";
-        }
-
-
-        private async void PmMonitorTimer1_Tick(object? sender, EventArgs e)
-        {
-            if (!powerMeterController1.IsConnected)
-                return;
-
             try
             {
-                double power = await powerMeterController1.ExecuteMeasurementAsync();
+                // 1. Zero Offset 적용 (Background ON 상태일 때)
                 if (_pm1ZeroEnabled)
                 {
                     power -= _pm1ZeroOffset;
@@ -54,34 +40,33 @@ namespace SpadApp
                         power = 0;
                 }
 
+                // 2. 컨트롤러 모델 상태 동기화
                 powerMeterController1.MeasurementStatus.CurrentPower = power;
 
-                lblPowerMeter1.Text =
-                    $"{power * 1e6:F3}μW";
+                // 3. UI 업데이트
+                lblPowerMeter1.Text = $"{power * 1e6:F3}μW";
 
+                // 4. 광자 통계 및 ucPDE 연동 이벤트 처리
                 UpdatePhotonStatistics();
-
             }
             catch (Exception ex)
             {
-                Log($"PM Monitor Error: {ex.Message}");
+                Log($"PM1 Event Handling Error: {ex.Message}");
             }
         }
 
-        private async void PmMonitorTimer2_Tick(object? sender, EventArgs e)
+        /// <summary>
+        /// 파워미터 2번의 내부 타이머가 데이터를 읽어올 때마다 실시간 실행됩니다.
+        /// </summary>
+        private void OnPowerMeter2Updated(double power)
         {
-            if (!powerMeterController2.IsConnected)
-                return;
-
             try
             {
-                double power = await powerMeterController2.ExecuteMeasurementAsync();
-
                 lblPowerMeter2.Text = $"{power:E3} W";
             }
             catch (Exception ex)
             {
-                Log($"PM Monitor Error: {ex.Message}");
+                Log($"PM2 Event Handling Error: {ex.Message}");
             }
         }
 
@@ -101,28 +86,19 @@ namespace SpadApp
         {
             try
             {
-
                 double repetitionRate = PicoHarp_MeasurementStatus.CountRate0;
-
                 double detectedPhotonRate = PicoHarp_MeasurementStatus.CountRate1;
-
                 double power = powerMeterController1.MeasurementStatus.CurrentPower;
-
-
-                // --------------------------------------------------------
-                // calculate
-                // --------------------------------------------------------
                 double wavelength = powerMeterController1.MeasurementStatus.CurrentWavelength;
 
                 PhotonStatistics stat = PhotonCalculator.Calculate(power, repetitionRate, detectedPhotonRate, _attenuationDb, wavelength);
 
-                // --------------------------------------------------------
-                // UI update
-                // --------------------------------------------------------
-
                 lblPhotonFlux.Text = $"{stat.PhotonFlux:E3} photons/s";
                 lblMeanPerPulse.Text = $"{stat.MeanPerPulse:F6}";
                 lblPDE.Text = $"{stat.PDE:P2}";
+
+                // 🌟 2. 값이 계산될 때마다 이벤트를 구독 중인 객체(MainForm -> ucPDE)로 실시간 토스
+                PhotonFluxUpdated?.Invoke(stat.PhotonFlux);
             }
             catch (Exception ex)
             {

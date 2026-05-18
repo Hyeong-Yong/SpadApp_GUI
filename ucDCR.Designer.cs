@@ -120,7 +120,7 @@
             Controls.Add(numAverageCount);
             Controls.Add(btnMeasure);
             Name = "ucDCR";
-            Size = new Size(729, 588);
+            Size = new Size(1200, 600);
             ((System.ComponentModel.ISupportInitialize)numAverageCount).EndInit();
             ResumeLayout(false);
             PerformLayout();

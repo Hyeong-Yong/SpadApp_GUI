@@ -347,10 +347,10 @@
             // 
             statusStrip1.ImageScalingSize = new Size(32, 32);
             statusStrip1.Items.AddRange(new ToolStripItem[] { lblStatus, lblCountRate1, lblCountRate0 });
-            statusStrip1.Location = new Point(0, 500);
+            statusStrip1.Location = new Point(0, 578);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.RightToLeft = RightToLeft.Yes;
-            statusStrip1.Size = new Size(1118, 22);
+            statusStrip1.Size = new Size(1200, 22);
             statusStrip1.TabIndex = 21;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -471,7 +471,7 @@
             Controls.Add(btnConnect);
             Margin = new Padding(2, 1, 2, 1);
             Name = "ucMainView";
-            Size = new Size(1118, 522);
+            Size = new Size(1200, 600);
             Load += ucMainView_Load;
             ((System.ComponentModel.ISupportInitialize)numPMWavelength).EndInit();
             ((System.ComponentModel.ISupportInitialize)numBinning).EndInit();
