@@ -121,6 +121,7 @@
             Controls.Add(btnMeasure);
             Name = "ucDCR";
             Size = new Size(1200, 600);
+            Load += ucDCR_Load;
             ((System.ComponentModel.ISupportInitialize)numAverageCount).EndInit();
             ResumeLayout(false);
             PerformLayout();

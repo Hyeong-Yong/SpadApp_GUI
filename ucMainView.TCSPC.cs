@@ -43,6 +43,7 @@ namespace SpadApp
                 // PicoHarp 설정 변경 => 새로운 Resolution 값 취득
                 double resolution = 0;
                 PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resolution);
+                PicoHarp_MeasurementStatus.ResolutionPs = resolution;
                 lblResolution.Text = resolution.ToString();
 
                 // 차트 매니저에게도 변경된 해상도를 알림
@@ -83,7 +84,7 @@ namespace SpadApp
 
             // 장비 설정값에 반영
             PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
-            UpdateDeviceSettings();
+            UpdateDeviceSettings_PicoHarp();
         }
 
         private void numBinning_ValueChanged(object sender, EventArgs e) => UpdateDeviceSettings_PicoHarp();

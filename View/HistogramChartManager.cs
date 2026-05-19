@@ -2,6 +2,7 @@
 using ScottPlot.WinForms;
 using SpadApp.DLLWrapper;
 using SpadApp.Parameters;
+using System;
 
 namespace SpadApp.View
 {
@@ -11,110 +12,198 @@ namespace SpadApp.View
         private ScottPlot.Plottables.Signal? _signal;
         private double[] _plotData;
 
-        /// <summary>
-        /// 생성자: MainForm의 histogramPlot 컨트롤을 받아 초기화합니다.
-        /// </summary>
-        /// <param name="plot">WinForm에 배치된 FormsPlot 컨트롤</param>
+        private bool _isLogScaleY = false;
+        private bool _isLogScaleX = false;
+        private uint[]? _lastRawData;
+        private double _lastResolutionPs = 4.0;
+
+        // ★ X축 수동 범위 설정을 위한 필드 추가
+        private bool _useManualXLimits = false;
+        private double _manualXMin = 0;
+        private double _manualXMax = 50;
+
         public HistogramChartManager(FormsPlot plot)
         {
             _plot = plot;
-            // PicoHarp 300의 표준 히스토그램 채널 수(65536)에 맞춰 배열 생성 [cite: 830, 1088]
             _plotData = new double[PicoHarp_Native.HISTCHAN];
             InitChart();
         }
 
-        /// <summary>
-        /// 차트의 초기 스타일과 레이블을 설정합니다.
-        /// </summary>
         private void InitChart()
         {
+            _lastRawData = new uint[PicoHarp_Native.HISTCHAN];
+            UpdatePlotRender();
+        }
+
+        private void UpdatePlotRender()
+        {
             _plot.Plot.Clear();
+            if (_lastRawData == null) return;
 
-            // 1. 시그널 그래프 생성 (데이터 소스를 _plotData 배열로 직접 연결)
-            _signal = _plot.Plot.Add.Signal(_plotData);
-            _signal.Color = Colors.Blue;
-            _signal.LineWidth = 1.5f;
+            double resNs = _lastResolutionPs / 1000.0;
 
-            // 2. 요청하신 차트 타이틀 및 축 레이블 설정
+            if (_isLogScaleX)
+            {
+                int count = _lastRawData.Length - 1;
+                double[] xs = new double[count];
+                double[] ys = new double[count];
+
+                for (int i = 1; i < _lastRawData.Length; i++)
+                {
+                    double timeNs = i * resNs;
+                    xs[i - 1] = Math.Log10(timeNs);
+
+                    if (_isLogScaleY)
+                        ys[i - 1] = _lastRawData[i] > 0 ? Math.Log10(_lastRawData[i]) : 0;
+                    else
+                        ys[i - 1] = _lastRawData[i];
+                }
+
+                var scatter = _plot.Plot.Add.Scatter(xs, ys);
+                scatter.Color = Colors.Blue;
+                scatter.LineWidth = 1.5f;
+                scatter.MarkerSize = 0;
+            }
+            else
+            {
+                for (int i = 0; i < _lastRawData.Length; i++)
+                {
+                    if (_isLogScaleY)
+                        _plotData[i] = _lastRawData[i] > 0 ? Math.Log10(_lastRawData[i]) : 0;
+                    else
+                        _plotData[i] = _lastRawData[i];
+                }
+
+                _signal = _plot.Plot.Add.Signal(_plotData);
+                _signal.Data.Period = resNs;
+                _signal.Color = Colors.Blue;
+                _signal.LineWidth = 1.5f;
+            }
+
+            ApplyAxisSettings();
+
+            // 1. 전체 범위를 기본적으로 자동 맞춤 실행
+            _plot.Plot.Axes.AutoScale();
+
+            // ★ 2. 만약 유저가 X축 수동 범위를 활성화했다면 덮어쓰기 적용
+            if (_useManualXLimits)
+            {
+                if (_isLogScaleX)
+                {
+                    // X축이 로그 스케일일 경우 입력된 물리적 ns 범위값을 로그 스페이스 좌표로 변환하여 매핑
+                    double logMin = _manualXMin > 0 ? Math.Log10(_manualXMin) : -3;
+                    double logMax = _manualXMax > 0 ? Math.Log10(_manualXMax) : 2;
+                    _plot.Plot.Axes.SetLimitsX(logMin, logMax);
+                }
+                else
+                {
+                    _plot.Plot.Axes.SetLimitsX(_manualXMin, _manualXMax);
+                }
+            }
+
+            if (_isLogScaleY)
+            {
+                var limits = _plot.Plot.Axes.GetLimits();
+                _plot.Plot.Axes.SetLimitsY(0, limits.Top);
+            }
+
+            _plot.Refresh();
+        }
+
+        private void ApplyAxisSettings()
+        {
             _plot.Plot.Title("Time-Resolved Photon Spectrum");
-            _plot.Plot.XLabel("Time (ns)");
-            _plot.Plot.YLabel("Photon Counts (number)");
-
-            // 3. 눈금 및 그리드 스타일 조정
             _plot.Plot.Grid.MajorLineColor = Colors.LightGray.WithAlpha(0.5);
 
-            _plot.Refresh();
+            if (_isLogScaleY)
+            {
+                _plot.Plot.YLabel("Photon Counts (Log Scale)");
+                _plot.Plot.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic
+                {
+                    IntegerTicksOnly = true,
+                    MinorTickGenerator = new ScottPlot.TickGenerators.LogMinorTickGenerator(),
+                    LabelFormatter = (val) => val >= 0 ? $"10^{val:F0}" : "0"
+                };
+            }
+            else
+            {
+                _plot.Plot.YLabel("Photon Counts (number)");
+                _plot.Plot.Axes.Left.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic();
+            }
+
+            if (_isLogScaleX)
+            {
+                _plot.Plot.XLabel("Time (Log Scale ns)");
+                _plot.Plot.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic
+                {
+                    MinorTickGenerator = new ScottPlot.TickGenerators.LogMinorTickGenerator(),
+                    LabelFormatter = (val) => Math.Pow(10, val).ToString("0.###")
+                };
+            }
+            else
+            {
+                _plot.Plot.XLabel("Time (ns)");
+                _plot.Plot.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic();
+            }
         }
 
         /// <summary>
-        /// 데이터는 건드리지 않고, Binning 변경 등에 따른 X축 해상도(눈금)만 즉시 업데이트합니다.
+        /// ★ 외부 UI 컨트롤(NumericUpDown)에서 수동 X축 입력을 보낼 때 호출하는 메서드입니다.
         /// </summary>
-        /// <param name="resolutionPs">장비에서 읽어온 현재 Resolution (ps 단위) [cite: 841]</param>
+        public void SetXLimits(double minNs, double maxNs)
+        {
+            _useManualXLimits = true;
+            _manualXMin = minNs;
+            _manualXMax = maxNs;
+
+            // 실시간 렌더링 파이프라인 가동
+            UpdatePlotRender();
+        }
+
+        /// <summary>
+        /// ★ 외부 UI 버튼(Reset)을 눌러 다시 전체 자동 맞춤 상태로 변환할 때 호출합니다.
+        /// </summary>
+        public void ResetXLimitsToAuto()
+        {
+            _useManualXLimits = false;
+            UpdatePlotRender();
+        }
+
+        public bool ToggleScaleModeY()
+        {
+            _isLogScaleY = !_isLogScaleY;
+            UpdatePlotRender();
+            return _isLogScaleY;
+        }
+
+        public bool ToggleScaleModeX()
+        {
+            _isLogScaleX = !_isLogScaleX;
+            UpdatePlotRender();
+            return _isLogScaleX;
+        }
+
         public void UpdateTimeAxis(double resolutionPs)
         {
-            if (_signal == null) return;
-
-            // ps 단위를 ns로 변환하여 시그널의 간격(Period) 업데이트
-            double resNs = resolutionPs / 1000.0;
-            _signal.Data.Period = resNs;
-
-            // X축 범위만 자동으로 맞춤
-            _plot.Plot.Axes.AutoScaleX();
-            _plot.Refresh();
+            _lastResolutionPs = resolutionPs;
+            UpdatePlotRender();
         }
 
-        /// <summary>
-        /// 장치에서 직접 최신 해상도(Resolution)를 읽어와 히스토그램 차트를 갱신합니다.
-        /// </summary>
-        /// <param name="rawData">PicoHarp에서 취득한 원본 히스토그램 데이터</param>
         public void UpdateFromHardware(uint[] rawData)
         {
-            if (_signal == null) return;
-
-            // 1. 하드웨어에서 현재 해상도 읽기 
             double resPs = 0;
-            PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resPs); 
+            PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resPs);
+            _lastResolutionPs = resPs;
 
-            // 2. X축 시간 간격 업데이트 (ps -> ns 변환)
-            double resNs = resPs / 1000.0;
-            _signal.Data.Period = resNs;
-
-            // 3. 데이터 복사 (uint -> double)
-            for (int i = 0; i < rawData.Length; i++)
-            {
-                _plotData[i] = rawData[i];
-            }
-
-            // 4. 차트 화면 갱신 및 축 자동 맞춤
-            _plot.Plot.Axes.AutoScale();
-            _plot.Refresh();
+            _lastRawData = rawData;
+            UpdatePlotRender();
         }
 
-        /// <summary>
-        /// 측정 완료 후, 새로운 히스토그램 데이터와 해상도를 차트에 반영합니다.
-        /// </summary>
-        /// <param name="rawData">PicoHarp에서 읽어온 uint 배열 [cite: 827]</param>
-        /// <param name="resolutionPs">현재 Resolution (ps 단위) [cite: 841]</param>
         public void Update(uint[] rawData, double resolutionPs)
         {
-            if (_signal == null) return;
-
-            // 1. X축 스케일 업데이트 (ps -> ns)
-            double resNs = resolutionPs / 1000.0;
-            _signal.Data.Period = resNs;
-
-            // 2. 히스토그램 데이터 복사 (uint -> double)
-            // ScottPlot 5 Signal은 연결된 배열의 값이 바뀌면 Refresh 시 바로 반영됩니다.
-            for (int i = 0; i < rawData.Length; i++)
-            {
-                _plotData[i] = rawData[i];
-            }
-
-            // 3. 전체 축 자동 조절 및 화면 갱신
-            _plot.Plot.Axes.AutoScale();
-            _plot.Refresh();
+            _lastResolutionPs = resolutionPs;
+            _lastRawData = rawData;
+            UpdatePlotRender();
         }
-
-
     }
 }

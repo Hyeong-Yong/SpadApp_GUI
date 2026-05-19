@@ -110,5 +110,10 @@ namespace SpadApp
         {
             await MeasureAverageDCRAsync();
         }
+
+        private void ucDCR_Load(object sender, EventArgs e)
+        {
+            numAverageCount.Value = 10; // 기본값 설정
+        }
     }
 }

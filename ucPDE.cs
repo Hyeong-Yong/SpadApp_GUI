@@ -52,12 +52,11 @@ namespace SpadApp
             }
 
             double nDCR = _ucDCR.LatestAverageDCR.Value;
-            int avgCount = 100;
+            int avgCount = 10;
 
             // 3. 하드웨어 독점 및 UI 잠금
             _TCSPCDeviceController.StopMonitoring();
             btnPDEmeasure.Enabled = false;
-
 
             try
             {
@@ -84,15 +83,21 @@ namespace SpadApp
                 {
                     if (!PicoHarp_DeviceInfo.IsConnected) return;
 
-                    // 🌟 [핵심] 고정된 텍스트 파싱 대신, 실시간으로 변하고 있는 파워메터 기반 Flux 값을 매 루프마다 가져옵니다.
+                    // 🌟 실시간으로 변하고 있는 파워메터 기반 Flux 값을 매 루프마다 가져옴
                     double nInc = _currentIncidentPhotonNumber;
 
-                    // 만약 광원이 꺼져있거나 계산 오류로 0 이하의 값이 들어오면 DivideByZero 방지를 위해 스킵 처리
+                    // 파워미터 백그라운드 캘리브레이션 미수행 혹은 광원 OFF 등으로 0 이하(마이너스 포함)의 값이 들어오면 중단 처리
                     if (nInc <= 0)
                     {
-                        await Task.Delay(100);
-                        continue;
+                        MessageBox.Show("Incident Photon Number(입사 광자 수)가 0 이하입니다.\n\n" +
+                                        "원인 분석:\n" +
+                                        "1. 파워미터의 Background Calibration(Zero Adjust)이 수행되지 않았을 수 있습니다.\n" +
+                                        "2. 현재 레이저/광원이 완전히 꺼져(OFF) 있을 수 있습니다.\n\n" +
+                                        "확인 후 다시 시도해 주세요. 측정을 중단합니다.",
+                                        "측정 오류 및 중단", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return; 
                     }
+
                     int countRate1 = 0;
                     int ret = PicoHarp_Native.PH_GetCountRate(PicoHarp_DeviceInfo.DeviceIndex, 1, ref countRate1);
                     PicoHarp_MeasurementStatus.CountRate1 = countRate1;
@@ -122,7 +127,7 @@ namespace SpadApp
                     progressBarPDE.Value = i + 1;
 
                     // 120ms 비동기 대기 (UI Freeze 방지 및 드라이버 안정화)
-                    await Task.Delay(10);
+                    await Task.Delay(120);
                 }
 
                 double finalAveragePDE = pdeSum / avgCount;
