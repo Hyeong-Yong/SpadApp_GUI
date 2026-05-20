@@ -69,6 +69,10 @@
             label14 = new Label();
             lblPowerMeter2 = new Label();
             btnResetXLimits = new Button();
+            numAcqOffset = new NumericUpDown();
+            label13 = new Label();
+            numSyncOffset = new NumericUpDown();
+            label15 = new Label();
             ((System.ComponentModel.ISupportInitialize)numPMWavelength).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numBinning).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numAcqTime).BeginInit();
@@ -81,6 +85,8 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numPlotMinX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPlotMaxX).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numAcqOffset).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numSyncOffset).BeginInit();
             SuspendLayout();
             // 
             // lblMeanPerPulse
@@ -103,7 +109,7 @@
             // 
             // numPMWavelength
             // 
-            numPMWavelength.Location = new Point(127, 465);
+            numPMWavelength.Location = new Point(244, 518);
             numPMWavelength.Name = "numPMWavelength";
             numPMWavelength.Size = new Size(120, 23);
             numPMWavelength.TabIndex = 27;
@@ -182,7 +188,7 @@
             label5.Name = "label5";
             label5.Size = new Size(83, 32);
             label5.TabIndex = 11;
-            label5.Text = "Resolution";
+            label5.Text = "Resolution (ps)";
             // 
             // label4
             // 
@@ -319,7 +325,7 @@
             // lblPowerMeter1
             // 
             lblPowerMeter1.AutoSize = true;
-            lblPowerMeter1.Location = new Point(127, 447);
+            lblPowerMeter1.Location = new Point(244, 500);
             lblPowerMeter1.Name = "lblPowerMeter1";
             lblPowerMeter1.Size = new Size(91, 15);
             lblPowerMeter1.TabIndex = 22;
@@ -376,7 +382,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(34, 447);
+            label12.Location = new Point(151, 500);
             label12.Name = "label12";
             label12.Size = new Size(87, 15);
             label12.TabIndex = 23;
@@ -503,7 +509,7 @@
             // lblPowerMeter2
             // 
             lblPowerMeter2.AutoSize = true;
-            lblPowerMeter2.Location = new Point(127, 504);
+            lblPowerMeter2.Location = new Point(244, 557);
             lblPowerMeter2.Name = "lblPowerMeter2";
             lblPowerMeter2.Size = new Size(91, 15);
             lblPowerMeter2.TabIndex = 28;
@@ -519,10 +525,48 @@
             btnResetXLimits.UseVisualStyleBackColor = true;
             btnResetXLimits.Click += btnResetXLimits_Click;
             // 
+            // numAcqOffset
+            // 
+            numAcqOffset.Location = new Point(25, 477);
+            numAcqOffset.Name = "numAcqOffset";
+            numAcqOffset.Size = new Size(68, 23);
+            numAcqOffset.TabIndex = 40;
+            numAcqOffset.ValueChanged += numOffset_ValueChanged;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(25, 451);
+            label13.Name = "label13";
+            label13.Size = new Size(84, 15);
+            label13.TabIndex = 41;
+            label13.Text = "AcqOffset (ps)";
+            // 
+            // numSyncOffset
+            // 
+            numSyncOffset.Location = new Point(25, 535);
+            numSyncOffset.Name = "numSyncOffset";
+            numSyncOffset.Size = new Size(68, 23);
+            numSyncOffset.TabIndex = 40;
+            numSyncOffset.ValueChanged += numOffset_ValueChanged;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Location = new Point(20, 517);
+            label15.Name = "label15";
+            label15.Size = new Size(93, 15);
+            label15.TabIndex = 41;
+            label15.Text = "Sync Offset (ps)";
+            // 
             // ucMainView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(label15);
+            Controls.Add(label13);
+            Controls.Add(numSyncOffset);
+            Controls.Add(numAcqOffset);
             Controls.Add(btnResetXLimits);
             Controls.Add(label14);
             Controls.Add(lblPlotMinX);
@@ -567,6 +611,8 @@
             tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numPlotMinX).EndInit();
             ((System.ComponentModel.ISupportInitialize)numPlotMaxX).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numAcqOffset).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numSyncOffset).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -618,5 +664,9 @@
         private Label label14;
         private Label lblPowerMeter2;
         private Button btnResetXLimits;
+        private NumericUpDown numAcqOffset;
+        private Label label13;
+        private NumericUpDown numSyncOffset;
+        private Label label15;
     }
 }

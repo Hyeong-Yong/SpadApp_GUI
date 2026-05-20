@@ -1,3 +1,4 @@
+using SpadApp.DLLWrapper;
 using System.Runtime.InteropServices;
 
 namespace SpadApp
@@ -6,11 +7,12 @@ namespace SpadApp
     {
 
         // 현재 어떤 화면이 켜져 있는지 추적하는 변수
-        private UserControl _currentView;
+        private UserControl? _currentView;
 
-        private ucMainView _ucMainView;
-        private ucDCR _ucDCRview;
-        private ucPDE _ucPDEview;
+        private ucMainView? _ucMainView;
+        private ucDCR? _ucDCRview;
+        private ucPDE? _ucPDEview;
+        private ucAPP? _ucAPPview;
 
         private int borderSize = 2;
         private Size formSize; //Keep form size when it is minimized and restored.Since the form is resized because it takes into account the size of the title bar and borders.
@@ -30,6 +32,7 @@ namespace SpadApp
             _ucMainView = new ucMainView { Dock = DockStyle.Fill };
             _ucDCRview = new ucDCR(_ucMainView.TCSPCDeviceController) { Dock = DockStyle.Fill };
             _ucPDEview = new ucPDE(_ucMainView.TCSPCDeviceController, _ucDCRview) { Dock = DockStyle.Fill };
+            _ucAPPview = new ucAPP(_ucMainView.TCSPCDeviceController) { Dock = DockStyle.Fill };
 
             // 🌟 ucMainView에서 PhotonFlux 이벤트가 발생하면, ucPDE의 텍스트박스(N_inc)에 실시간 주입
             _ucMainView.PhotonFluxUpdated += (flux) => _ucPDEview.UpdateIncidentPhotonNumber(flux);
@@ -38,18 +41,22 @@ namespace SpadApp
             panelMainView.Controls.Add(_ucMainView);
             panelMainView.Controls.Add(_ucDCRview);
             panelMainView.Controls.Add(_ucPDEview);
+            panelMainView.Controls.Add(_ucAPPview);
 
             // 초기 숨김 처리
             _ucMainView.Visible = false;
             _ucDCRview.Visible = false;
             _ucPDEview.Visible = false;
+            _ucAPPview.Visible = false;
 
             // 시작 화면으로 홈 화면만 켜줍니다.
             ChangeView(_ucMainView);
         }
 
-        private void ChangeView(UserControl newView)
+        private void ChangeView(UserControl? newView)
         {
+            if (newView == null) return;
+
             // 이미 그 화면이 켜져 있다면 아무 변화도 주지 않고 함수 종료
             if (_currentView == newView) return;
 
@@ -57,6 +64,18 @@ namespace SpadApp
             if (_currentView != null)
             {
                 _currentView.Visible = false;
+            }
+
+            // APP View가 아니면 HIST 모드 보장
+            if (newView != _ucAPPview)
+            {
+                bool modeChanged =_ucMainView.TCSPCDeviceController.InitializeMode(PicoHarpDevice.MODE_HIST);
+
+                // 실제로 모드가 바뀐 경우만 세팅 재적용
+                if (modeChanged)
+                {
+                    _ucMainView.TCSPCDeviceController.UpdateDeviceSettings();
+                }
             }
 
             // 새 화면을 보임 처리
@@ -131,6 +150,8 @@ namespace SpadApp
                 System.Diagnostics.Debug.WriteLine($"FormClosing 하드웨어 해제 중 에러: {ex.Message}");
             }
         }
+
+        private void btnAppView_Click(object sender, EventArgs e) => ChangeView(_ucAPPview);
     }
 
 }

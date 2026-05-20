@@ -9,6 +9,12 @@ namespace SpadApp.DLLWrapper
         private int _deviceIndex = -1;
         private bool _connected;
 
+
+        // ★ 계측 모드 관련 상수 보완 (PicoHarp 300 공식 스펙 라인)
+        public const int MODE_HIST = 0;
+        public const int MODE_T2 = 2;   // 애프터펄스 확률 분석에 필수적인 T2 모드
+        public const int MODE_T3 = 3;   // 크로스토크 및 레이저 동기화 분석을 위한 T3 모드
+
         public bool IsConnected => _connected;
         public int DeviceIndex => _deviceIndex;
 
@@ -46,7 +52,7 @@ namespace SpadApp.DLLWrapper
         // Connect / Disconnect
         // ------------------------------------------------------------
 
-        public string Connect(int deviceIndex, int mode = PicoHarp_Native.MODE_HIST)
+        public string Connect(int deviceIndex, int mode = MODE_HIST)
         {
             if (_connected) return string.Empty;
 

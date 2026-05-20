@@ -251,6 +251,17 @@ namespace SpadApp
             numPlotMaxX.Value = 200;         // 초기 디스플레이 윈도우 한계를 200 ns 부근으로 가정
             btnResetXLimits.Text = "X Auto Scale";
 
+            numSyncOffset.Maximum = 99999;
+            numSyncOffset.Minimum = -99999;
+            numSyncOffset.Increment = 1000;
+            numSyncOffset.Value = 0;
+
+            numAcqOffset.Minimum = 0;
+            numAcqOffset.Maximum = 100000;
+            numAcqOffset.Value = 0;
+            numAcqOffset.Increment = 1000;
+
+
             numPMWavelength.Minimum = 200;
             numPMWavelength.Maximum = 2000;
             numPMWavelength.Value = 512;
@@ -289,12 +300,14 @@ namespace SpadApp
             numCFDZeroCross1.Value = (decimal)zx1;
 
             PicoHarp_MeasurementStatus.AcquisitionTimeMs = (int)numAcqTime.Value;
-            PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
-            PicoHarp_MeasurementSettings.Binning = (int)numBinning.Value;
-            PicoHarp_MeasurementSettings.CFDLevel0 = (int)numCFDLevel0.Value;
-            PicoHarp_MeasurementSettings.CFDLevel1 = (int)numCFDLevel1.Value;
-            PicoHarp_MeasurementSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
-            PicoHarp_MeasurementSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
+            PicoHarp_DeviceSettings.SyncOffset = (int)numSyncOffset.Value;
+            PicoHarp_MeasurementStatus.AcqOffset = (int)numAcqOffset.Value;
+            PicoHarp_DeviceSettings.SyncDivider = (int)numSyncDiv.Value;
+            PicoHarp_DeviceSettings.Binning = (int)numBinning.Value;
+            PicoHarp_DeviceSettings.CFDLevel0 = (int)numCFDLevel0.Value;
+            PicoHarp_DeviceSettings.CFDLevel1 = (int)numCFDLevel1.Value;
+            PicoHarp_DeviceSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
+            PicoHarp_DeviceSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
 
             btnPM1ZeroAdjust.BackColor = Color.LightGreen;
             btnPM1ZeroAdjust.Text = "Background OFF";
@@ -333,7 +346,7 @@ namespace SpadApp
 
         }
 
-        private void numPlotMinX_ValueChanged(object sender, EventArgs e)
+        private void numPlotMinX_ValueChanged(object? sender, EventArgs e)
         {
             // 최소값이 최대값보다 커지거나 같아지는 논리적 오류 역전 제어
             if (numPlotMinX.Value >= numPlotMaxX.Value)
@@ -345,7 +358,7 @@ namespace SpadApp
             _chartManager.SetXLimits((double)numPlotMinX.Value, (double)numPlotMaxX.Value);
         }
 
-        private void numPlotMaxX_ValueChanged(object sender, EventArgs e)
+        private void numPlotMaxX_ValueChanged(object? sender, EventArgs e)
         {
             // 최대값이 최소값보다 작아지거나 같아지는 오류 역전 제어
             if (numPlotMaxX.Value <= numPlotMinX.Value)
@@ -384,5 +397,6 @@ namespace SpadApp
             numPlotMinX.ValueChanged += numPlotMinX_ValueChanged;
             numPlotMaxX.ValueChanged += numPlotMaxX_ValueChanged;
         }
+
     }
 }

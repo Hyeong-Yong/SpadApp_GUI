@@ -166,6 +166,7 @@
             btnAppView.TextAlign = ContentAlignment.MiddleLeft;
             btnAppView.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnAppView.UseVisualStyleBackColor = true;
+            btnAppView.Click += btnAppView_Click;
             // 
             // btnJitterView
             // 

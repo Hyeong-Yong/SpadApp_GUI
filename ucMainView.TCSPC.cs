@@ -25,29 +25,31 @@ namespace SpadApp
 
             try
             {
-                // 1. UI에서 현재 설정값 읽어오기
+                // UI에서 현재 설정값 읽어오기
                 PicoHarp_MeasurementStatus.AcquisitionTimeMs = (int)numAcqTime.Value;
-                PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
-                PicoHarp_MeasurementSettings.Binning = (int)numBinning.Value;
-                PicoHarp_MeasurementSettings.CFDLevel0 = (int)numCFDLevel0.Value;
-                PicoHarp_MeasurementSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
-                PicoHarp_MeasurementSettings.CFDLevel1 = (int)numCFDLevel1.Value;
-                PicoHarp_MeasurementSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
+                PicoHarp_MeasurementStatus.AcqOffset = (int)numAcqOffset.Value;
+                PicoHarp_DeviceSettings.SyncDivider = (int)numSyncDiv.Value;
+                PicoHarp_DeviceSettings.Binning = (int)numBinning.Value;
+                PicoHarp_DeviceSettings.CFDLevel0 = (int)numCFDLevel0.Value;
+                PicoHarp_DeviceSettings.CFDZeroCross0 = (int)numCFDZeroCross0.Value;
+                PicoHarp_DeviceSettings.CFDLevel1 = (int)numCFDLevel1.Value;
+                PicoHarp_DeviceSettings.CFDZeroCross1 = (int)numCFDZeroCross1.Value;
+                PicoHarp_DeviceSettings.SyncOffset = (int)numSyncOffset.Value;
 
-                // 2. 장비에 설정 적용 (Native API 순차 호출)
-                PicoHarp_Native.PH_SetSyncDiv(PicoHarp_DeviceInfo.DeviceIndex, PicoHarp_MeasurementSettings.SyncDivider);
-                PicoHarp_Native.PH_SetInputCFD(PicoHarp_DeviceInfo.DeviceIndex, 0, PicoHarp_MeasurementSettings.CFDLevel0, PicoHarp_MeasurementSettings.CFDZeroCross0);
-                PicoHarp_Native.PH_SetInputCFD(PicoHarp_DeviceInfo.DeviceIndex, 1, PicoHarp_MeasurementSettings.CFDLevel1, PicoHarp_MeasurementSettings.CFDZeroCross1);
-                PicoHarp_Native.PH_SetBinning(PicoHarp_DeviceInfo.DeviceIndex, PicoHarp_MeasurementSettings.Binning);
+                int result = TCSPCDeviceController.UpdateDeviceSettings();
 
-                // PicoHarp 설정 변경 => 새로운 Resolution 값 취득
-                double resolution = 0;
-                PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref resolution);
-                PicoHarp_MeasurementStatus.ResolutionPs = resolution;
-                lblResolution.Text = resolution.ToString();
+                if (result >= 0)
+                {
+                    lblResolution.Text = $"{PicoHarp_MeasurementStatus.ResolutionPs:F1} ps";
+                    Log("PicoHarp 300 하드웨어 설정 변경 및 Sync Offset 정렬 성공.");
+                }
+                else
+                {
+                    Log($"[경고] 하드웨어 레벨 설정 동기화 실패. 에러 코드: {result}");
+                }
 
                 // 차트 매니저에게도 변경된 해상도를 알림
-                _chartManager.UpdateTimeAxis(resolution);
+                _chartManager.UpdateTimeAxis(PicoHarp_MeasurementStatus.ResolutionPs);
             }
             catch (Exception ex)
             {
@@ -83,7 +85,6 @@ namespace SpadApp
             lastSyncValue = numSyncDiv.Value;
 
             // 장비 설정값에 반영
-            PicoHarp_MeasurementSettings.SyncDivider = (int)numSyncDiv.Value;
             UpdateDeviceSettings_PicoHarp();
         }
 
@@ -93,7 +94,6 @@ namespace SpadApp
         private void numCFDZeroCross0_ValueChanged(object sender, EventArgs e) => UpdateDeviceSettings_PicoHarp();
         private void numCFDLevel1_ValueChanged(object sender, EventArgs e) => UpdateDeviceSettings_PicoHarp();
         private void numCFDZeroCross1_ValueChanged(object sender, EventArgs e) => UpdateDeviceSettings_PicoHarp();
-
-
+        private void numOffset_ValueChanged(object sender, EventArgs e) => UpdateDeviceSettings_PicoHarp();
     }
 }
