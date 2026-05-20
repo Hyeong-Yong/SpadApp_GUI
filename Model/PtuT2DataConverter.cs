@@ -45,6 +45,132 @@ namespace SpadApp.Model
         public event EventHandler<PtuProgressEventArgs>? ConversionProgressChanged;
         public event EventHandler<string>? StatusMessageReceived;
 
+        public async Task<double[]?> AnalyzeAutocorrelationAsync(string inputPtu, int targetChannel, double maxDelayNs, double binWidthNs)
+        {
+            if (!File.Exists(inputPtu))
+            {
+                OnStatusMessageReceived("오류: 대상 PTU 파일이 존재하지 않습니다.");
+                return null;
+            }
+
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    Process currentProcess = Process.GetCurrentProcess();
+                    Stopwatch swTime = new Stopwatch();
+
+                    int binCount = (int)(maxDelayNs / binWidthNs);
+                    double[] histogram = new double[binCount];
+
+                    using (var fs = new FileStream(inputPtu, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 1024))
+                    using (var br = new BinaryReader(fs))
+                    {
+                        double resolution = 4e-12;
+                        long numRecords = 0;
+
+                        // 1. 헤더 파싱 (기존 로직 동일)
+                        while (true)
+                        {
+                            string ident = Encoding.ASCII.GetString(br.ReadBytes(32)).TrimEnd('\0');
+                            int idx = br.ReadInt32();
+                            uint typ = br.ReadUInt32();
+                            long tagValue = br.ReadInt64();
+
+                            if (ident == "TTResult_NumberOfRecords") numRecords = tagValue;
+                            if (ident == "MeasDesc_GlobalResolution") resolution = BitConverter.Int64BitsToDouble(tagValue);
+                            if (typ == 0x4001FFFF || typ == 0x4002FFFF) br.ReadBytes((int)tagValue);
+                            if (ident == "Header_End") break;
+                        }
+
+                        if (numRecords == 0)
+                        {
+                            OnStatusMessageReceived("경고: 파일에 기록된 레코드가 0개입니다.");
+                            return histogram;
+                        }
+
+                        OnStatusMessageReceived($"오프라인 Autocorrelation 분석 시작 (총 레코드: {numRecords:N0})");
+                        swTime.Start();
+                        TimeSpan startCpuTime = currentProcess.TotalProcessorTime;
+
+                        // 2. 오프라인 링 버퍼 세팅 (RAM 폭발 방지)
+                        const int HISTORY_SIZE = 512; // 오프라인이므로 조금 더 깊게(512) 탐색
+                        long[] photonHistory = new long[HISTORY_SIZE];
+                        int historyHead = 0;
+                        int historyCount = 0;
+
+                        long oflCorrection = 0;
+                        double resNs = resolution * 1e9; // 초(s) 단위를 나노초(ns)로 변환
+
+                        // 3. 파일 전체 데이터 고속 스캔
+                        for (long i = 0; i < numRecords; i++)
+                        {
+                            uint record = br.ReadUInt32();
+                            uint channel = (record >> 28) & 0xF;
+                            uint time = record & 0x0FFFFFFF;
+
+                            if (channel == 0xF)
+                            {
+                                if ((time & 0xF) == 0) oflCorrection += T2WRAPAROUND;
+                            }
+                            else if (channel == targetChannel)
+                            {
+                                long absoluteTicks = oflCorrection + time;
+
+                                for (int h = 0; h < historyCount; h++)
+                                {
+                                    int historyIdx = (historyHead - 1 - h + HISTORY_SIZE) % HISTORY_SIZE;
+                                    long pastTicks = photonHistory[historyIdx];
+                                    long deltaTicks = absoluteTicks - pastTicks;
+
+                                    if (deltaTicks <= 0) continue;
+
+                                    double deltaNs = deltaTicks * resNs;
+                                    if (deltaNs < maxDelayNs)
+                                    {
+                                        histogram[(int)(deltaNs / binWidthNs)]++;
+                                    }
+                                    else
+                                    {
+                                        break; // 윈도우 초과 시 즉시 이탈 (핵심 최적화)
+                                    }
+                                }
+
+                                photonHistory[historyHead] = absoluteTicks;
+                                historyHead = (historyHead + 1) % HISTORY_SIZE;
+                                if (historyCount < HISTORY_SIZE) historyCount++;
+                            }
+
+                            // 진행률 업데이트 (UI 스레드 부하를 막기 위해 10만 번마다 한 번씩 발송)
+                            if (i % 100000 == 0 && i > 0)
+                            {
+                                TimeSpan currentCpuTime = currentProcess.TotalProcessorTime - startCpuTime;
+                                double cpuUsage = (currentCpuTime.TotalMilliseconds / swTime.Elapsed.TotalMilliseconds) * 100;
+                                double progressPercent = (i * 100.0) / numRecords;
+
+                                OnConversionProgressChanged(progressPercent, cpuUsage, i, numRecords);
+                            }
+                        }
+
+                        swTime.Stop();
+                        OnConversionProgressChanged(100.0, 0, numRecords, numRecords); // 100% 완료 보고
+                        OnStatusMessageReceived($"분석 완료! (소요 시간: {swTime.Elapsed.TotalSeconds:F2}초)");
+
+                        return histogram;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    OnStatusMessageReceived($"분석 중 오류 발생: {ex.Message}");
+                    return null;
+                }
+            });
+        }
+
+
+
+
+
         /// <summary>
         /// 백그라운드 스레드에서 PTU 파일을 읽어 TXT(US) 파일로 비동기 변환 처리를 수행합니다.
         /// </summary>

@@ -14,19 +14,17 @@ namespace SpadApp
     public partial class ucAPP : UserControl
     {
         private readonly DeviceController_PicoHarp300 _tcspcController;
-
         private TttrCorrelationProcessor? _processor;
         private bool _isAppMeasuring = false;
-
-        // ★ 차트 매니저 선언 (이제 모든 차트 제어는 이 매니저만 담당합니다)
         private HistogramChartManager _chartManager;
+
+        private PtuT2DataConverter _ptuConverter = new PtuT2DataConverter();
 
         public ucAPP(DeviceController_PicoHarp300 tcspcController)
         {
             InitializeComponent();
             _tcspcController = tcspcController;
 
-            // ★ InitChartLayout() 수동 호출 삭제됨! 차트 매니저가 알아서 초기화합니다.
             _chartManager = new HistogramChartManager(this.APPplot)
             {
                 ChartTitle = "SPAD Correlation (Afterpulse / Crosstalk) Distribution"
@@ -38,6 +36,15 @@ namespace SpadApp
 
         private void ucAPP_Load(object sender, EventArgs e)
         {
+            // 프로그레스바 초기화
+            progressBarPtu.Minimum = 0;
+            progressBarPtu.Maximum = 100;
+            progressBarPtu.Value = 0;
+
+            // 컨버터 이벤트 바인딩
+            _ptuConverter.ConversionProgressChanged += OnPtuProgressChanged;
+            _ptuConverter.StatusMessageReceived += OnPtuStatusMessage;
+
             numAcqTime.Minimum = 1;
             numAcqTime.Maximum = 3600;
             numAcqTime.Value = 10;
@@ -61,9 +68,39 @@ namespace SpadApp
             btnAPPmeasure.Enabled = true;
             btnAPPmeasure.Text = "Measure";
             btnAPPmeasure.BackColor = SystemColors.Control;
+
+            // (가정) UI 디자이너 창에서 추가해야 할 컨트롤 기본 상태
+            // radModeInterArrival.Checked = true;
+            // chkSavePtuFile.Checked = false;
         }
 
-        // ★ 수동 차트 조작 함수인 InitChartLayout()는 삭제되었습니다.
+        // 🔄 프로그레스 바 스레드 안전 업데이트 (Invoke 패턴)
+        private void OnPtuProgressChanged(object? sender, PtuProgressEventArgs e)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() => OnPtuProgressChanged(sender, e)));
+                return;
+            }
+
+            // ProgressBar 값 업데이트
+            progressBarPtu.Value = (int)Math.Min(100, Math.Max(0, e.ProgressPercentage));
+
+            // (선택) 진행률 텍스트 업데이트
+            // lblProgress.Text = $"Processing: {e.ProgressPercentage:F1}% ({e.CurrentRecord:N0} / {e.TotalRecords:N0})";
+        }
+
+        private void OnPtuStatusMessage(object? sender, string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() => OnPtuStatusMessage(sender, message)));
+                return;
+            }
+
+            // (선택) 상태창이나 콘솔에 로그 출력
+            Console.WriteLine($"[PTU Analyzer] {message}");
+        }
 
         private void btnAPPsettings_Click(object sender, EventArgs e)
         {
@@ -85,14 +122,22 @@ namespace SpadApp
             _processor.ReferenceChannel = 1; // SPAD 채널
             _processor.TargetChannel = 1;    // 동일한 SPAD 채널
 
+            // ★ UI 연동 파트: 측정 모드 라디오 버튼 읽기 (컨트롤 이름은 디자인에 맞게 변경하세요)
+            // _processor.Mode = radModeAutocorr.Checked ? CorrelationMode.Autocorrelation : CorrelationMode.InterArrival;
+
+            // ★ UI 연동 파트: 디스크 스트리밍 옵션 읽기
+            // _processor.EnableDataSaving = chkSavePtuFile.Checked;
+            // if (_processor.EnableDataSaving) 
+            // {
+            //     // 현재 시간 기반으로 파일명 자동 생성 (예: Data_20260521_120100.ptu)
+            //     string fileName = $"Data_{DateTime.Now:yyyyMMdd_HHmmss}.ptu";
+            //     _processor.SaveFilePath = Path.Combine(Application.StartupPath, "Data", fileName);
+            //     Directory.CreateDirectory(Path.GetDirectoryName(_processor.SaveFilePath)!);
+            // }
+
             _processor.ProgressUpdated += OnProcessorProgressUpdated;
             _processor.StatusMessageLogged += OnProcessorLogReceived;
             _processor.MeasurementFinished += OnProcessorMeasurementFinished;
-
-            // ★ APPplot.Clear(), PlotData 수동 생성 등 차트 매니저의 영역을 침범하는 코드 삭제됨!
-            // 셋팅이 완료되면 계측 버튼을 누를 때 _chartManager가 데이터를 받아 알아서 렌더링합니다.
-
-            MessageBox.Show("하드웨어가 성공적으로 설정되었습니다.", "설정 완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private async void btnAPPmeasure_Click(object sender, EventArgs e)
@@ -123,9 +168,32 @@ namespace SpadApp
                     return;
                 }
 
-                // 🌟 try-finally 구조로 변경하여 무조건적으로 하드웨어 모니터링 복구 보장
+                _processor.EnableDataSaving = chkSavePtuFile.Checked; // 체크박스 상태 대입
+                if (_processor.EnableDataSaving)
+                {
+                    // 체크되어 있다면 현재 시간을 바탕으로 겹치지 않는 새 파일명 생성
+                    string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    string fileName = $"SPAD_Data_{timeStamp}.ptu";
+
+                    // 프로그램 실행 폴더 밑에 "Data" 폴더를 만들고 거기에 저장
+                    string dataFolder = Path.Combine(Application.StartupPath, "Data");
+                    Directory.CreateDirectory(dataFolder); // 폴더가 없으면 자동 생성
+
+                    _processor.SaveFilePath = Path.Combine(dataFolder, fileName);
+
+                    // UI 로그로 저장 위치 알림 (선택 사항)
+                    Console.WriteLine($"[저장 모드 활성화] 파일 경로: {_processor.SaveFilePath}");
+                }
+                else
+                {
+                    // 체크가 풀려있다면 경로를 지우고 SSD 저장 없이 RAM 모니터링만 수행
+                    _processor.SaveFilePath = "";
+                    Console.WriteLine("[검증 모드] 디스크 저장 없이 고속 모니터링만 수행합니다.");
+                }
+                // =========================================================================
                 try
                 {
+                    // 이 StartAcquisitionAsync 내부에서 EnableDataSaving이 true일 때만 FileStream을 엽니다.
                     await _processor.StartAcquisitionAsync(targetDurationMs);
                 }
                 catch (Exception ex)
@@ -135,7 +203,7 @@ namespace SpadApp
                 finally
                 {
                     ResetUIState();
-                    _tcspcController.StartMonitoring(); // 측정 성공/실패 여부와 관계없이 타이머 복구
+                    _tcspcController.StartMonitoring();
                 }
             }
             else
@@ -252,5 +320,55 @@ namespace SpadApp
             }
             _chartManager.SetXLimits((double)numPlotMinX.Value, (double)numPlotMaxX.Value);
         }
+
+        // 📂 파일 불러오기 및 오프라인 분석 버튼 클릭 이벤트
+        private async void btnLoadPtu_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "PTU Files (*.ptu)|*.ptu|All Files (*.*)|*.*";
+                ofd.Title = "저장된 PTU 데이터 불러오기";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    btnLoadPtu.Enabled = false; // 분석 중 중복 클릭 방지
+                    progressBarPtu.Value = 0;
+
+                    // X축 설정값에서 범위 가져오기
+                    double maxDelayNs = (double)numPlotMaxX.Value;
+                    double binWidthNs = 1.0; // 필요시 UI 컨트롤로 연결
+                    int targetChannel = 1;   // SPAD 채널
+
+                    try
+                    {
+                        // 비동기로 오프라인 분석 실행 (UI 멈춤 없음)
+                        double[]? resultHistogram = await _ptuConverter.AnalyzeAutocorrelationAsync(
+                            ofd.FileName, targetChannel, maxDelayNs, binWidthNs);
+
+                        if (resultHistogram != null)
+                        {
+                            // 분석 완료 시 차트에 즉시 렌더링
+                            _chartManager.UpdateFromProcessedData(resultHistogram, binWidthNs);
+
+                            // 스케일 자동 맞춤
+                            _chartManager.ResetXLimitsToAuto();
+                            MessageBox.Show("오프라인 데이터 분석 및 렌더링이 완료되었습니다.", "완료", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"파일 처리 중 오류: {ex.Message}", "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        btnLoadPtu.Enabled = true;
+                        progressBarPtu.Value = 100; // 시각적 완료 처리
+                    }
+                }
+            }
+        }
+
+
+
     }
 }

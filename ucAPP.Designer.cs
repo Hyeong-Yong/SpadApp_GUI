@@ -42,6 +42,9 @@
             numPlotMinX = new NumericUpDown();
             btnLogOrLinearScaleX = new Button();
             btnLogOrLinearScaleY = new Button();
+            chkSavePtuFile = new CheckBox();
+            btnLoadPtu = new Button();
+            progressBarPtu = new ProgressBar();
             ((System.ComponentModel.ISupportInitialize)numAcqTime).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPlotMaxX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPlotMinX).BeginInit();
@@ -212,10 +215,40 @@
             btnLogOrLinearScaleY.UseVisualStyleBackColor = true;
             btnLogOrLinearScaleY.Click += btnLogOrLinearScaleY_Click;
             // 
+            // chkSavePtuFile
+            // 
+            chkSavePtuFile.AutoSize = true;
+            chkSavePtuFile.Location = new Point(80, 473);
+            chkSavePtuFile.Name = "chkSavePtuFile";
+            chkSavePtuFile.Size = new Size(76, 19);
+            chkSavePtuFile.TabIndex = 47;
+            chkSavePtuFile.Text = "Save PTU";
+            chkSavePtuFile.UseVisualStyleBackColor = true;
+            // 
+            // btnLoadPtu
+            // 
+            btnLoadPtu.Location = new Point(175, 473);
+            btnLoadPtu.Name = "btnLoadPtu";
+            btnLoadPtu.Size = new Size(75, 23);
+            btnLoadPtu.TabIndex = 48;
+            btnLoadPtu.Text = "Load Ptu";
+            btnLoadPtu.UseVisualStyleBackColor = true;
+            btnLoadPtu.Click += btnLoadPtu_Click;
+            // 
+            // progressBarPtu
+            // 
+            progressBarPtu.Location = new Point(161, 516);
+            progressBarPtu.Name = "progressBarPtu";
+            progressBarPtu.Size = new Size(100, 23);
+            progressBarPtu.TabIndex = 49;
+            // 
             // ucAPP
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(progressBarPtu);
+            Controls.Add(btnLoadPtu);
+            Controls.Add(chkSavePtuFile);
             Controls.Add(btnResetXLimits);
             Controls.Add(label14);
             Controls.Add(lblPlotMinX);
@@ -264,5 +297,8 @@
         private NumericUpDown numPlotMinX;
         private Button btnLogOrLinearScaleX;
         private Button btnLogOrLinearScaleY;
+        private CheckBox chkSavePtuFile;
+        private Button btnLoadPtu;
+        private ProgressBar progressBarPtu;
     }
 }
