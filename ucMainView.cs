@@ -27,7 +27,6 @@ namespace SpadApp
 
         }
 
-
         private void btnConnect_Click(object sender, EventArgs e)
         {
             if (btnConnect.Text == "Connect")
@@ -36,17 +35,14 @@ namespace SpadApp
                 // PicoHarp300 Connect
                 // ------------------------------------------------------------
 
-                bool tcspcConnected =
-                    TCSPCDeviceController.ConnectDevice(Log);
+                bool tcspcConnected = TCSPCDeviceController.ConnectDevice(Log);
 
-                if (!tcspcConnected)
-                {
+                if (!tcspcConnected){
                     Log("PicoHarp300 connection failed.");
                     return;
                 }
 
                 DeviceSettingInit();
-
                 Log("PicoHarp300 connected.");
 
                 // ------------------------------------------------------------
@@ -58,12 +54,10 @@ namespace SpadApp
                         0,
                         Log);
 
-                if (pm1Connected)
-                {
+                if (pm1Connected){
                     Log("PM100USB #1 Connected");
                 }
-                else
-                {
+                else{
                     Log("PM100USB #1 connection failed.");
                 }
 
@@ -76,40 +70,22 @@ namespace SpadApp
                         1,
                         Log);
 
-                if (pm2Connected)
-                {
+                if (pm2Connected){
                     Log("PM100USB #2 Connected");
                 }
-                else
-                {
+                else{
                     Log("PM100USB #2 connection failed.");
                 }
 
-                // ------------------------------------------------------------
-                // UI Update
-                // ------------------------------------------------------------
-
                 btnConnect.Text = "Disconnect";
-
-                btnConnect.BackColor =
-                    Color.IndianRed;
-
+                btnConnect.BackColor = Color.IndianRed;
                 btnMeasure.Enabled = true;
             }
-            else
-            {
-                // ------------------------------------------------------------
-                // Disconnect All Devices
-                // ------------------------------------------------------------
-
+            else{
                 TCSPCDeviceController.DisconnectDevice(Log);
-
                 powerMeterController1.DisconnectDevice(Log);
-
                 powerMeterController2.DisconnectDevice(Log);
-
                 Log("All devices disconnected.");
-
                 ResetUI();
             }
         }
@@ -153,7 +129,7 @@ namespace SpadApp
                 return;
             }
 
-            // 🌟 1. 하드웨어 독점 계측을 시작하기 전, 실시간 모니터링 타이머를 중지합니다.
+            // 하드웨어 독점 계측을 시작하기 전, 실시간 모니터링 타이머를 중지합니다.
             TCSPCDeviceController.StopMonitoring();
             btnMeasure.Enabled = false;
 
@@ -172,21 +148,12 @@ namespace SpadApp
             }
             finally
             {
-                // 🌟 2. [핵심] 성공/실패 여부와 상관없이 계측 태스크가 완전히 끝났으므로
                 // 단발성 측정 버튼을 다시 활성화하고, 실시간 모니터링 타이머를 되살립니다.
                 btnMeasure.Enabled = true;
                 TCSPCDeviceController.StartMonitoring();
             }
         }
 
-        // 중복되는 차트 업데이트 로직을 별도 뺌
-        private void UpdateChartAfterMeasurement()
-        {
-
-            double res = 0;
-            PicoHarp_Native.PH_GetResolution(PicoHarp_DeviceInfo.DeviceIndex, ref res);
-            _chartManager.Update(_histogram.RawData, res);
-        }
 
         private bool _isRepeating = false;
 
@@ -209,8 +176,9 @@ namespace SpadApp
                         await TCSPCDeviceController.ExecuteMeasurementAsync(_histogram.RawData, () => _isRepeating);
                         if (!_isRepeating) break;
 
-                        // 루프 중간에 레이트 미터도 한 번 갱신하고 차트를 그립니다.
-                        UpdateChartAfterMeasurement();
+                        // 차트 실시간 갱신
+                        _chartManager.Update(_histogram.RawData, PicoHarp_MeasurementStatus.ResolutionPs);
+
                     }
                 }
                 finally
@@ -219,7 +187,7 @@ namespace SpadApp
                     btnRun.Text = "Run";
                     btnRun.BackColor = SystemColors.Control;
 
-                    // 🌟 2. 반복 계측이 완전히 정지되면 진짜 타이머를 다시 확실하게 켭니다.
+                    // 반복 계측이 완전히 정지되면 진짜 타이머를 다시 확실하게 켭니다.
                     TCSPCDeviceController.StartMonitoring();
                 }
             }
@@ -237,7 +205,7 @@ namespace SpadApp
 
         private void MeasurementParameterSetting()
         {
-            // ★ X축 가로 제어 NumericUpDown 컨트롤 규격 세팅
+            //  X축 가로 제어 NumericUpDown 컨트롤 규격 세팅
             numPlotMinX.Minimum = 0;
             numPlotMinX.Maximum = 100000;
             numPlotMinX.DecimalPlaces = 2;   // 소수점 둘째 자리까지 정밀 제어 (ps 단위 고려)

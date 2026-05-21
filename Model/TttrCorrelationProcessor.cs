@@ -68,6 +68,241 @@ namespace SpadApp.Model
             CorrelationHistogram = new double[binCount];
         }
 
+        /// <summary>
+        /// [고해상도 오프라인 분석] 짧은 수명(Trap Lifetime 등)을 가진 소규모 데이터의 
+        /// 정밀 자기상관 분석을 수행합니다. (예: MaxDelay = 10us, BinWidth = 10ns)
+        /// </summary>
+        public async Task<double[]?> AnalyzeHighResAutocorrelationAsync(
+            string inputPtu, double maxDelayNs = 10000, double binWidthNs = 10)
+        {
+            if (!File.Exists(inputPtu)) return null;
+
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    // 1. 5만 개 데이터를 담을 리스트 (5만 개면 RAM 점유율 1MB도 안 됨)
+                    List<long> absoluteTicks = new List<long>();
+                    double resolutionPs = 4.0;
+                    long oflCorrection = 0;
+
+                    // 파일 읽기
+                    using (var fs = new FileStream(inputPtu, FileMode.Open, FileAccess.Read))
+                    using (var br = new BinaryReader(fs))
+                    {
+                        LogMessage("고해상도 분석: 데이터 로드 중...");
+
+                        while (true) // 헤더 건너뛰기
+                        {
+                            string ident = Encoding.ASCII.GetString(br.ReadBytes(32)).TrimEnd('\0');
+                            uint typ = br.ReadUInt32();
+                            br.ReadInt32(); // idx
+                            long tagValue = br.ReadInt64();
+
+                            if (ident == "MeasDesc_GlobalResolution") resolutionPs = BitConverter.Int64BitsToDouble(tagValue) * 1e12;
+                            if (typ == 0x4001FFFF || typ == 0x4002FFFF) br.ReadBytes((int)tagValue);
+                            if (ident == "Header_End") break;
+                        }
+
+                        // 이진 데이터 파싱
+                        while (br.BaseStream.Position < br.BaseStream.Length)
+                        {
+                            uint record = br.ReadUInt32();
+                            uint channel = (record >> 28) & 0xF;
+                            uint time = record & 0x0FFFFFFF;
+
+                            if (channel == 0xF)
+                            {
+                                if ((time & 0xF) == 0) oflCorrection += T2WRAPAROUND;
+                            }
+                            else if (channel == TargetChannel)
+                            {
+                                absoluteTicks.Add(oflCorrection + time);
+                            }
+                        }
+                    }
+
+                    int count = absoluteTicks.Count;
+                    if (count == 0) return null;
+
+                    LogMessage($"고해상도 분석: {count:N0}개 광자 로드 완료. 상관도 계산 시작...");
+
+                    // 2. 고해상도 히스토그램 생성
+                    double resNs = resolutionPs / 1000.0;
+                    int binCount = (int)(maxDelayNs / binWidthNs);
+                    double[] histogram = new double[binCount];
+
+                    // 3. 직접 자기상관 연산 (Windowed $O(N)$)
+                    for (int i = 0; i < count; i++)
+                    {
+                        long baseTick = absoluteTicks[i];
+
+                        // 자기 자신 이후의 광자들과 거리 비교
+                        for (int j = i + 1; j < count; j++)
+                        {
+                            long delta = absoluteTicks[j] - baseTick;
+                            double deltaNs = delta * resNs;
+
+                            // 우리가 관심있는 윈도우(예: 10us)를 넘어가면 즉시 내부 루프 탈출 (엄청난 속도 향상)
+                            if (deltaNs >= maxDelayNs) break;
+
+                            int binIdx = (int)(deltaNs / binWidthNs);
+                            histogram[binIdx]++;
+                        }
+                    }
+
+                    sw.Stop();
+                    LogMessage($"고해상도 분석 완료 (소요 시간: {sw.Elapsed.TotalSeconds:F3}초)");
+
+                    return histogram;
+                }
+                catch (Exception ex)
+                {
+                    LogMessage($"[오류] 고해상도 분석 실패: {ex.Message}");
+                    return null;
+                }
+            });
+        }
+
+
+        public async Task<(double[] delays, double[] correlations)?> AnalyzeMultiTauAsync(
+            string inputPtu, double baseBinWidthNs = 1000, int cascades = 20, int binsPerCascade = 16)
+        {
+            if (!File.Exists(inputPtu)) return null;
+
+            // ★ 해결: Task.Run 뒤에 꺾쇠 < > 를 사용하여 반환 타입을 명확하게 알려줍니다.
+            return await Task.Run<(double[] delays, double[] correlations)?>(() =>
+            {
+                try
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    List<long> targetTicks = new List<long>();
+                    double resolutionPs = 4.0;
+                    long numRecords = 0;
+                    long oflCorrection = 0;
+
+                    using (var fs = new FileStream(inputPtu, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 1024))
+                    using (var br = new BinaryReader(fs))
+                    {
+                        LogMessage("다중 타우 분석: 헤더 분석 및 데이터 로드 시작...");
+
+                        while (true)
+                        {
+                            string ident = Encoding.ASCII.GetString(br.ReadBytes(32)).TrimEnd('\0');
+                            int idx = br.ReadInt32();
+                            uint typ = br.ReadUInt32();
+                            long tagValue = br.ReadInt64();
+
+                            if (ident == "TTResult_NumberOfRecords") numRecords = tagValue;
+                            if (ident == "MeasDesc_GlobalResolution") resolutionPs = BitConverter.Int64BitsToDouble(tagValue) * 1e12;
+                            if (typ == 0x4001FFFF || typ == 0x4002FFFF) br.ReadBytes((int)tagValue);
+                            if (ident == "Header_End") break;
+                        }
+
+                        for (long i = 0; i < numRecords; i++)
+                        {
+                            uint record = br.ReadUInt32();
+                            uint channel = (record >> 28) & 0xF;
+                            uint time = record & 0x0FFFFFFF;
+
+                            if (channel == 0xF)
+                            {
+                                if ((time & 0xF) == 0) oflCorrection += T2WRAPAROUND;
+                            }
+                            else if (channel == TargetChannel)
+                            {
+                                targetTicks.Add(oflCorrection + time);
+                            }
+                        }
+                    }
+
+                    if (targetTicks.Count == 0) return null;
+
+                    LogMessage($"다중 타우 분석: {targetTicks.Count:N0}개 광자 Binning 시작...");
+
+                    double ticksPerBaseBin = (baseBinWidthNs * 1000.0) / resolutionPs;
+                    long maxTick = targetTicks[targetTicks.Count - 1];
+                    int numBaseBins = (int)(maxTick / ticksPerBaseBin) + 1;
+
+                    double[] currentTrace = new double[numBaseBins];
+                    foreach (var tick in targetTicks)
+                    {
+                        int binIdx = (int)(tick / ticksPerBaseBin);
+                        if (binIdx < numBaseBins) currentTrace[binIdx]++;
+                    }
+
+                    targetTicks.Clear();
+                    targetTicks.TrimExcess();
+
+                    LogMessage($"다중 타우 분석: {numBaseBins:N0}개 Bin에 대한 상관 연산 진행 중...");
+
+                    List<double> delays = new List<double>();
+                    List<double> correlations = new List<double>();
+                    double currentBinNs = baseBinWidthNs;
+
+                    for (int cascade = 0; cascade < cascades; cascade++)
+                    {
+                        int startLag = (cascade == 0) ? 1 : binsPerCascade / 2;
+                        int endLag = binsPerCascade;
+
+                        for (int m = startLag; m < endLag; m++)
+                        {
+                            if (m >= currentTrace.Length) break;
+
+                            double sumProduct = 0, sumI = 0, sumDelayed = 0;
+                            int N = currentTrace.Length - m;
+
+                            for (int i = 0; i < N; i++)
+                            {
+                                sumProduct += currentTrace[i] * currentTrace[i + m];
+                                sumI += currentTrace[i];
+                                sumDelayed += currentTrace[i + m];
+                            }
+
+                            double meanI = sumI / N;
+                            double meanDelayed = sumDelayed / N;
+                            double g = 0;
+
+                            if (meanI > 0 && meanDelayed > 0)
+                            {
+                                g = (sumProduct / N) / (meanI * meanDelayed) - 1.0;
+                            }
+
+                            delays.Add(m * currentBinNs);
+                            correlations.Add(g);
+                        }
+
+                        int nextLength = currentTrace.Length / 2;
+                        if (nextLength <= binsPerCascade) break;
+
+                        double[] nextTrace = new double[nextLength];
+                        for (int i = 0; i < nextLength; i++)
+                        {
+                            nextTrace[i] = currentTrace[2 * i] + currentTrace[2 * i + 1];
+                        }
+
+                        currentTrace = nextTrace;
+                        currentBinNs *= 2;
+                    }
+
+                    sw.Stop();
+                    LogMessage($"다중 타우 분석 완료 (소요 시간: {sw.Elapsed.TotalSeconds:F2}초)");
+
+                    return (delays.ToArray(), correlations.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    LogMessage($"[오류] 다중 타우 분석 실패: {ex.Message}");
+                    return null;
+                }
+            });
+        }
+
         public async Task StartAcquisitionAsync(int targetDurationMs)
         {
             _isMeasuring = true;

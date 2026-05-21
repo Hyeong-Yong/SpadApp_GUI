@@ -46,6 +46,9 @@
             panelDeskTop = new Panel();
             panelTitleBar = new Panel();
             panelMenu = new Panel();
+            btn2Dmap = new FontAwesome.Sharp.IconButton();
+            btnCDC = new FontAwesome.Sharp.IconButton();
+            btnCrossTalk = new FontAwesome.Sharp.IconButton();
             btnSPCview = new FontAwesome.Sharp.IconButton();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -137,7 +140,7 @@
             iconButton8.Size = new Size(148, 41);
             iconButton8.TabIndex = 7;
             iconButton8.Tag = "Exit";
-            iconButton8.Text = "  iconButton2";
+            iconButton8.Text = "  Exit";
             iconButton8.TextAlign = ContentAlignment.MiddleLeft;
             iconButton8.TextImageRelation = TextImageRelation.ImageBeforeText;
             iconButton8.UseVisualStyleBackColor = true;
@@ -192,6 +195,7 @@
             btnJitterView.TextAlign = ContentAlignment.MiddleLeft;
             btnJitterView.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnJitterView.UseVisualStyleBackColor = true;
+            btnJitterView.Click += btnJitterView_Click;
             // 
             // btnPDEview
             // 
@@ -352,6 +356,9 @@
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(98, 102, 242);
+            panelMenu.Controls.Add(btn2Dmap);
+            panelMenu.Controls.Add(btnCDC);
+            panelMenu.Controls.Add(btnCrossTalk);
             panelMenu.Controls.Add(btnSPCview);
             panelMenu.Controls.Add(iconButton8);
             panelMenu.Controls.Add(btnAppView);
@@ -367,6 +374,81 @@
             panelMenu.Size = new Size(148, 614);
             panelMenu.TabIndex = 3;
             // 
+            // btn2Dmap
+            // 
+            btn2Dmap.AutoSize = true;
+            btn2Dmap.Dock = DockStyle.Top;
+            btn2Dmap.FlatAppearance.BorderSize = 0;
+            btn2Dmap.FlatStyle = FlatStyle.Flat;
+            btn2Dmap.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btn2Dmap.ForeColor = Color.White;
+            btn2Dmap.IconChar = FontAwesome.Sharp.IconChar.HandsHoldingCircle;
+            btn2Dmap.IconColor = Color.White;
+            btn2Dmap.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btn2Dmap.IconSize = 30;
+            btn2Dmap.ImageAlign = ContentAlignment.MiddleLeft;
+            btn2Dmap.Location = new Point(0, 386);
+            btn2Dmap.Margin = new Padding(2, 1, 2, 1);
+            btn2Dmap.Name = "btn2Dmap";
+            btn2Dmap.Padding = new Padding(5, 7, 8, 0);
+            btn2Dmap.Size = new Size(148, 43);
+            btn2Dmap.TabIndex = 11;
+            btn2Dmap.Tag = "2D Map";
+            btn2Dmap.Text = "  2D map";
+            btn2Dmap.TextAlign = ContentAlignment.MiddleLeft;
+            btn2Dmap.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn2Dmap.UseVisualStyleBackColor = true;
+            // 
+            // btnCDC
+            // 
+            btnCDC.AutoSize = true;
+            btnCDC.Dock = DockStyle.Top;
+            btnCDC.FlatAppearance.BorderSize = 0;
+            btnCDC.FlatStyle = FlatStyle.Flat;
+            btnCDC.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCDC.ForeColor = Color.White;
+            btnCDC.IconChar = FontAwesome.Sharp.IconChar.Hubspot;
+            btnCDC.IconColor = Color.White;
+            btnCDC.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnCDC.IconSize = 30;
+            btnCDC.ImageAlign = ContentAlignment.MiddleLeft;
+            btnCDC.Location = new Point(0, 343);
+            btnCDC.Margin = new Padding(2, 1, 2, 1);
+            btnCDC.Name = "btnCDC";
+            btnCDC.Padding = new Padding(5, 7, 8, 0);
+            btnCDC.Size = new Size(148, 43);
+            btnCDC.TabIndex = 10;
+            btnCDC.Tag = "CDC";
+            btnCDC.Text = "  CDC";
+            btnCDC.TextAlign = ContentAlignment.MiddleLeft;
+            btnCDC.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnCDC.UseVisualStyleBackColor = true;
+            // 
+            // btnCrossTalk
+            // 
+            btnCrossTalk.AutoSize = true;
+            btnCrossTalk.Dock = DockStyle.Top;
+            btnCrossTalk.FlatAppearance.BorderSize = 0;
+            btnCrossTalk.FlatStyle = FlatStyle.Flat;
+            btnCrossTalk.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCrossTalk.ForeColor = Color.White;
+            btnCrossTalk.IconChar = FontAwesome.Sharp.IconChar.Instalod;
+            btnCrossTalk.IconColor = Color.White;
+            btnCrossTalk.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnCrossTalk.IconSize = 30;
+            btnCrossTalk.ImageAlign = ContentAlignment.MiddleLeft;
+            btnCrossTalk.Location = new Point(0, 300);
+            btnCrossTalk.Margin = new Padding(2, 1, 2, 1);
+            btnCrossTalk.Name = "btnCrossTalk";
+            btnCrossTalk.Padding = new Padding(5, 7, 8, 0);
+            btnCrossTalk.Size = new Size(148, 43);
+            btnCrossTalk.TabIndex = 9;
+            btnCrossTalk.Tag = "CTP";
+            btnCrossTalk.Text = "  CTP";
+            btnCrossTalk.TextAlign = ContentAlignment.MiddleLeft;
+            btnCrossTalk.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnCrossTalk.UseVisualStyleBackColor = true;
+            // 
             // btnSPCview
             // 
             btnSPCview.AutoSize = true;
@@ -375,7 +457,7 @@
             btnSPCview.FlatStyle = FlatStyle.Flat;
             btnSPCview.Font = new Font("Microsoft Sans Serif", 10.125F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSPCview.ForeColor = Color.White;
-            btnSPCview.IconChar = FontAwesome.Sharp.IconChar.Institution;
+            btnSPCview.IconChar = FontAwesome.Sharp.IconChar.Intercom;
             btnSPCview.IconColor = Color.White;
             btnSPCview.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnSPCview.IconSize = 30;
@@ -437,5 +519,8 @@
         private FontAwesome.Sharp.IconButton btnMinimize;
         private FontAwesome.Sharp.IconButton btnClose;
         private FontAwesome.Sharp.IconButton btnMaximize;
+        private FontAwesome.Sharp.IconButton btnCDC;
+        private FontAwesome.Sharp.IconButton btnCrossTalk;
+        private FontAwesome.Sharp.IconButton btn2Dmap;
     }
 }
